@@ -66,6 +66,17 @@ rentalRouter.route('/:serviceName')
         res.json(null);
         res.end();
     } else {
+        if (req.body.address == "" || req.body.description == "") {
+            res.json(null);
+            res.end();
+            return;
+        }
+        if (isNaN(req.body.priceMenu.categoryA) || isNaN(req.body.priceMenu.categoryB)
+        || isNaN(req.body.priceMenu.categoryC)) {
+            res.json(null);
+            res.end();
+            return;
+        }
         matchingService.address = req.body.address;
         matchingService.description = req.body.description;
         matchingService.priceMenu.categoryA = req.body.priceMenu.categoryA;
