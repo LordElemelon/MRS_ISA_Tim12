@@ -13,12 +13,10 @@ const rentalRouter = require('./routes/carRentalServiceRouter');
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
-<<<<<<< HEAD
 app.use('/rentalServices', rentalRouter);
-=======
 app.use('/hotels', hotelRouter);
 app.use('/sysAdmin', sysAdminRouter);
->>>>>>> 5f976f604c37553070425c02d723136b040dcd85
+
 
 app.use((req, res, next) => {
   res.statusCode = 200;
