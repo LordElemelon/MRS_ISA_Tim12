@@ -6,9 +6,12 @@ const bodyParser = require('body-parser');
 const hostname = 'localhost';
 const port = 3000;
 
+const rentalRouter = require('./routes/carRentalServiceRouter');
+
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+app.use('/rentalServices', rentalRouter);
 
 app.use((req, res, next) => {
   res.statusCode = 200;
