@@ -13,30 +13,67 @@ var dummyRental = {
         categoryB: 100,
         categoryC: 100
     },
-    vehicleList: [
-        {
-            make: 'Volkswagen',
-            serial: '1122'
-        },
-        {
-            make: 'BMW',
-            serial: '1122'
-        }
-    ],
     branchList: [
         {
             name: 'Dummy branch 1',
-            address: 'Dummy address 1'
+            address: 'Dummy address 1',
+            vehicleList: [
+                {
+                    make: 'Volkswagen',
+                    serial: '1',
+                    category: 'B',
+                    seats: 4,
+                    taken: [
+                        {
+                            start: new Date('December 17, 2018 03:24:00'),
+                            end: new Date('December 20, 2018 03:24:00')
+                        },
+                        {
+                            start: new Date('January 2, 2019 03:24:00'),
+                            end: new Date('January 10, 2019 03:24:00')
+                        }
+                    ]
+                },
+                {
+                    make: 'BMW',
+                    serial: '2',
+                    category: 'A',
+                    seats: 5,
+                    taken: [
+
+                    ]
+                }
+            ]
         },
         {
             name: 'Dummy branch 2',
-            address: 'Dummy address 2'
+            address: 'Dummy address 2',
+            vehicleList: [
+                {
+                    make: 'Volkswagen',
+                    serial: '3',
+                    category: 'B',
+                    seats: 3,
+                    taken: [
+
+                    ]
+                },
+                {
+                    make: 'BMW',
+                    serial: '4',
+                    category: 'C',
+                    seats: 5,
+                    taken: [
+
+                    ]
+                }
+            ]
         }
     ]
 }
     
 
-rentalRouter.route('/:serviceName')
+rentalRouter.route('/modifyRentalService')
 .all((req, res, next) =>  {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
@@ -85,6 +122,84 @@ rentalRouter.route('/:serviceName')
         res.json(matchingService);
         res.end();
     }    
+});
+
+rentalRouter.route('/searchVehicles')
+.all((req, res, next) => {
+    res.statusCode = 200;
+    res.setHeader('Content-type', 'text/html');
+    next();
 })
+.get((req, res, next) => {
+    /*
+        Expected query json
+        {
+            start: startDate,
+            end: endDate,
+            seats: number of seats, or undefined,
+            category: category, or undefined,
+            place: branch name, or undefined,
+        }
+    */
+    req.body.start = new Date(req.body.start);
+    req.body.end = new Date(req.body.end);
+    vehicleFilterMethods = []
+    vehicleFilterMethods.push((vehicle) => {
+        for (interval of vehicle.taken) {
+            if ((req.body.start <= interval.end) && (req.body.end >= interval.start)) {
+                return false;
+            }
+        }
+        return true;
+    });
+    if (typeof req.body.seats != 'undefined' ) {
+        if (!isNaN(req.body.seats)) {
+            vehicleFilterMethods.push((vehicle) => {
+                return vehicle.seats = req.body.seats;
+            })
+        }
+    }
+    if (typeof req.body.category != 'undefined') {
+        vehicleFilterMethods.push((vehicle) => {
+            return req.body.category == vehicle.category;
+        })
+    }
+    vehicleList = [];
+    for (branch of dummyRental.branchList) {
+        if (typeof req.body.place  != 'undefined') {
+            if (req.body.place != branch.name) {
+                continue;
+            }
+        }
+        for (vehicle of branch.vehicleList) {
+            vehicleList.push(vehicle);
+        }
+    }
+    retVal = [];
+    for (vehicle of vehicleList) {
+        var passed = true;
+        for (method of vehicleFilterMethods) {
+            if (!method(vehicle)) {
+                passed = false;
+                break;
+            }
+        }
+        if (passed) {
+            retVal.push(vehicle);
+        }
+    }
+    res.setHeader('Content-type', 'application/json');
+    res.json(retVal);
+    res.end();
+})
+.post((req, res, next) => {
+    res.end('Post for vehicle search not implemented yet');
+})
+.put((req, res, next) => {
+    res.end('Put for vehicle search not implemented yet');
+})
+.delete((req, res, next) => {
+    res.end('Delete for vehicle search not implemented yet');
+});
 
 module.exports = rentalRouter;
