@@ -1,14 +1,18 @@
 const express = require('express');
 const http = require('http');
-
 const bodyParser = require('body-parser');
-     
+
+const hotelRouter = require('./routes/hotelRouter.js');
+const sysAdminRouter = require('./routes/sysAdminRouter.js');
+
 const hostname = 'localhost';
 const port = 3000;
 
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
+app.use('/hotels', hotelRouter);
+app.use('/sysAdmin', sysAdminRouter);
 
 app.use((req, res, next) => {
   res.statusCode = 200;
