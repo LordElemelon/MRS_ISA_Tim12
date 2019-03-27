@@ -1,0 +1,27 @@
+{
+  "name": "mrs_isa_tim12",
+  "version": "1.0.0",
+  "description": "Projekat iz mrs_isa",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LordElemelon/MRS_ISA_Tim12.git"
+  },
+  "keywords": [
+    "quality"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LordElemelon/MRS_ISA_Tim12/issues"
+  },
+  "homepage": "https://github.com/LordElemelon/MRS_ISA_Tim12#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
