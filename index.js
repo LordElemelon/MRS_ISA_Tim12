@@ -1,14 +1,21 @@
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const hotelRouter = require('./routes/hotelRouter.js');
 const sysAdminRouter = require('./routes/sysAdminRouter.js');
+const rentalRouter = require('./routes/carRentalServiceRouter');
 
 const hostname = 'localhost';
 const port = 3000;
 
-const rentalRouter = require('./routes/carRentalServiceRouter');
+const url = 'mongodb://localhost:27017/travels';
+const connect = mongoose.connect(url);
+
+connect.then((db) => {
+    console.log("Connected to the database correctly");
+}, (err) => { console.log(err); });
 
 const app = express();
 app.use(bodyParser.json());

@@ -1,30 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Hotels = require('../models/hotel/hotel.js');
 
 const hotelRouter = express.Router();
 hotelRouter.use(bodyParser.json());
 
-var hotels = [];
-
 hotelRouter.route('/')
-    .all((req,res,next) => {
-        res.statusCode = 200;
-        next();
-    })
-    .post((req,res) => {
-        for (hotel of hotels){
-            if (hotel.name === req.body.name){
-                res.send("<html><body>fail, name already taken</body></html>");
-                return;
-            }
-        }
+    .put((req,res) => {
         if (req.body.year > 2019){
             res.send("<html><body>fail, it couldn't have been established after 2019</body><html>");
             return;
         }
-        hotels.push(req.body);
-        res.send(hotels);
-
+        //modifying the hotel
+        Hotels.findOneAndUpdate({"name" : "hotel1"}, {
+            $set: {"name" : req.body.name, "address" : req.body.address, "description" : req.body.description}
+        }, {new : true})
+            .then((hotel) => {
+                res.send(hotel);
+            })
+            .catch((err) => {
+                res.send({err});
+            });
     });
 
 module.exports = hotelRouter;

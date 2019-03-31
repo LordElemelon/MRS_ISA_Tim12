@@ -1,23 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Hotels = require('../models/hotel/hotel.js');
 
 const sysAdminRouter = express.Router();
 sysAdminRouter.use(bodyParser.json());
-var hotel = {"name" : "Hotel1", "address" : "Address1", "description" : "Description1",
-             "year" : 1911};
 
-sysAdminRouter.route('/')
-    .all((req,res,next) => {
-        res.statusCode = 200;
-        next();
-    })
-    .put((req,res) => {
-        if (req.body.year > 2019){
-            res.send("<html><body>fail, it couldn't have been established after 2019</body><html>");
-            return;
-        }
-        hotel.address = req.body.address;
-        hotel.description = req.body.description;
-        res.send(hotel);
+var hotels = [];
+
+sysAdminRouter.route('/hotels')
+    .post((req,res) => {
+        Hotels.create(req.body)
+            .then((hotel)=>{
+                return Hotels.find({});
+            })
+            .then((hotels)=>{
+                res.send(hotels);
+                console.log("brousky");
+            })
+            .catch((err)=>{
+                console.log(err);
+                console.log("brou");
+                res.send(err);
+            });
     });
+
 module.exports = sysAdminRouter;
