@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const hotelRouter = require('./routes/hotelRouter.js');
 const sysAdminRouter = require('./routes/sysAdminRouter.js');
 const rentalRouter = require('./routes/carRentalServiceRouter');
+const airlineRouter = require('./routes/airlineRouter.js');
 
 const hostname = 'localhost';
 const port = 3000;
@@ -23,6 +24,7 @@ app.use(express.static(__dirname + '/public'));
 app.use('/rentalServices', rentalRouter);
 app.use('/hotels', hotelRouter);
 app.use('/sysAdmin', sysAdminRouter);
+app.use('/airlines', airlineRouter);
 
 
 app.use((req, res, next) => {
