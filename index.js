@@ -7,6 +7,7 @@ const hotelRouter = require('./routes/hotelRouter.js');
 const sysAdminRouter = require('./routes/sysAdminRouter.js');
 const rentalRouter = require('./routes/carRentalServiceRouter');
 const airlineRouter = require('./routes/airlineRouter.js');
+const registeredUserRouter = require('./routes/registeredUserRouter.js');
 
 const hostname = 'localhost';
 const port = 3000;
@@ -25,6 +26,7 @@ app.use('/rentalServices', rentalRouter);
 app.use('/hotels', hotelRouter);
 app.use('/sysAdmin', sysAdminRouter);
 app.use('/airlines', airlineRouter);
+app.use('/users', registeredUserRouter);
 
 
 app.use((req, res, next) => {
