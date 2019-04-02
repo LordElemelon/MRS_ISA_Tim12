@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 const roomSchema = new Schema({
     number: {
         type: Number,
-        required: true,
-        unique: true
+        required: true
     },
     description: {
         type: String,
@@ -14,6 +13,11 @@ const roomSchema = new Schema({
     beds: {
         type: Number,
         required: true
+    },
+    active: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 },{
     timestamps: true
