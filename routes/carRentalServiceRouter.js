@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const RentalServices = require('../models/rentalService/rentalService.js');
+
 
 const rentalRouter = express.Router();
 
@@ -80,10 +82,53 @@ rentalRouter.route('/modifyRentalService')
     next();
 })
 .get((req, res, next) => {
-    res.end('Get for rental service not implemented yet');
+    RentalServices.find({
+        name: 'Original dummy name'
+    }).then((result) => {
+        res.json(result);
+        res.end();
+    }).catch((err) => {
+        console.log(err);
+    })
 })
 .post((req, res, next) => {
-    res.end('Post for rental service not implemented yet');
+    RentalServices.create(
+        {
+            name: 'Original dummy name',
+            address: 'Original dummy address',
+            description: 'Original dummy description',
+            cars: [
+                {
+                    make: 'Volkswagen',
+                    registration: '1',
+                    category: 'A',
+                    seats: 4,
+                    reservations: [
+                        {
+                            from: new Date('December 17, 2018 03:24:00'),
+                            to: new Date('December 20, 2018 03:24:00'),
+                            user: 'DummyUsername'
+                        }
+                    ]
+                }
+
+            ],
+            branches: [
+                {
+                    name: 'Dummy branch 1',
+                    address: 'Dummy address 1'
+                },
+                {
+                    name: 'Dummy branch 2',
+                    address: 'Dummy address 2'
+                }
+            ]
+        }).then((result) => {
+            console.log('Uspeo')
+        }).catch((err) => {
+            console.log('Times is hard')
+        });
+    
 })
 .delete((req, res, next) => {
     res.end('Delete for rental service not implemented yet');
