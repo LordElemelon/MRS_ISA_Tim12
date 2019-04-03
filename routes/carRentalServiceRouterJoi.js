@@ -30,9 +30,18 @@ const carDeleteSchema = Joi.object({
     registration: Joi.string().required()
 })
 
+const carSearchSchema = Joi.object({
+    start: Joi.number().required(),
+    end: Joi.number().required(),
+    serviceName: Joi.string().required(),
+    seats: Joi.number(),
+    category: Joi.string()
+})
+
 exports.rentalServiceGetSchema = getSchema;
 exports.rentalServiceDeleteSchema = deleteSchema;
 exports.rentalServicePutSchema = putSchema;
 exports.carGetSchema = carGetSchema;
 exports.carPostSchema = carPostSchema;
 exports.carDeleteSchema = carDeleteSchema;
+exports.carSearchSchema = carSearchSchema

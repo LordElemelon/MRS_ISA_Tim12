@@ -142,8 +142,6 @@ rentalRouter.route('/modifyCar')
     res.end("Currently no attributes of a car can be changed.");
 })
 .delete((req, res, next) => {
-    //expected json body -> {name-> name of service to delete}
-    //ovo sada treba prepraviti
     const result = Joi.validate(req.body, RentalServiceJoi.carDeleteSchema);
     if (result.error != null) {
         //bad request
@@ -181,63 +179,68 @@ rentalRouter.route('/searchVehicles')
     /*
         Expected query json
         {
-            start: startDate,
-            end: endDate,
+            start: Number, ticks
+            end: Number, ticks
+            serviceName: service name,
             seats: number of seats, or undefined,
             category: category, or undefined,
-            place: branch name, or undefined,
         }
     */
-    req.body.start = new Date(req.body.start);
-    req.body.end = new Date(req.body.end);
-    vehicleFilterMethods = []
-    vehicleFilterMethods.push((vehicle) => {
-        for (interval of vehicle.taken) {
-            if ((req.body.start <= interval.end) && (req.body.end >= interval.start)) {
-                return false;
+    const result = Joi.validate(req.body, RentalServiceJoi.carSearchSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        req.body.start = new Date(req.body.start);
+        req.body.end = new Date(req.body.end);
+        vehicleFilterMethods = []
+        vehicleFilterMethods.push((vehicle) => {
+            for (interval of vehicle.reservations) {
+                if ((req.body.start <= interval.to) && (req.body.end >= interval.from)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        if (typeof req.body.seats != 'undefined' ) {
+            if (!isNaN(req.body.seats)) {
+                vehicleFilterMethods.push((vehicle) => {
+                    return vehicle.seats = req.body.seats;
+                })
             }
         }
-        return true;
-    });
-    if (typeof req.body.seats != 'undefined' ) {
-        if (!isNaN(req.body.seats)) {
+        if (typeof req.body.category != 'undefined') {
             vehicleFilterMethods.push((vehicle) => {
-                return vehicle.seats = req.body.seats;
+                return req.body.category == vehicle.category;
             })
         }
-    }
-    if (typeof req.body.category != 'undefined') {
-        vehicleFilterMethods.push((vehicle) => {
-            return req.body.category == vehicle.category;
+        Cars.find({serviceName: req.body.serviceName})
+        .then((result) => {
+            retVal = [];
+            for (vehicle of result) {
+                var passed = true;
+                for (method of vehicleFilterMethods) {
+                    if (!method(vehicle)) {
+                        passed = false;
+                        break;
+                    }
+                }
+                if (passed) {
+                    retVal.push(vehicle);
+                }
+            }
+            res.setHeader('Content-type', 'application/json');
+            res.json(retVal);
+            res.end();
         })
+        .catch((err) => {
+            console.log(err);
+            res.json(null);
+            res.end();
+        });
     }
-    vehicleList = [];
-    for (branch of dummyRental.branchList) {
-        if (typeof req.body.place  != 'undefined') {
-            if (req.body.place != branch.name) {
-                continue;
-            }
-        }
-        for (vehicle of branch.vehicleList) {
-            vehicleList.push(vehicle);
-        }
-    }
-    retVal = [];
-    for (vehicle of vehicleList) {
-        var passed = true;
-        for (method of vehicleFilterMethods) {
-            if (!method(vehicle)) {
-                passed = false;
-                break;
-            }
-        }
-        if (passed) {
-            retVal.push(vehicle);
-        }
-    }
-    res.setHeader('Content-type', 'application/json');
-    res.json(retVal);
-    res.end();
+    
 })
 .post((req, res, next) => {
     res.end('Post for vehicle search not implemented');
