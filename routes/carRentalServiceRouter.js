@@ -1,173 +1,175 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const Joi = require('joi')
 const RentalServices = require('../models/rentalService/rentalService.js');
+const RentalServiceJoi = require('./carRentalServiceRouterJoi');
 
+const Cars = require('../models/rentalService/car.js');
 
 const rentalRouter = express.Router();
-
-//single dummy car rental object to test outing changing the rental service, will refresh once server restarts
-var dummyRental = {
-    name: 'Original dummy name',
-    address: 'Original dummy address',
-    description: 'Original dummy description',
-    priceMenu: {
-        categoryA: 100,
-        categoryB: 100,
-        categoryC: 100
-    },
-    branchList: [
-        {
-            name: 'Dummy branch 1',
-            address: 'Dummy address 1',
-            vehicleList: [
-                {
-                    make: 'Volkswagen',
-                    serial: '1',
-                    category: 'B',
-                    seats: 4,
-                    taken: [
-                        {
-                            start: new Date('December 17, 2018 03:24:00'),
-                            end: new Date('December 20, 2018 03:24:00')
-                        },
-                        {
-                            start: new Date('January 2, 2019 03:24:00'),
-                            end: new Date('January 10, 2019 03:24:00')
-                        }
-                    ]
-                },
-                {
-                    make: 'BMW',
-                    serial: '2',
-                    category: 'A',
-                    seats: 5,
-                    taken: [
-
-                    ]
-                }
-            ]
-        },
-        {
-            name: 'Dummy branch 2',
-            address: 'Dummy address 2',
-            vehicleList: [
-                {
-                    make: 'Volkswagen',
-                    serial: '3',
-                    category: 'B',
-                    seats: 3,
-                    taken: [
-
-                    ]
-                },
-                {
-                    make: 'BMW',
-                    serial: '4',
-                    category: 'C',
-                    seats: 5,
-                    taken: [
-
-                    ]
-                }
-            ]
-        }
-    ]
-}
-    
 
 rentalRouter.route('/modifyRentalService')
 .all((req, res, next) =>  {
     res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Content-Type', 'application/json');
     next();
 })
 .get((req, res, next) => {
-    RentalServices.find({
-        name: 'Original dummy name'
-    }).then((result) => {
-        res.json(result);
-        res.end();
-    }).catch((err) => {
-        console.log(err);
-    })
-})
-.post((req, res, next) => {
-    RentalServices.create(
-        {
-            name: 'Original dummy name',
-            address: 'Original dummy address',
-            description: 'Original dummy description',
-            cars: [
-                {
-                    make: 'Volkswagen',
-                    registration: '1',
-                    category: 'A',
-                    seats: 4,
-                    reservations: [
-                        {
-                            from: new Date('December 17, 2018 03:24:00'),
-                            to: new Date('December 20, 2018 03:24:00'),
-                            user: 'DummyUsername'
-                        }
-                    ]
-                }
-
-            ],
-            branches: [
-                {
-                    name: 'Dummy branch 1',
-                    address: 'Dummy address 1'
-                },
-                {
-                    name: 'Dummy branch 2',
-                    address: 'Dummy address 2'
-                }
-            ]
-        }).then((result) => {
-            console.log('Uspeo')
-        }).catch((err) => {
-            console.log('Times is hard')
-        });
-    
-})
-.delete((req, res, next) => {
-    res.end('Delete for rental service not implemented yet');
-})
-.put((req, res, next) => {
-    //this rest call only changes primitive attributes (name, address, description, priceMenu)
-    res.setHeader('Content-Type', 'application/json');
-    var rentalServiceList = [dummyRental];
-    var matchingService = null
-    for (rental of rentalServiceList) {
-        if (rental.name == req.body.name) {
-            matchingService = rental;
-            break;
-        }
-    }
-    if (matchingService == null) {
-        res.json(null);
+    //expected json body -> {name: 'name of rental service to get'}
+    const result = Joi.validate(req.body, RentalServiceJoi.rentalServiceGetSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
         res.end();
     } else {
-        if (req.body.address == "" || req.body.description == "") {
-            res.json(null);
+        RentalServices.findOne({
+            name: req.body.name
+        }).then((result) => {
+            res.json(result);
             res.end();
-            return;
-        }
-        if (isNaN(req.body.priceMenu.categoryA) || isNaN(req.body.priceMenu.categoryB)
-        || isNaN(req.body.priceMenu.categoryC)) {
-            res.json(null);
+        }).catch((err) => {
+            res.json(false);
             res.end();
-            return;
-        }
-        matchingService.address = req.body.address;
-        matchingService.description = req.body.description;
-        matchingService.priceMenu.categoryA = req.body.priceMenu.categoryA;
-        matchingService.priceMenu.categoryB = req.body.priceMenu.categoryB;
-        matchingService.priceMenu.categoryC = req.body.priceMenu.categoryC;
-        res.json(matchingService);
+        });
+    }
+})
+.post((req, res, next) => {
+    //expected json body -> {rentalService-> rentalService to add to database}
+    //here there is no need for Joi validation because mongoose will handle it
+    RentalServices.create(req.body)
+    .then((result) => {
+        res.json(true);
         res.end();
-    }    
+    })
+    .catch((err) => {
+        res.json(false);
+        res.end();
+    });  
+})
+.delete((req, res, next) => {
+    //expected json body -> {name-> name of service to delete}
+    const result = Joi.validate(req.body, RentalServiceJoi.rentalServiceDeleteSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        RentalServices.deleteOne({
+            name: req.body.name
+        })
+        .then((result) => {
+            res.json(true);
+            res.end();
+        })
+        .catch((err) => {
+            res.json(false);
+            res.end();
+        });
+    }
+})
+.put((req, res, next) => {
+    //this rest call only changes primitive attributes (address, description)
+    //expected json body -> {address: 'new address', description: 'new description'}
+    const result = Joi.validate(req.body, RentalServiceJoi.rentalServicePutSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        RentalServices.findOneAndUpdate({name: req.body.name},{address: req.body.address, description: req.body.description}, {new : true})
+        .then((result) => {
+            res.json(result);
+            res.end();
+        })
+        .catch((err) => {
+            res.json(false);
+            res.end();
+        });
+    }
 });
+
+rentalRouter.route('/modifyCar')
+.all((req, res, next) =>  {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    next();
+})
+.get((req, res, next) => {
+    //expected json body -> {name: 'name of rental service to get'}
+    const result = Joi.validate(req.body, RentalServiceJoi.carGetSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        Cars.findOne({
+            registration: req.body.registration
+        }).then((result) => {
+            res.json(result);
+            res.end();
+        }).catch((err) => {
+            res.json(false);
+            res.end();
+        });
+    }
+})
+.post((req, res, next) => {
+    const result = Joi.validate(req.body, RentalServiceJoi.carPostSchema);
+    if (null != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        RentalServices.findOne({name: req.body.serviceName})
+        .then((result) => {
+            if (result == null) {
+                throw Error('Vehicle has to exist');
+            }
+            return Cars.create(req.body)
+        })
+        .then((result) => {
+            res.json(result);
+            res.end();
+        })
+        .catch((err) => {
+            res.json(false);
+            res.end();
+        })
+    }
+})
+.put((req, res, next) => {
+    res.setHeader('Content-type', 'text/html');
+    res.end("Currently no attributes of a car can be changed.");
+})
+.delete((req, res, next) => {
+    //expected json body -> {name-> name of service to delete}
+    //ovo sada treba prepraviti
+    const result = Joi.validate(req.body, RentalServiceJoi.carDeleteSchema);
+    if (result.error != null) {
+        //bad request
+        res.statusCode = 400;
+        res.end();
+    } else {
+        Cars.findOne({registration: req.body.registration})
+        .then((result) => {
+            if (result == null) {
+                throw Error('Vehicle not found');
+            } 
+            if (result.reservations.length != 0) {
+                throw Error('Vehicle has reservations');
+            }
+            return Cars.deleteOne({registration: req.body.registration})
+        })
+        .then((result) => {
+            res.json(true);
+            res.end();
+        })
+        .catch((err) => {
+            res.json(false);
+            res.end();
+        });
+    }
+})
 
 rentalRouter.route('/searchVehicles')
 .all((req, res, next) => {
@@ -238,13 +240,13 @@ rentalRouter.route('/searchVehicles')
     res.end();
 })
 .post((req, res, next) => {
-    res.end('Post for vehicle search not implemented yet');
+    res.end('Post for vehicle search not implemented');
 })
 .put((req, res, next) => {
-    res.end('Put for vehicle search not implemented yet');
+    res.end('Put for vehicle search not implemented');
 })
 .delete((req, res, next) => {
-    res.end('Delete for vehicle search not implemented yet');
+    res.end('Delete for vehicle search not implemented');
 });
 
 module.exports = rentalRouter;

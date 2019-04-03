@@ -17,7 +17,6 @@ const rentalServiceSchema = new Schema({
         type: String,
         required: true,
     },
-    cars: [car.schema],
     branches: [branch.schema]
 
 },{

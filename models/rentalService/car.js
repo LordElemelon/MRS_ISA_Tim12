@@ -9,6 +9,11 @@ const carSchema = new Schema({
     },
     registration: {
         required: true,
+        type: String,
+        unique: true
+    },
+    serviceName: {
+        required: true,
         type: String
     },
     category: {
