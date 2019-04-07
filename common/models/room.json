@@ -1,0 +1,50 @@
+{
+  "name": "room",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "number": {
+      "type": "number",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": true
+    },
+    "beds": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "active": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "hotel": {
+      "type": "belongsTo",
+      "model": "hotel",
+      "foreignKey": ""
+    }
+  },
+  "indexes":{
+	"numberHotelIndex": {
+		"keys": {
+			"number": 1,
+			"hotelId" : -1
+		},
+		"options": {
+			"unique" : true
+		}
+	}
+  },
+  "acls": [],
+  "methods": {}
+}
+
