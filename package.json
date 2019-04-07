@@ -1,29 +1,33 @@
 {
-  "name": "mrs_isa_tim12",
+  "name": "MRS_ISA_Tim12",
   "version": "1.0.0",
-  "description": "Projekat iz mrs_isa",
-  "main": "index.js",
+  "main": "server/server.js",
+  "engines": {
+    "node": ">=6"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index"
+    "lint": "eslint .",
+    "start": "node .",
+    "posttest": "npm run lint"
+  },
+  "dependencies": {
+    "compression": "^1.0.3",
+    "cors": "^2.5.2",
+    "helmet": "^3.10.0",
+    "loopback-boot": "^2.6.5",
+    "serve-favicon": "^2.0.1",
+    "strong-error-handler": "^3.0.0",
+    "loopback-component-explorer": "^6.2.0",
+    "loopback": "^3.22.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.17.1",
+    "eslint-config-loopback": "^8.0.0"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://github.com/LordElemelon/MRS_ISA_Tim12.git"
+    "type": "",
+    "url": ""
   },
-  "keywords": [
-    "quality"
-  ],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/LordElemelon/MRS_ISA_Tim12/issues"
-  },
-  "homepage": "https://github.com/LordElemelon/MRS_ISA_Tim12#readme",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
-    "joi": "^14.3.1",
-    "mongoose": "^5.4.20"
-  }
+  "license": "UNLICENSED",
+  "description": "MRS_ISA_Tim12"
 }
