@@ -42,5 +42,17 @@
   "room": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "rentalService": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "branch": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "car": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }

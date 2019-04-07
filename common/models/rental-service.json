@@ -1,0 +1,37 @@
+{
+  "name": "rentalService",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "branches": {
+      "type": "hasMany",
+      "model": "branch",
+      "foreignKey": ""
+    },
+    "cars": {
+      "type": "hasMany",
+      "model": "car",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
