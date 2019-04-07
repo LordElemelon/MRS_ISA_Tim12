@@ -1,0 +1,35 @@
+{
+  "name": "car",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "make": {
+      "type": "string",
+      "required": true
+    },
+    "registration": {
+      "type": "string",
+      "required": true,
+	  "index": {
+	    "unique": true
+	   }
+    },
+    "seats": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "rentalService": {
+      "type": "belongsTo",
+      "model": "rentalService",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

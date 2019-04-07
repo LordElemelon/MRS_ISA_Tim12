@@ -2,6 +2,17 @@
   "name": "room",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "numberHotelIndex": {
+      "keys": {
+        "number": 1,
+        "hotelId": -1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },
@@ -33,18 +44,6 @@
       "foreignKey": ""
     }
   },
-  "indexes":{
-	"numberHotelIndex": {
-		"keys": {
-			"number": 1,
-			"hotelId" : -1
-		},
-		"options": {
-			"unique" : true
-		}
-	}
-  },
   "acls": [],
   "methods": {}
 }
-
