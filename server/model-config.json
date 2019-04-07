@@ -34,5 +34,13 @@
   "Role": {
     "dataSource": "db",
     "public": false
+  },
+  "hotel": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "room": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
