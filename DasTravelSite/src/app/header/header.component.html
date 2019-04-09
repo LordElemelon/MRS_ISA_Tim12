@@ -1,0 +1,24 @@
+<div class="container jumbotron"
+    fxLayout="row"
+    fxLayout.sm="column" 
+    fxLayout.xs="column" 
+    fxLayoutAlign.xs="start center"
+    fxLayoutAlign.sm="start center" 
+    fxLayoutAlign.gt-sm="center center" 
+    fxLayoutGap="10px">
+
+  <div fxFlex fxFlex="50%">
+    <h1>Das Travel Site</h1>
+  </div>
+
+  <div fxFlex></div>
+</div>
+<mat-toolbar color="primary">
+  <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+  <a mat-button routerLink='/flights'> Flights </a>
+  <a mat-button routerLink='/hotels'> Hotels </a>
+  <a mat-button routerLink='/cars'> Cars </a>
+  <span class="flex-spacer"></span>
+  <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
+</mat-toolbar>
+
