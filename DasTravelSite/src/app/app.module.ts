@@ -25,9 +25,12 @@ import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
 import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
-import { FormsModule} from '@angular/forms';
-import { ReactiveFormsModule} from '@angular/forms';
 
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { RentalservicesComponent } from './rentalservices/rentalservices.component';
+import { BranchesComponent } from './branches/branches.component';
 import { HotelApi } from './shared/sdk/services/custom/Hotel';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { HotelComponent } from './hotel/hotel.component';
@@ -42,6 +45,8 @@ import { HotelComponent } from './hotel/hotel.component';
     FlightsComponent,
     HotelsComponent,
     CarsComponent,
+    RentalservicesComponent,
+    BranchesComponent,
     HotelComponent
   ],
   imports: [
@@ -60,10 +65,10 @@ import { HotelComponent } from './hotel/hotel.component';
     MatSelectModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
-    SDKBrowserModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    SDKBrowserModule.forRoot()
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}

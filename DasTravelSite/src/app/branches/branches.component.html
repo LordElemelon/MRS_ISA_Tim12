@@ -1,0 +1,120 @@
+<mat-toolbar color="primary">
+    <a mat-button (click)="setToAdd()"> Add</a>
+    <a mat-button (click)="setToRemove()"> Remove </a>
+    <a mat-button (click)="setToChange()"> Change </a>
+    <span class="flex-spacer"></span>
+    <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
+</mat-toolbar>
+
+<div *ngIf="isAdd">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="addForm" #addform="ngForm" (ngSubmit)="onAddSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
+            <mat-error *ngIf="addFormErrors.serviceName">
+             {{ addFormErrors.serviceName }}
+            </mat-error>
+          </mat-form-field>
+          </p>
+        <p>
+        <mat-form-field class="form-size">
+            <input matInput formControlName="name" placeholder="Name" type="text">
+            <mat-error *ngIf="addFormErrors.name">
+              {{ addFormErrors.name }}
+            </mat-error>
+        </mat-form-field>
+        </p>
+        <p>
+        <mat-form-field class="form-size">
+            <input matInput formControlName="address" placeholder="Address" type="text">
+            <mat-error *ngIf="addFormErrors.address">
+                {{ addFormErrors.address }}
+            </mat-error>
+        </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="addForm.invalid">
+          Submit
+        </button>
+      </form>
+      <div *ngIf="successfullAdd">
+          Branch added successfully.
+      </div>
+      <div *ngIf="failedAdd">
+         Branch was not added.
+      </div>
+  </div>
+</div>
+
+<div *ngIf="isRemove">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+      <form novalidate [formGroup]="removeForm" #changeform="ngForm" (ngSubmit)="onRemoveSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
+            <mat-error *ngIf="removeFormErrors.serviceName">
+              {{ removeFormErrors.serviceName }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="form-size">
+              <input matInput formControlName="name" placeholder="Name" type="text">
+              <mat-error *ngIf="removeFormErrors.name">
+                {{ removeFormErrors.name }}
+              </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="removeForm.invalid">
+            Submit
+        </button>
+        </form>
+        <div *ngIf="successfullRemove">
+            Branch removed successfully.
+        </div>
+        <div *ngIf="failedRemove">
+           Branch was not removed.
+        </div>
+  </div>
+</div>
+
+<div *ngIf="isChange">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+      <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
+            <mat-error *ngIf="changeFormErrors.serviceName">
+              {{ changeFormErrors.serviceName }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="form-size">
+              <input matInput formControlName="name" placeholder="Name" type="text">
+              <mat-error *ngIf="changeFormErrors.name">
+                {{ changeFormErrors.name }}
+              </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="button" mat-button class="background-primary text-floral-white" (click)="changeGrabBranch()">Get</button>
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="address" placeholder="Address" type="text">
+            <mat-error *ngIf="changeFormErrors.address">
+                {{ changeFormErrors.address }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+          <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changeForm.invalid">
+            Submit
+          </button>
+      </form>
+      <div *ngIf="successfullChange">
+        Branch changed successfully.
+      </div>
+      <div *ngIf="failedChange">
+          Branch was not changed.
+       </div>
+  </div>
+</div>
