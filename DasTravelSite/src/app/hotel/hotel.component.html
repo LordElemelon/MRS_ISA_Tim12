@@ -1,0 +1,173 @@
+<mat-toolbar color="primary">
+  <a mat-button (click) = "modifyButton()"> Change</a>
+  <a mat-button (click) = "addRoomButton()"> Add a room</a>
+  <a mat-button (click) = "removeRoomButton()"> Remove a room</a>
+  <a mat-button (click) = "modifyRoomButton()"> Modify a room </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf = "modifyActive">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Modify your hotel</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+        <form novalidate [formGroup]="modifyHotelForm" #fformModifyHotel="ngForm" (ngSubmit)="onModifyHotelSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+              <mat-error *ngIf="modifyHotelFormErrors.name">
+                {{ modifyHotelFormErrors.name }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="address" placeholder="Address" type="text">
+              <mat-error *ngIf="modifyHotelFormErrors.address">
+                {{ modifyHotelFormErrors.address}}
+              </mat-error>
+            </mat-form-field>
+          </p>         
+          <p>
+            <mat-form-field class="full-width">
+              <textarea matInput formControlName="description" placeholder="Hotel description" rows=10></textarea>
+            </mat-form-field>
+          </p>
+          <input hidden formControlName="id">
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="modifyHotelForm.invalid">Submit</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf = "addRoomActive">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Add a room to your hotel</h3>
+          <hr>
+      </div>
+    </div>
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="addRoomForm" #fformAddRoom="ngForm" (ngSubmit)="onAddRoomSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="number" placeholder="Room number" type="number">
+            <mat-error *ngIf="addRoomFormErrors.number">
+              {{ addRoomFormErrors.number }}
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="beds" placeholder="Number of beds" type="number">
+            <mat-error *ngIf="addRoomFormErrors.beds">
+                {{ addRoomFormErrors.beds }}
+              </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="full-width">
+            <textarea matInput formControlName="description" placeholder="Description" type="text" rows=3></textarea>
+          </mat-form-field>
+        </p>
+        <input hidden formControlName="hotelId">
+        <button type="submit" mat-button class="background-primary text-floral-white"
+        [disabled]="addRoomForm.invalid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf = "removeRoomActive">
+    <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Remove a room from your hotel</h3>
+          <hr>
+      </div>
+    </div>
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="removeRoomForm" #fformRemoveRoom="ngForm" (ngSubmit)="onRemoveRoomSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="number" placeholder="Room number" type="number">
+            <mat-error *ngIf="addRoomFormErrors.number">
+              {{ addRoomFormErrors.number }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+        [disabled]="removeRoomForm.invalid">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf = "modifyRoomActive">
+    <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Modify a room from your hotel</h3>
+          <hr>
+      </div>
+    </div>
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="getRoomForm" #fformGetRoom="ngForm" (ngSubmit)="onGetRoomSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="number" placeholder="Room number" type="number">
+            <mat-error *ngIf="getRoomFormErrors.number">
+              {{ getRoomFormErrors.number }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+        [disabled]="getRoomForm.invalid">Find room</button>
+      </form>
+    </div>
+    <div fxFex calss="form-size">
+      <form novalidate [formGroup]="modifyRoomForm" #fformModifyRoom="ngForm" (ngSubmit)="onModifyRoomSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="number" placeholder="Room number" type="number">
+              <mat-error *ngIf="modifyRoomFormErrors.number">
+                {{ modifyRoomFormErrors.number }}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="beds" placeholder="Number of beds" type="number">
+              <mat-error *ngIf="modifyRoomFormErrors.beds">
+                  {{ modifyRoomFormErrors.beds }}
+                </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="full-width">
+              <textarea matInput formControlName="description" placeholder="Description" type="text" rows=3></textarea>
+            </mat-form-field>
+          </p>
+          <input hidden formControlName="hotelId">
+          <input hidden formControlName="id">
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="modifyRoomForm.invalid">Submit</button>
+        </form>
+    </div>
+  </div>
+</div>

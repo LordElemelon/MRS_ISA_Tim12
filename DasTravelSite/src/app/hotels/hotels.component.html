@@ -1,3 +1,59 @@
-<p>
-  {{foundHotels}}
-</p>
+<mat-toolbar color="primary">
+  <a mat-button (click) = "addButton()"> Add</a>
+  <a mat-button (click) = "removeButton()"> Remove </a>
+  <a mat-button (click) = "modifyButton()"> Modify </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf = "addActive">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Add a hotel</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+        <form novalidate [formGroup]="hotelForm" #fformAdd="ngForm" (ngSubmit)="onSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+              <mat-error *ngIf="formErrors.name">
+                {{ formErrors.name }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="address" placeholder="Address" type="text">
+              <mat-error *ngIf="formErrors.address">
+                {{ formErrors.address}}
+              </mat-error>
+            </mat-form-field>
+          </p>         
+          <p>
+            <mat-form-field class="full-width">
+              <textarea matInput formControlName="description" placeholder="Hotel description" rows=10></textarea>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="hotelForm.invalid">Submit</button>
+        </form>
+        <p *ngIf = "added">
+            Added succesfully.
+        </p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf = "removeActive">
+  This part of the site is still in development
+</div>
+
+<div *ngIf = "modifyActive">
+  This part of the site is still in development
+</div>
