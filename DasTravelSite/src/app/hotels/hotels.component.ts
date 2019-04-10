@@ -21,7 +21,13 @@ export class HotelsComponent implements OnInit {
   // form related objects
   hotelForm: FormGroup;
   newHotel: Hotel;
+  params = {};
   @ViewChild('fformAdd') hotelFormDirective;
+
+  searchHotelForm: FormGroup;
+  searchHotelParameters: Hotel;
+  hotelsFound: Hotel[];
+  @ViewChild('fformSearchHotels') searchHotelFormDirective;
 
   formErrors = {
     'name': '',
@@ -37,6 +43,9 @@ export class HotelsComponent implements OnInit {
     }
   }
 
+  searchHotelFormErrors = {}
+  searchHotelFormValidationMessages = {}
+
   constructor(@Inject('baseURL') private baseURL,
     private hotelservice: HotelApi,
     private fb: FormBuilder
@@ -45,28 +54,11 @@ export class HotelsComponent implements OnInit {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createForm();
+      this.createSearchHotelForm();
    }
 
   ngOnInit() {
     this.hotelservice.find().subscribe((hotels: Hotel[]) => this.foundHotels = hotels);
-  }
-
-  addButton(){
-    this.addActive = true;
-    this.removeActive = false;
-    this.modifyActive = false;
-  }
-
-  removeButton(){
-    this.addActive = false;
-    this.removeActive = true;
-    this.modifyActive = false;
-  }
-
-  modifyButton(){
-    this.addActive = false;
-    this.removeActive = false;
-    this.modifyActive = true;
   }
 
   onValueChanged(data?:any){
@@ -114,6 +106,78 @@ export class HotelsComponent implements OnInit {
       setTimeout(() =>{ this.added = false; }, 3000);
     });
 
+  }
+
+
+  onValueChangedSearchHotels(data?:any){
+    if (!this.searchHotelForm) {return;}
+    const form = this.searchHotelForm;
+    for (const field in this.searchHotelFormErrors){
+      if (this.searchHotelFormErrors.hasOwnProperty(field)){
+        this.searchHotelFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.searchHotelFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.searchHotelFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createSearchHotelForm() {
+    this.searchHotelForm = this.fb.group({
+      'name': ['', Validators.required],
+      'address': ['', Validators.required]
+    });
+
+    this.searchHotelForm.valueChanges
+      .subscribe(data => this.onValueChangedSearchHotels(data));
+    this.onValueChangedSearchHotels();
+  }
+
+  onSearchHotelsSubmit() {
+    this.searchHotelParameters = this.searchHotelForm.value;
+    this.params = {};
+    if (this.searchHotelParameters.name != '' && this.searchHotelParameters.name != undefined){
+      this.params['name'] = this.searchHotelParameters.name;
+    }
+    if (this.searchHotelParameters.address != '' && this.searchHotelParameters.address != undefined){
+      this.params['address'] = this.searchHotelParameters.address;
+    }
+    if (this.params !== {}){
+      this.hotelservice.find({where : this.params})
+      .subscribe((result: Hotel[]) =>{
+        this.hotelsFound = result;
+      });
+    } else{
+      this.hotelservice.find()
+      .subscribe((result: Hotel[]) =>{
+        this.hotelsFound = result;
+      })
+    }
+
+  }
+
+  addButton(){
+    this.addActive = true;
+    this.removeActive = false;
+    this.modifyActive = false;
+  }
+
+  removeButton(){
+    this.addActive = false;
+    this.removeActive = true;
+    this.modifyActive = false;
+  }
+
+  modifyButton(){
+    this.addActive = false;
+    this.removeActive = false;
+    this.modifyActive = true;
   }
 
 }
