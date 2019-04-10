@@ -1,15 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { HomeComponent } from './home/home.component';
-import { HeaderComponent } from './header/header.component'
+import { HeaderComponent } from './header/header.component';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatListModule } from '@angular/material/list'
-import {MatGridListModule} from '@angular/material/grid-list'
+import { MatListModule } from '@angular/material/list';
+import {MatGridListModule} from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -25,11 +26,14 @@ import { CarsComponent } from './cars/cars.component';
 import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
 
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 
 import { RentalservicesComponent } from './rentalservices/rentalservices.component';
 import { BranchesComponent } from './branches/branches.component';
+import { HotelApi } from './shared/sdk/services/custom/Hotel';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HotelComponent } from './hotel/hotel.component';
 
 
 
@@ -42,7 +46,8 @@ import { BranchesComponent } from './branches/branches.component';
     HotelsComponent,
     CarsComponent,
     RentalservicesComponent,
-    BranchesComponent
+    BranchesComponent,
+    HotelComponent
   ],
   imports: [
     BrowserModule,

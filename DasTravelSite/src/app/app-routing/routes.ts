@@ -5,6 +5,7 @@ import { HotelsComponent} from '../hotels/hotels.component';
 import { FlightsComponent} from '../flights/flights.component';
 import { RentalservicesComponent } from '../rentalservices/rentalservices.component';
 import { BranchesComponent } from '../branches/branches.component';
+import { HotelComponent } from '../hotel/hotel.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -13,5 +14,6 @@ export const routes: Routes = [
     {path: 'flights', component: FlightsComponent},
     {path: 'cars', component: CarsComponent},
     {path: 'rentalServices', component: RentalservicesComponent},
-    {path: 'branches', component: BranchesComponent}
+    {path: 'branches', component: BranchesComponent},
+    {path: 'hotel', component: HotelComponent}
 ];
