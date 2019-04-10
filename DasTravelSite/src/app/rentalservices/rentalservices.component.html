@@ -1,0 +1,105 @@
+<mat-toolbar color="primary">
+  <a mat-button (click)="setToAdd()"> Add</a>
+  <a mat-button (click)="setToRemove()"> Remove </a>
+  <a mat-button (click)="setToChange()"> Change </a>
+  <span class="flex-spacer"></span>
+  <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
+</mat-toolbar>
+
+<div *ngIf="isAdd">
+  
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="addForm" #addform="ngForm" (ngSubmit)="onAddSubmit()">
+      <p>
+      <mat-form-field class="form-size">
+          <input matInput formControlName="name" placeholder="Name" type="text">
+          <mat-error *ngIf="addFormErrors.name">
+            {{ addFormErrors.name }}
+          </mat-error>
+      </mat-form-field>
+      </p>
+      <p>
+      <mat-form-field class="form-size">
+          <input matInput formControlName="address" placeholder="Address" type="text">
+          <mat-error *ngIf="addFormErrors.address">
+              {{ addFormErrors.address }}
+          </mat-error>
+      </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="form-size">
+            <input matInput formControlName="description" placeholder="Description" type="text">
+            <mat-error *ngIf="addFormErrors.description">
+                {{ addFormErrors.description }}
+            </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="addForm.invalid">
+        Submit
+      </button>
+    </form>
+    <div *ngIf="successfullAdd">
+        Rental service added successfully.
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isRemove">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="removeForm" #removeform="ngForm" (ngSubmit)="onRemoveSubmit()">
+      <p>
+        <mat-form-field class="form-size">
+          <input matInput formControlName="name" placeholder="Name" type="text">
+          <mat-error *ngIf="removeFormErrors.name">
+            {{ removeFormErrors.name }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="removeForm.invalid" (ngSubmit)="onRemoveSubmit()">
+          Submit
+      </button>
+    </form>
+    <div *ngIf="successfullRemove">
+      Rental service removed successfully
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isChange">
+    <!---->
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+      <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="name" placeholder="Name" type="text">
+            <mat-error *ngIf="changeFormErrors.name">
+              {{ changeFormErrors.name }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="button" mat-button class="background-primary text-floral-white" (click)="changeGrabRental()">Get</button>
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="address" placeholder="Address" type="text">
+            <mat-error *ngIf="changeFormErrors.address">
+              {{ changeFormErrors.address }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="description" placeholder="Description" type="text">
+            <mat-error *ngIf="changeFormErrors.description">
+              {{ changeFormErrors.description }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changeForm.invalid" (ngSubmit)="onChangeSubmit()">
+            Submit
+        </button>
+      </form>
+      <div *ngIf="successfullChange">
+          Rental service changed successfully
+        </div>
+    </div>
+</div>
