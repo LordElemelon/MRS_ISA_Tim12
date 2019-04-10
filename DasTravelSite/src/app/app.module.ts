@@ -25,8 +25,11 @@ import { CarsComponent } from './cars/cars.component';
 import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
 
-import { HotelApi } from './shared/sdk/services/custom/Hotel';
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+
+import { RentalservicesComponent } from './rentalservices/rentalservices.component';
+import { BranchesComponent } from './branches/branches.component';
 
 
 
@@ -37,7 +40,9 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
     HeaderComponent,
     FlightsComponent,
     HotelsComponent,
-    CarsComponent
+    CarsComponent,
+    RentalservicesComponent,
+    BranchesComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +60,9 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
     MatSelectModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
     SDKBrowserModule.forRoot()
   ],
   providers: [

@@ -1,18 +1,17 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { BranchApi } from '../shared/sdk/services';
+import { Branch } from '../shared/sdk/models/Branch';
+import { RentalServiceApi } from '../shared/sdk/services';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoopBackConfig, RentalService } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
-import { CarApi, RentalServiceApi } from '../shared/sdk/services';
-import { Car } from '../shared/sdk/models/Car';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-cars',
-  templateUrl: './cars.component.html',
-  styleUrls: ['./cars.component.scss']
+  selector: 'app-branches',
+  templateUrl: './branches.component.html',
+  styleUrls: ['./branches.component.scss']
 })
-export class CarsComponent implements OnInit {
-
-  foundCars: Car[];
+export class BranchesComponent implements OnInit {
 
   addForm: FormGroup;
   @ViewChild('addform') addFormDirective;
@@ -37,15 +36,15 @@ export class CarsComponent implements OnInit {
   failedChange: boolean;
 
   constructor(@Inject('baseURL') private baseURL,
-    private carservice: CarApi,
-    private fb: FormBuilder,
-    private rentalServiceService: RentalServiceApi) { 
+  private branchService: BranchApi,
+  private fb: FormBuilder,
+  private rentalServiceService: RentalServiceApi) {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
       this.createRemoveForm();
       this.createChangeForm();  
-    }
+   }
 
   ngOnInit() {
   }
@@ -68,26 +67,23 @@ export class CarsComponent implements OnInit {
     this.isChange = true;
   }
 
+
+
   addFormErrors = {
     'serviceName': '',
-    'registration': '',
-    'make': '',
-    'seats': '' 
+    'name': '',
+    'address': ''
   }
 
   addFormValidationMessages = {
     'serviceName': {
       'required': 'Service name is required'
     },
-    'registration': {
-      'required': 'Registration is required'
+    'name': {
+      'required': 'Name is required'
     },
-    'make': {
-      'required': 'Make is required'
-    },
-    'seats': {
-      'required': 'Seats are required',
-      'pattern': 'Seats have to be a number'
+    'address': {
+      'required': 'Address is required'
     }
   }
 
@@ -114,9 +110,8 @@ export class CarsComponent implements OnInit {
   createAddForm() {
     this.addForm = this.fb.group({
       serviceName: ['', Validators.required],
-      registration: ['', Validators.required],
-      make: ['', Validators.required],
-      seats: [0, [Validators.required, Validators.pattern]]
+      name: ['', Validators.required],
+      address: ['', Validators.required]
     });
     this.addForm.valueChanges
       .subscribe(data => this.onAddValueChanged(data));
@@ -124,41 +119,33 @@ export class CarsComponent implements OnInit {
   }
 
   onAddSubmit() {
-    var o1 = this.rentalServiceService.findOne({'where': {'name': this.addForm.value.serviceName}});
-    o1.subscribe(
-      (result) => {
-        var myrentalservice = result as RentalService;
-        var o2 = this.carservice.create({
-          'make': this.addForm.value.make,
-          'registration': this.addForm.value.registration,
-          'seats': this.addForm.value.seats,
-          'rentalServiceId': myrentalservice.id
-        });
-        o2.subscribe(
-          (result) => {
+    this.rentalServiceService.findOne({'where': {'name': this.addForm.value.serviceName}})
+    .subscribe((rentalservice) => {
+      if (rentalservice != null) {
+        var myrentalservice = rentalservice as RentalService;
+        this.branchService.create({'name': this.addForm.value.name,
+          'address': this.addForm.value.address, 'rentalServiceId': myrentalservice.id})
+        .subscribe((result) => {
+          if (result != null) {
             this.successfullAdd = true;
             setTimeout(() => {this.successfullAdd = null}, 5000);
-          },
-          (err) => {
-            this.failedAdd = true;
-            setTimeout(() => { this.failedAdd = null; }, 5000);
           }
-        )
-      },
-      (err) => {
-        this.failedAdd = true;
-        setTimeout(() => { this.failedAdd = null; }, 5000);
+        });
       }
-    )
+    }, (err) => {this.failedAdd = true; setTimeout(() => {this.failedAdd = null}, 5000);})
   }
 
   removeFormErrors = {
-    'registration': ''
+    'serviceName': '',
+    'name': ''
   }
 
   removeFormValidationMessages = {
-    'registration': {
-      'required': 'Registration is required'
+    'serviceName': {
+      'required': 'Service name is required'
+    },
+    'name': {
+      'required': 'Name is required'
     }
   }
 
@@ -184,57 +171,53 @@ export class CarsComponent implements OnInit {
 
   createRemoveForm() {
     this.removeForm = this.fb.group({
-      registration: ['', Validators.required]
+      serviceName: ['', Validators.required],
+      name: ['', Validators.required]
     });
     this.removeForm.valueChanges
-      .subscribe((data) => this.onRemoveValueChanged(data));
+      .subscribe(data => this.onRemoveValueChanged(data));
     this.onRemoveValueChanged();
   }
 
   onRemoveSubmit() {
-    var o1 = this.carservice.findOne({'where': {'registration' : this.removeForm.value.registration}});
-    o1.subscribe(
-      (result) => {
-        var mycar = result as Car;
-        var o2 = this.carservice.deleteById(mycar.id);
-        o2.subscribe(
-          (result) => {
-            this.successfullRemove = true;
-            setTimeout(() => {this.successfullRemove = null;}, 5000);
-          },
-          (err) => {
-            this.failedRemove = true;
-            setTimeout(() => {this.failedRemove = null;}, 5000);
-          }
-        )
-      },
-      (err) => {
+    this.rentalServiceService.findOne({'where': {'name': this.removeForm.value.serviceName}})
+      .subscribe((result) => {
+        if (result != null) {
+          var myrentalservice = result as RentalService;
+          this.branchService.findOne({'where': {'name': this.removeForm.value.name,
+            'rentalServiceId': myrentalservice.id}})
+            .subscribe((branch) => {
+              if (branch != null) {
+                var mybranch = branch as Branch;
+                this.branchService.deleteById(mybranch.id)
+                  .subscribe((result) => {
+                    this.successfullRemove = true;
+                    setTimeout(() => {this.successfullRemove = null; },5000);
+                  });
+              }
+            })
+        }
+      }, (err) => {
         this.failedRemove = true;
-        setTimeout(() => {this.failedRemove = null;}, 5000);
-      }
-    )
+        setTimeout(() => {this.failedRemove = null; },5000);
+      });
   }
 
   changeFormErrors = {
     'serviceName': '',
-    'registration': '',
-    'make': '',
-    'seats': '' 
+    'name': '',
+    'address': ''
   }
 
   changeFormValidationMessages = {
     'serviceName': {
       'required': 'Service name is required'
     },
-    'registration': {
-      'required': 'Registration is required'
+    'name': {
+      'required': 'Name is required'
     },
-    'make': {
-      'required': 'Make is required'
-    },
-    'seats': {
-      'required': 'Seats are required',
-      'pattern': 'Seats have to be a number'
+    'address': {
+      'required': 'Address is required'
     }
   }
 
@@ -260,58 +243,66 @@ export class CarsComponent implements OnInit {
 
   createChangeForm() {
     this.changeForm = this.fb.group({
-      registration: ['', Validators.required],
-      make: ['', Validators.required],
-      seats: [0, [Validators.required, Validators.pattern]]
+      serviceName: ['', Validators.required],
+      name: ['', Validators.required],
+      address: ['', Validators.required]
     });
     this.changeForm.valueChanges
       .subscribe(data => this.onChangeValueChanged(data));
     this.onChangeValueChanged();
   }
 
-  onChangeSubmit() {
-    var o1 = this.carservice.findOne({'where': {'registration': this.changeForm.value.registration}});
+  changeGrabBranch() {
+    var o1 = this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.serviceName}});
     o1.subscribe(
       (result) => {
-        var mycar = result as Car;
-        mycar.seats = this.changeForm.value.seats;
-        mycar.make = this.changeForm.value.make;
-        var o2 = this.carservice.updateAttributes(mycar.id, mycar);
+        var myrentalservice = result as RentalService;
+        var o2 = this.branchService.findOne({'where': {'name': this.changeForm.value.name,
+          'rentalServiceId': myrentalservice.id}});
         o2.subscribe(
           (result) => {
-            this.successfullChange = true;
-            setTimeout(() => {this.successfullChange = null;}, 5000);
+            var mybranch = result as Branch;
+            this.changeForm.controls['address'].setValue(mybranch.address);
+          },
+          (err) => {});
+      },
+      (err) => {});
+  }
+
+  onChangeSubmit() {
+    var o1 = this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.serviceName}});
+    o1.subscribe(
+      (result) => {
+        var myrentalservice = result as RentalService;
+        var o2 = this.branchService.findOne({'where': {'name': this.changeForm.value.name,
+          'rentalServiceId': myrentalservice.id}});
+        o2.subscribe(
+          (result) => {
+            var mybranch = result as Branch;
+            mybranch.address = this.changeForm.value.address;
+            var o3 = this.branchService.updateAttributes(mybranch.id, mybranch);
+            o3.subscribe(
+              (result) => {
+                this.successfullChange = true;
+                setTimeout(() => { this.successfullChange = null; }, 5000);
+              },
+              (err) => {
+                this.failedChange = true;
+                setTimeout(() => { this.failedChange = null; }, 5000);
+              }
+            );
           },
           (err) => {
             this.failedChange = true;
-            setTimeout(() => {this.failedChange = null;}, 5000);
+            setTimeout(() => { this.failedChange = null; }, 5000);
           }
         );
       },
       (err) => {
         this.failedChange = true;
-        setTimeout(() => {this.failedChange = null;}, 5000);
+        setTimeout(() => { this.failedChange = null; }, 5000);
       }
     );
   }
-
-  changeGrabCar() {
-    var o1 = this.carservice.findOne({'where': {'registration': this.changeForm.value.registration}});
-    o1.subscribe(
-      (result) => {
-        var mycar = result as Car;
-        this.changeForm.controls['make'].setValue(mycar.make);
-        this.changeForm.controls['seats'].setValue(mycar.seats);
-      },
-      (err) => {
-        this.changeForm.controls['make'].setValue('');
-        this.changeForm.controls['seats'].setValue('');
-      }
-    );
-  }
-
-
-
-
 
 }
