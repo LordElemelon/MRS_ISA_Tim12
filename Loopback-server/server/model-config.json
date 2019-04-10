@@ -54,5 +54,13 @@
   "car": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "airline": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "flight": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
