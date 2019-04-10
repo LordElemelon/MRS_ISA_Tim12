@@ -1,32 +1,30 @@
 {
-  "name": "car",
+  "name": "airline",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "make": {
+    "name": {
       "type": "string",
       "required": true
     },
-    "registration": {
-      "type": "string",
-      "required": true,
-      "index": {
-        "unique": true
-      }
+    "address": {
+      "type": "string"
     },
-    "seats": {
-      "type": "number",
-      "required": true
+    "description": {
+      "type": "string"
+    },
+    "destinations": {
+      "type": "string"
     }
   },
   "validations": [],
   "relations": {
-    "rentalService": {
-      "type": "belongsTo",
-      "model": "rentalService",
+    "flights": {
+      "type": "hasMany",
+      "model": "flight",
       "foreignKey": ""
     }
   },

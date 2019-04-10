@@ -1,0 +1,49 @@
+{
+  "name": "flight",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "origin": {
+      "type": "string",
+      "required": true
+    },
+    "destination": {
+      "type": "string",
+      "required": true
+    },
+    "takeoffDate": {
+      "type": "date",
+      "required": true
+    },
+    "landingDate": {
+      "type": "date",
+      "required": true
+    },
+    "duration": {
+      "type": "number"
+    },
+    "length": {
+      "type": "number"
+    },
+    "layover": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "airline": {
+      "type": "belongsTo",
+      "model": "airline",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
