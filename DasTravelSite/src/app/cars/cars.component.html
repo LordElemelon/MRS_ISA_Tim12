@@ -46,12 +46,6 @@
               Submit
           </button>
         </form>
-        <div *ngIf="successfullAdd">
-            Car added successfully.
-        </div>
-        <div *ngIf="failedAdd">
-           Car was not added.
-        </div>
     </div>
 </div>
 
@@ -70,12 +64,6 @@
           Submit
       </button>
     </form>
-    <div *ngIf="successfullRemove">
-        Car removed successfully.
-    </div>
-    <div *ngIf="failedRemove">
-        Car was not removed.
-    </div>
   </div>
 </div>
 
@@ -111,13 +99,6 @@
           Submit
       </button>
     </form>
-
-    <div *ngIf="successfullChange">
-        Car changed successfully.
-    </div>
-    <div *ngIf="failedChange">
-        Car was not changed.
-    </div>
   </div>
 </div>
 
@@ -180,11 +161,6 @@
           {{car.registration}} | {{car.make}} | {{car.seats}} | zal
         </mat-card>
       </mat-grid-tile>
-      <mat-grid-tile *ngFor="let number of test">
-          <mat-card routerLink="" class="pointer">
-            zal
-          </mat-card>
-        </mat-grid-tile>
     </mat-grid-list>
   </div>
 </div>

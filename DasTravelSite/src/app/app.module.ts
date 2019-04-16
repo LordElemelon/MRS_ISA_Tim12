@@ -27,6 +27,7 @@ import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
 import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
+import { MatSnackBarModule } from '@angular/material';
 
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -53,6 +54,7 @@ import { HotelComponent } from './hotel/hotel.component';
   ],
   imports: [
     BrowserModule,
+    MatSnackBarModule,
     AppRoutingModule,
     FlexLayoutModule,
     MatToolbarModule,

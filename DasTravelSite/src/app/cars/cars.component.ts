@@ -4,6 +4,7 @@ import { API_VERSION } from '../shared/baseUrl';
 import { CarApi, RentalServiceApi } from '../shared/sdk/services';
 import { Car } from '../shared/sdk/models/Car';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-cars',
@@ -28,23 +29,18 @@ export class CarsComponent implements OnInit {
   @ViewChild('searchform') searchFormDirective;
 
   isAdd: boolean;
-  successfullAdd: boolean;
-  failedAdd: boolean;
 
   isRemove: boolean;
-  successfullRemove: boolean;
-  failedRemove: boolean;
 
   isChange: boolean;
-  successfullChange: boolean;
-  failedChange: boolean;
 
   isSearch: boolean;
 
   constructor(@Inject('baseURL') private baseURL,
     private carservice: CarApi,
     private fb: FormBuilder,
-    private rentalServiceService: RentalServiceApi) { 
+    private rentalServiceService: RentalServiceApi,
+    public snackBar: MatSnackBar) { 
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
@@ -82,6 +78,12 @@ export class CarsComponent implements OnInit {
     this.isRemove = null;
     this.isChange = null;
     this.isSearch = true;
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
   }
 
   addFormErrors = {
@@ -152,18 +154,14 @@ export class CarsComponent implements OnInit {
         });
         o2.subscribe(
           (result) => {
-            this.successfullAdd = true;
-            setTimeout(() => {this.successfullAdd = null}, 5000);
+            this.openSnackBar("Car added successfully", "Dismiss");
           },
           (err) => {
-            this.failedAdd = true;
-            setTimeout(() => { this.failedAdd = null; }, 5000);
-          }
-        )
+            this.openSnackBar("Failed to add car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedAdd = true;
-        setTimeout(() => { this.failedAdd = null; }, 5000);
+        this.openSnackBar("Rental service does not exist", "Dismiss");
       }
     )
   }
@@ -215,18 +213,14 @@ export class CarsComponent implements OnInit {
         var o2 = this.carservice.deleteById(mycar.id);
         o2.subscribe(
           (result) => {
-            this.successfullRemove = true;
-            setTimeout(() => {this.successfullRemove = null;}, 5000);
+            this.openSnackBar("Car deleted successfuly", "Dismiss");
           },
           (err) => {
-            this.failedRemove = true;
-            setTimeout(() => {this.failedRemove = null;}, 5000);
-          }
-        )
+            this.openSnackBar("Could not delete car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedRemove = true;
-        setTimeout(() => {this.failedRemove = null;}, 5000);
+        this.openSnackBar("This car does not exist", "Dismiss");
       }
     )
   }
@@ -295,20 +289,15 @@ export class CarsComponent implements OnInit {
         var o2 = this.carservice.updateAttributes(mycar.id, mycar);
         o2.subscribe(
           (result) => {
-            this.successfullChange = true;
-            setTimeout(() => {this.successfullChange = null;}, 5000);
+            this.openSnackBar("Car changed successfully", "Dismiss");
           },
           (err) => {
-            this.failedChange = true;
-            setTimeout(() => {this.failedChange = null;}, 5000);
-          }
-        );
+            this.openSnackBar("Failed to change car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedChange = true;
-        setTimeout(() => {this.failedChange = null;}, 5000);
-      }
-    );
+        this.openSnackBar("Could not find car with that registration", "Dismiss");
+      });
   }
 
   changeGrabCar() {
@@ -320,6 +309,7 @@ export class CarsComponent implements OnInit {
         this.changeForm.controls['seats'].setValue(mycar.seats);
       },
       (err) => {
+        this.openSnackBar("Could not find car with that registration", "Dismiss");
         this.changeForm.controls['make'].setValue('');
         this.changeForm.controls['seats'].setValue('');
       }
