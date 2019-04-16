@@ -1,14 +1,19 @@
 'use strict';
 
-module.exports = function(Room) {
-    Room.observe('before save', function verifyForeignKeys(ctx, next){
+module.exports = function(Hotelspecialoffer) {
+    Hotelspecialoffer.observe('before save', function verifyForeignKeys(ctx, next){
 		if (ctx.instance){
 			var s = ctx.instance;
 			var hotelId = s.__data.hotelId;
+			var price = s.__data.price;
+			if (isNaN(price))
+				return next(new Error('Price has to be a number'));
+			if (price <= 0)
+				return next(new Error('Price has to be higher than 0'));
 			if (hotelId === null || hotelId === undefined){
 				next();
 			}
-			Room.getApp((err, app) =>{
+			Hotelspecialoffer.getApp((err, app) =>{
 				app.models.Hotel.exists(hotelId, (err, exists) =>{
 					if (err) next(err);
 					if (!exists){
@@ -22,4 +27,3 @@ module.exports = function(Room) {
 		};
 	});
 };
-

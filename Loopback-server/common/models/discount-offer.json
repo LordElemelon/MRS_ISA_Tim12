@@ -1,0 +1,24 @@
+{
+  "name": "discountOffer",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "hotelDiscount": {
+      "type": "belongsTo",
+      "model": "hotelDiscount",
+      "foreignKey": ""
+    },
+    "hotelSpecialOffer": {
+      "type": "belongsTo",
+      "model": "hotelSpecialOffer",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

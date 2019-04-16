@@ -1,0 +1,42 @@
+{
+  "name": "hotelDiscount",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "discount": {
+      "type": "number",
+      "required": true
+    },
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "hotel": {
+      "type": "belongsTo",
+      "model": "hotel",
+      "foreignKey": ""
+    },
+    "discountOffers": {
+      "type": "hasMany",
+      "model": "discountOffer",
+      "foreignKey": ""
+    },
+    "room": {
+      "type": "belongsTo",
+      "model": "room",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

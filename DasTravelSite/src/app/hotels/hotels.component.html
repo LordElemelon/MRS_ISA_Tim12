@@ -54,37 +54,41 @@
   This part of the site is still in development
 </div>
 
-<div *ngIf = "modifyActive">
-    <div class="container"
-    fxLayout="column"
-    fxLayoutGap="10px">
-
+<div *ngIf = "modifyActive" >
+  <div class="container"
+  fxLayout="column"
+  fxLayoutGap="10px">
     <div fxFlex>
-      <div>
+        <div>
           <h3>Search for a hotel</h3>
-          <hr>
-      </div>
+        </div>
+        <div>
+          <form novalidate [formGroup]="searchHotelForm" #fformSearchHotels="ngForm" (ngSubmit)="onSearchHotelsSubmit()">
+            <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+              </mat-form-field>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="address" placeholder="Address" type="text">
+              </mat-form-field>
+            </p>
+            <p>
+              <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+            </p>
+            <hr>
+          </form>
+        </div>
     </div>
-    <div fxFlex class="form-size">
-      <form novalidate [formGroup]="searchHotelForm" #fformSearchHotels="ngForm" (ngSubmit)="onSearchHotelsSubmit()">
-        <p>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="name" placeholder="Hotel Name" type="text">
-          </mat-form-field>
-        </p>
-        <p>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="address" placeholder="Address" type="text">
-          </mat-form-field>
-        </p>
-        <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
-      </form>
-    </div> 
     <div fxFlex>
-      <mat-grid-list cols="1" rowHeight="200px">
-          <mat-grid-tile *ngFor="let hotel of hotelsFound">
-            {{hotel.name}} | {{hotel.address}} | {{hotel.description}}
-          </mat-grid-tile>
-        </mat-grid-list>
+      <mat-grid-list cols="3" rowHeight="200px">
+        <mat-grid-tile *ngFor="let hotel of hotelsFound">
+          <mat-card routerLink="" class="pointer">
+            <mat-card-content>
+                {{hotel.name}} | {{hotel.address}} | {{hotel.description}}
+            </mat-card-content>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>         
     </div>
+  </div>
 </div>

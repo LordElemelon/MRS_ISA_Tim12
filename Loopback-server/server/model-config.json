@@ -62,5 +62,21 @@
   "flight": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "roomPrice": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "hotelSpecialOffer": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "hotelDiscount": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "discountOffer": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
