@@ -2,6 +2,17 @@
   "name": "branch",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "nameRentalIndex": {
+      "keys": {
+        "name": 1,
+        "rentalServiceId": -1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },
@@ -22,17 +33,6 @@
       "model": "rentalService",
       "foreignKey": ""
     }
-  },
-  "indexes": {
-	"nameRentalIndex": {
-		"keys": {
-			"name": 1,
-			"rentalServiceId": -1
-		},
-		"options": {
-			"unique": true
-		}
-	}
   },
   "acls": [],
   "methods": {}

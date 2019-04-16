@@ -1,32 +1,30 @@
 {
-  "name": "car",
+  "name": "roomPrice",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "make": {
-      "type": "string",
+    "price": {
+      "type": "number",
       "required": true
     },
-    "registration": {
-      "type": "string",
-      "required": true,
-      "index": {
-        "unique": true
-      }
-    },
-    "seats": {
-      "type": "number",
+    "startDate": {
+      "type": "date",
       "required": true
     }
   },
   "validations": [],
   "relations": {
-    "rentalService": {
+    "hotel": {
       "type": "belongsTo",
-      "model": "rentalService",
+      "model": "hotel",
+      "foreignKey": ""
+    },
+    "room": {
+      "type": "belongsTo",
+      "model": "room",
       "foreignKey": ""
     }
   },

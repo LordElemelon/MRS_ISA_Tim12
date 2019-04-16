@@ -1,32 +1,31 @@
 {
-  "name": "car",
+  "name": "hotelSpecialOffer",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "make": {
+    "name": {
       "type": "string",
       "required": true
     },
-    "registration": {
-      "type": "string",
-      "required": true,
-      "index": {
-        "unique": true
-      }
-    },
-    "seats": {
+    "price": {
       "type": "number",
-      "required": true
+      "required": true,
+      "default": 0
     }
   },
   "validations": [],
   "relations": {
-    "rentalService": {
+    "hotel": {
       "type": "belongsTo",
-      "model": "rentalService",
+      "model": "hotel",
+      "foreignKey": ""
+    },
+    "discountOffers": {
+      "type": "hasMany",
+      "model": "discountOffer",
       "foreignKey": ""
     }
   },

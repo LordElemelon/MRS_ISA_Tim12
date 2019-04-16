@@ -27,6 +27,21 @@
       "type": "hasMany",
       "model": "room",
       "foreignKey": ""
+    },
+    "roomPrices": {
+      "type": "hasMany",
+      "model": "roomPrice",
+      "foreignKey": ""
+    },
+    "hotelSpecialOffers": {
+      "type": "hasMany",
+      "model": "hotelSpecialOffer",
+      "foreignKey": ""
+    },
+    "hotelDiscounts": {
+      "type": "hasMany",
+      "model": "hotelDiscount",
+      "foreignKey": ""
     }
   },
   "acls": [],
