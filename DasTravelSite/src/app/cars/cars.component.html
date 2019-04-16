@@ -2,6 +2,7 @@
     <a mat-button (click)="setToAdd()"> Add</a>
     <a mat-button (click)="setToRemove()"> Remove </a>
     <a mat-button (click)="setToChange()"> Change </a>
+    <a mat-button (click)="setToSearch()"> Search </a>
     <span class="flex-spacer"></span>
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -97,7 +98,6 @@
             {{ changeFormErrors.make }}
           </mat-error>
         </mat-form-field>
-
       </p>
       <p>
         <mat-form-field class="half-width">
@@ -118,5 +118,73 @@
     <div *ngIf="failedChange">
         Car was not changed.
     </div>
+  </div>
+</div>
+
+<div *ngIf="isSearch">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="searchForm" #searchform="ngForm" (ngSubmit)="onSearchSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+          <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+          <mat-error *ngIf="searchFormErrors.startDate">
+            {{ searchFormErrors.startDate }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" placeholder="Return time">
+          <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker2></mat-datepicker>
+          <mat-error *ngIf="searchFormErrors.startDate">
+            {{ searchFormErrors.endDate }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="make" placeholder="Make" type="text">
+          <mat-error *ngIf="searchFormErrors.make">
+            {{ searchFormErrors.make }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="seats" placeholder="Seats" pattern="[0-9]*" type="text">
+          <mat-error *ngIf="searchFormErrors.seats">
+            {{ searchFormErrors.seats }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
+          <mat-error *ngIf="searchFormErrors.rentalService">
+            {{ searchFormErrors.rentanService }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="searchForm.invalid">
+          Submit
+      </button>
+    </form>
+  </div>
+  <div fxFlex>
+    <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let car of foundCars">
+        <mat-card routerLink="" class="pointer">
+          {{car.registration}} | {{car.make}} | {{car.seats}} | zal
+        </mat-card>
+      </mat-grid-tile>
+      <mat-grid-tile *ngFor="let number of test">
+          <mat-card routerLink="" class="pointer">
+            zal
+          </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
   </div>
 </div>

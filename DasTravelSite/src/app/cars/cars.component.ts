@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { LoopBackConfig, RentalService } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { CarApi, RentalServiceApi } from '../shared/sdk/services';
@@ -24,6 +24,9 @@ export class CarsComponent implements OnInit {
   changeForm: FormGroup;
   @ViewChild('changeform') changeFormDirective;
 
+  searchForm: FormGroup;
+  @ViewChild('searchform') searchFormDirective;
+
   isAdd: boolean;
   successfullAdd: boolean;
   failedAdd: boolean;
@@ -36,6 +39,8 @@ export class CarsComponent implements OnInit {
   successfullChange: boolean;
   failedChange: boolean;
 
+  isSearch: boolean;
+
   constructor(@Inject('baseURL') private baseURL,
     private carservice: CarApi,
     private fb: FormBuilder,
@@ -44,7 +49,8 @@ export class CarsComponent implements OnInit {
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
       this.createRemoveForm();
-      this.createChangeForm();  
+      this.createChangeForm();
+      this.createSearchForm();
     }
 
   ngOnInit() {
@@ -54,18 +60,28 @@ export class CarsComponent implements OnInit {
     this.isAdd = true;
     this.isRemove = null;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToRemove() {
     this.isAdd = null;
     this.isRemove = true;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToChange() {
     this.isAdd = null;
     this.isRemove = null;
     this.isChange = true;
+    this.isSearch = null;
+  }
+
+  setToSearch() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isSearch = true;
   }
 
   addFormErrors = {
@@ -310,8 +326,114 @@ export class CarsComponent implements OnInit {
     );
   }
 
+  searchFormErrors = {
+    'startDate': '',
+    'endDate': '',
+    'make': '',
+    'seats': '' ,
+    'rentalService': ''
+  }
 
+  searchFormValidationMessages = {
+    'startDate': {
+      'required': 'Service name is required'
+    },
+    'endDate': {
+      'required': 'Registration is required'
+    },
+    'make': {
+      'required': 'Make is required'
+    },
+    'seats': {
+      'required': 'Seats are required',
+      'pattern': 'Seats have to be a number'
+    },
+    'rentalService': {
+      
+    }
+  }
 
+  onSearchValueChanged(data?: any) {
+    if (!this.searchForm) { return; }
+    const form = this.searchForm;
+    for (const field in this.searchFormErrors) {
+      if (this.searchFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.searchFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.searchFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.searchFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
 
+  createSearchForm() {
+    this.searchForm = this.fb.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      make: [''],
+      seats: ['', Validators.pattern],
+      rentalService: ['']
+    });
+    this.searchForm.valueChanges
+      .subscribe(data => this.onSearchValueChanged(data));
+    this.onSearchValueChanged();
+  }
+
+  //no logic for checking reservations because reservations are not implemented yet
+
+  getCars(searchObject: any) {
+    this.carservice.find({
+      'where': searchObject
+    })
+    .subscribe(
+      (result) => {
+        this.foundCars = result as Car[];
+      },
+      (err) => {
+
+      }
+    )
+  }
+
+  onSearchSubmit() {
+  
+    var searchObject : any = {}
+
+    if (this.searchForm.value.make != '') {
+      searchObject.make = this.searchForm.value.make;
+    }
+    if (this.searchForm.value.seats != '') {
+      searchObject.seats = this.searchForm.value.seats;
+    }
+    if (this.searchForm.value.rentalService != '') {
+      this.rentalServiceService.findOne({
+        'where': {
+          'name': this.searchForm.value.rentalService
+        }
+      })
+      .subscribe(
+        (result) => {
+          console.log("Found it mate");
+          var myrentalservice = result as RentalService;
+          searchObject.rentalServiceId = myrentalservice.id;
+          this.getCars(searchObject);
+        },
+        (err) => {
+          //this rental service does not exist, try without one or with another rental service
+          //need dialog component
+        }
+      )
+    } 
+    else {
+      this.getCars(searchObject);
+    }
+  }
 
 }
