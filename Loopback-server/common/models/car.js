@@ -11,8 +11,8 @@ module.exports = function(Car) {
                     if (!exists)
                         return next(new Error('Bad foreign key: ' + rentalServiceId));
                     return next();
-                })
-            })
+                });
+            });
         }
-    })
+    });
 };
