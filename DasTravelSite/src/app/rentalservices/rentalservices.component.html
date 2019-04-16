@@ -2,6 +2,7 @@
   <a mat-button (click)="setToAdd()"> Add</a>
   <a mat-button (click)="setToRemove()"> Remove </a>
   <a mat-button (click)="setToChange()"> Change </a>
+  <a mat-button (click)="setToSearch()"> Search </a>
   <span class="flex-spacer"></span>
   <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -38,9 +39,6 @@
         Submit
       </button>
     </form>
-    <div *ngIf="successfullAdd">
-        Rental service added successfully.
-    </div>
   </div>
 </div>
 
@@ -59,14 +57,10 @@
           Submit
       </button>
     </form>
-    <div *ngIf="successfullRemove">
-      Rental service removed successfully
-    </div>
   </div>
 </div>
 
 <div *ngIf="isChange">
-    <!---->
   <div fxFlex fxFlexOffset="20px" class="form-size">
       <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
         <p>
@@ -98,8 +92,34 @@
             Submit
         </button>
       </form>
-      <div *ngIf="successfullChange">
-          Rental service changed successfully
-        </div>
+    </div>
+</div>
+
+<div *ngIf="isSearch">
+  <div fxFlex fxFlexOffset="20px" class="form-size" >
+    <form novalidate [formGroup]="searchForm" #searchform="ngForm" (ngSubmit)="onSearchSubmit()">
+      <p>
+        <mat-form-field class="form-size">
+          <input matInput formControlName="name" placeholder="Name" type="text">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="form-size">
+          <input matInput formControlName="address" placeholder="Address" type="text">
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()">
+          Submit
+      </button>
+    </form>
+  </div>
+  <div fxFlex>
+      <mat-grid-list cols="3" rowHeight="200px">
+        <mat-grid-tile *ngFor="let service of foundServices">
+          <mat-card routerLink="" class="pointer">
+            {{service.name}} | {{service.address}} | {{service.description}}
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
     </div>
 </div>

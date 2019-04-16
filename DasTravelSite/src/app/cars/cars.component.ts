@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { LoopBackConfig, RentalService } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { CarApi, RentalServiceApi } from '../shared/sdk/services';
 import { Car } from '../shared/sdk/models/Car';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-cars',
@@ -24,27 +25,28 @@ export class CarsComponent implements OnInit {
   changeForm: FormGroup;
   @ViewChild('changeform') changeFormDirective;
 
+  searchForm: FormGroup;
+  @ViewChild('searchform') searchFormDirective;
+
   isAdd: boolean;
-  successfullAdd: boolean;
-  failedAdd: boolean;
 
   isRemove: boolean;
-  successfullRemove: boolean;
-  failedRemove: boolean;
 
   isChange: boolean;
-  successfullChange: boolean;
-  failedChange: boolean;
+
+  isSearch: boolean;
 
   constructor(@Inject('baseURL') private baseURL,
     private carservice: CarApi,
     private fb: FormBuilder,
-    private rentalServiceService: RentalServiceApi) { 
+    private rentalServiceService: RentalServiceApi,
+    public snackBar: MatSnackBar) { 
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
       this.createRemoveForm();
-      this.createChangeForm();  
+      this.createChangeForm();
+      this.createSearchForm();
     }
 
   ngOnInit() {
@@ -54,18 +56,34 @@ export class CarsComponent implements OnInit {
     this.isAdd = true;
     this.isRemove = null;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToRemove() {
     this.isAdd = null;
     this.isRemove = true;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToChange() {
     this.isAdd = null;
     this.isRemove = null;
     this.isChange = true;
+    this.isSearch = null;
+  }
+
+  setToSearch() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isSearch = true;
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
   }
 
   addFormErrors = {
@@ -136,18 +154,14 @@ export class CarsComponent implements OnInit {
         });
         o2.subscribe(
           (result) => {
-            this.successfullAdd = true;
-            setTimeout(() => {this.successfullAdd = null}, 5000);
+            this.openSnackBar("Car added successfully", "Dismiss");
           },
           (err) => {
-            this.failedAdd = true;
-            setTimeout(() => { this.failedAdd = null; }, 5000);
-          }
-        )
+            this.openSnackBar("Failed to add car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedAdd = true;
-        setTimeout(() => { this.failedAdd = null; }, 5000);
+        this.openSnackBar("Rental service does not exist", "Dismiss");
       }
     )
   }
@@ -199,18 +213,14 @@ export class CarsComponent implements OnInit {
         var o2 = this.carservice.deleteById(mycar.id);
         o2.subscribe(
           (result) => {
-            this.successfullRemove = true;
-            setTimeout(() => {this.successfullRemove = null;}, 5000);
+            this.openSnackBar("Car deleted successfuly", "Dismiss");
           },
           (err) => {
-            this.failedRemove = true;
-            setTimeout(() => {this.failedRemove = null;}, 5000);
-          }
-        )
+            this.openSnackBar("Could not delete car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedRemove = true;
-        setTimeout(() => {this.failedRemove = null;}, 5000);
+        this.openSnackBar("This car does not exist", "Dismiss");
       }
     )
   }
@@ -279,20 +289,15 @@ export class CarsComponent implements OnInit {
         var o2 = this.carservice.updateAttributes(mycar.id, mycar);
         o2.subscribe(
           (result) => {
-            this.successfullChange = true;
-            setTimeout(() => {this.successfullChange = null;}, 5000);
+            this.openSnackBar("Car changed successfully", "Dismiss");
           },
           (err) => {
-            this.failedChange = true;
-            setTimeout(() => {this.failedChange = null;}, 5000);
-          }
-        );
+            this.openSnackBar("Failed to change car", "Dismiss");
+          });
       },
       (err) => {
-        this.failedChange = true;
-        setTimeout(() => {this.failedChange = null;}, 5000);
-      }
-    );
+        this.openSnackBar("Could not find car with that registration", "Dismiss");
+      });
   }
 
   changeGrabCar() {
@@ -304,14 +309,121 @@ export class CarsComponent implements OnInit {
         this.changeForm.controls['seats'].setValue(mycar.seats);
       },
       (err) => {
+        this.openSnackBar("Could not find car with that registration", "Dismiss");
         this.changeForm.controls['make'].setValue('');
         this.changeForm.controls['seats'].setValue('');
       }
     );
   }
 
+  searchFormErrors = {
+    'startDate': '',
+    'endDate': '',
+    'make': '',
+    'seats': '' ,
+    'rentalService': ''
+  }
 
+  searchFormValidationMessages = {
+    'startDate': {
+      'required': 'Service name is required'
+    },
+    'endDate': {
+      'required': 'Registration is required'
+    },
+    'make': {
+      'required': 'Make is required'
+    },
+    'seats': {
+      'required': 'Seats are required',
+      'pattern': 'Seats have to be a number'
+    },
+    'rentalService': {
+      
+    }
+  }
 
+  onSearchValueChanged(data?: any) {
+    if (!this.searchForm) { return; }
+    const form = this.searchForm;
+    for (const field in this.searchFormErrors) {
+      if (this.searchFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.searchFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.searchFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.searchFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
 
+  createSearchForm() {
+    this.searchForm = this.fb.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
+      make: [''],
+      seats: ['', Validators.pattern],
+      rentalService: ['']
+    });
+    this.searchForm.valueChanges
+      .subscribe(data => this.onSearchValueChanged(data));
+    this.onSearchValueChanged();
+  }
+
+  //no logic for checking reservations because reservations are not implemented yet
+
+  getCars(searchObject: any) {
+    this.carservice.find({
+      'where': searchObject
+    })
+    .subscribe(
+      (result) => {
+        this.foundCars = result as Car[];
+      },
+      (err) => {
+
+      }
+    )
+  }
+
+  onSearchSubmit() {
+  
+    var searchObject : any = {}
+
+    if (this.searchForm.value.make != '') {
+      searchObject.make = this.searchForm.value.make;
+    }
+    if (this.searchForm.value.seats != '') {
+      searchObject.seats = this.searchForm.value.seats;
+    }
+    if (this.searchForm.value.rentalService != '') {
+      this.rentalServiceService.findOne({
+        'where': {
+          'name': this.searchForm.value.rentalService
+        }
+      })
+      .subscribe(
+        (result) => {
+          console.log("Found it mate");
+          var myrentalservice = result as RentalService;
+          searchObject.rentalServiceId = myrentalservice.id;
+          this.getCars(searchObject);
+        },
+        (err) => {
+          //this rental service does not exist, try without one or with another rental service
+          //need dialog component
+        }
+      )
+    } 
+    else {
+      this.getCars(searchObject);
+    }
+  }
 
 }

@@ -5,6 +5,7 @@ import { RentalServiceApi } from '../shared/sdk/services';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoopBackConfig, RentalService } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   selector: 'app-branches',
@@ -24,21 +25,16 @@ export class BranchesComponent implements OnInit {
   @ViewChild('changeform') changeFormDirective;
 
   isAdd: boolean;
-  successfullAdd: boolean;
-  failedAdd: boolean;
 
   isRemove: boolean;
-  successfullRemove: boolean;
-  failedRemove: boolean;
 
   isChange: boolean;
-  successfullChange: boolean;
-  failedChange: boolean;
 
   constructor(@Inject('baseURL') private baseURL,
   private branchService: BranchApi,
   private fb: FormBuilder,
-  private rentalServiceService: RentalServiceApi) {
+  private rentalServiceService: RentalServiceApi,
+  public snackBar: MatSnackBar) {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
@@ -67,7 +63,11 @@ export class BranchesComponent implements OnInit {
     this.isChange = true;
   }
 
-
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
+  }
 
   addFormErrors = {
     'serviceName': '',
@@ -120,19 +120,31 @@ export class BranchesComponent implements OnInit {
 
   onAddSubmit() {
     this.rentalServiceService.findOne({'where': {'name': this.addForm.value.serviceName}})
-    .subscribe((rentalservice) => {
+    .subscribe(
+    (rentalservice) => {
       if (rentalservice != null) {
         var myrentalservice = rentalservice as RentalService;
-        this.branchService.create({'name': this.addForm.value.name,
-          'address': this.addForm.value.address, 'rentalServiceId': myrentalservice.id})
-        .subscribe((result) => {
+        this.branchService.create({
+          'name': this.addForm.value.name,
+          'address': this.addForm.value.address,
+          'rentalServiceId': myrentalservice.id})
+        .subscribe(
+          (result) => {
           if (result != null) {
-            this.successfullAdd = true;
-            setTimeout(() => {this.successfullAdd = null}, 5000);
+           this.openSnackBar("Branch added successfully", "Dismiss");
           }
-        });
+          else {
+            this.openSnackBar("Failed to add branch", "Dismiss");
+          }
+          },
+          (err) => {
+            this.openSnackBar("Failed to add branch", "Dismiss");
+          });
       }
-    }, (err) => {this.failedAdd = true; setTimeout(() => {this.failedAdd = null}, 5000);})
+    },
+    (err) => {
+      this.openSnackBar("Rental service does not exist", "Dismiss");
+    });
   }
 
   removeFormErrors = {
@@ -175,32 +187,39 @@ export class BranchesComponent implements OnInit {
       name: ['', Validators.required]
     });
     this.removeForm.valueChanges
-      .subscribe(data => this.onRemoveValueChanged(data));
+    .subscribe(data => this.onRemoveValueChanged(data));
     this.onRemoveValueChanged();
   }
 
   onRemoveSubmit() {
     this.rentalServiceService.findOne({'where': {'name': this.removeForm.value.serviceName}})
-      .subscribe((result) => {
-        if (result != null) {
-          var myrentalservice = result as RentalService;
-          this.branchService.findOne({'where': {'name': this.removeForm.value.name,
-            'rentalServiceId': myrentalservice.id}})
-            .subscribe((branch) => {
-              if (branch != null) {
-                var mybranch = branch as Branch;
-                this.branchService.deleteById(mybranch.id)
-                  .subscribe((result) => {
-                    this.successfullRemove = true;
-                    setTimeout(() => {this.successfullRemove = null; },5000);
-                  });
-              }
-            })
+    .subscribe(
+    (result) => {
+      var myrentalservice = result as RentalService;
+      this.branchService.findOne({
+        'where': {
+          'name': this.removeForm.value.name,
+          'rentalServiceId': myrentalservice.id
         }
-      }, (err) => {
-        this.failedRemove = true;
-        setTimeout(() => {this.failedRemove = null; },5000);
-      });
+      })
+      .subscribe((branch) => {
+        var mybranch = branch as Branch;
+        this.branchService.deleteById(mybranch.id)
+        .subscribe(
+        (result) => {
+          this.openSnackBar("Branch deleted successfuly", "Dismiss");
+        },
+        (err) => {
+          this.openSnackBar("Failed to delete branch", "Dismiss");
+        });
+      },
+      (err) => {
+        this.openSnackBar("This branch does not exist", "Dismiss");
+      })
+    },
+    (err) => {
+      this.openSnackBar("This rental service does not exist", "Dismiss");
+    });
   }
 
   changeFormErrors = {
@@ -248,25 +267,29 @@ export class BranchesComponent implements OnInit {
       address: ['', Validators.required]
     });
     this.changeForm.valueChanges
-      .subscribe(data => this.onChangeValueChanged(data));
+    .subscribe(data => this.onChangeValueChanged(data));
     this.onChangeValueChanged();
   }
 
   changeGrabBranch() {
     var o1 = this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.serviceName}});
     o1.subscribe(
+    (result) => {
+      var myrentalservice = result as RentalService;
+      var o2 = this.branchService.findOne({'where': {'name': this.changeForm.value.name,
+        'rentalServiceId': myrentalservice.id}});
+      o2.subscribe(
       (result) => {
-        var myrentalservice = result as RentalService;
-        var o2 = this.branchService.findOne({'where': {'name': this.changeForm.value.name,
-          'rentalServiceId': myrentalservice.id}});
-        o2.subscribe(
-          (result) => {
-            var mybranch = result as Branch;
-            this.changeForm.controls['address'].setValue(mybranch.address);
-          },
-          (err) => {});
+        var mybranch = result as Branch;
+        this.changeForm.controls['address'].setValue(mybranch.address);
       },
-      (err) => {});
+      (err) => {
+        this.openSnackBar("This branch does not exist", "Dismiss");
+      });
+    },
+    (err) => {
+      this.openSnackBar("This rental service does not exist", "Dismiss");
+    });
   }
 
   onChangeSubmit() {
@@ -283,26 +306,19 @@ export class BranchesComponent implements OnInit {
             var o3 = this.branchService.updateAttributes(mybranch.id, mybranch);
             o3.subscribe(
               (result) => {
-                this.successfullChange = true;
-                setTimeout(() => { this.successfullChange = null; }, 5000);
+                this.openSnackBar("Branch updated successfully", "Dismiss");
               },
               (err) => {
-                this.failedChange = true;
-                setTimeout(() => { this.failedChange = null; }, 5000);
-              }
-            );
+                this.openSnackBar("Failed to update branch", "Dismiss");
+              });
           },
           (err) => {
-            this.failedChange = true;
-            setTimeout(() => { this.failedChange = null; }, 5000);
-          }
-        );
+            this.openSnackBar("This branch does not exist", "Dismiss");
+          });
       },
       (err) => {
-        this.failedChange = true;
-        setTimeout(() => { this.failedChange = null; }, 5000);
-      }
-    );
+        this.openSnackBar("This rental service does not exist", "Dismiss");
+      });
   }
 
 }

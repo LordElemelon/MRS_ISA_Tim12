@@ -8,7 +8,10 @@
   "properties": {
     "name": {
       "type": "string",
-      "required": true
+      "required": true,
+	  "index": {
+	    "unique": true
+	  }
     },
     "address": {
       "type": "string",
