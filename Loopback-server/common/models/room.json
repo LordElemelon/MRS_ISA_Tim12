@@ -42,6 +42,16 @@
       "type": "belongsTo",
       "model": "hotel",
       "foreignKey": ""
+    },
+    "roomPrices": {
+      "type": "hasMany",
+      "model": "roomPrice",
+      "foreignKey": ""
+    },
+    "hotelDiscounts": {
+      "type": "hasMany",
+      "model": "hotelDiscount",
+      "foreignKey": ""
     }
   },
   "acls": [],

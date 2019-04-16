@@ -1,0 +1,33 @@
+{
+  "name": "roomPrice",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "price": {
+      "type": "number",
+      "required": true
+    },
+    "startDate": {
+      "type": "date",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "hotel": {
+      "type": "belongsTo",
+      "model": "hotel",
+      "foreignKey": ""
+    },
+    "room": {
+      "type": "belongsTo",
+      "model": "room",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}
