@@ -1,8 +1,19 @@
 'use strict';
 
 module.exports = function(Rentalservice) {
-    Rentalservice.getAvailableServices = function (start,  end, cb) {
-        Rentalservice.find({})
+    Rentalservice.getAvailableServices = function (start,  end, name, address, cb) {
+        var searchObject = {};
+        console.log(start);
+        console.log(end);
+        console.log(name);
+        console.log(address);
+        if (typeof name != 'undefined') {
+            searchObject.name = name;
+        }
+        if (typeof address != 'undefined') {
+            searchObject.address = address;
+        }
+        Rentalservice.find({where: searchObject})
         .then((result) => {
             Rentalservice.getApp((err, app) => {
                 var promises = []
@@ -43,7 +54,8 @@ module.exports = function(Rentalservice) {
     }
 
     Rentalservice.remoteMethod('getAvailableServices',{
-        accepts: [{arg: 'start', type: 'date'}, {arg: 'end', type: 'date'}],
+        accepts: [{arg: 'start', type: 'date', required: true}, {arg: 'end', type: 'date', required: true},
+            {arg:'name', type: 'string'}, {arg: 'address', type: 'string'}],
         http: {path: '/getAvailableServices', verb: 'get' },
         returns: {type: 'object', arg: 'retval'}
     })

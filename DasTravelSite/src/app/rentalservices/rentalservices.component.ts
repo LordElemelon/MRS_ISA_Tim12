@@ -323,30 +323,27 @@ export class RentalservicesComponent implements OnInit {
   }
 
   onSearchSubmit() {
-    var searchObject : any = {}
-
+    var name = null;
+    var address = null;
     if (this.searchForm.value.name != '') {
-      searchObject.name = this.searchForm.value.name;
+      name = this.searchForm.value.name
     }
     if (this.searchForm.value.address != '') {
-      searchObject.address = this.searchForm.value.address;
+      address = this.searchForm.value.address
     }
-
-    this.rentalServiceService.find({
-      'where': searchObject
-    })
-    .subscribe(
-      (result) => {
-        this.foundServices = result as RentalService[];
-        console.log(this.foundServices);
-        if (this.foundServices.length == 0) {
-          this.openSnackBar("No services match your query", "Dismiss");
-        }
-      },
-      (err) => {
-        this.openSnackBar("Search failed", "Dismiss");
+    //these two values will change once we actually have resrvations
+    this.rentalServiceService.getAvailableServices(1000,
+      2000, name, address)
+    .subscribe((result) => {
+      console.log(result);
+      this.foundServices = result.retval as RentalService[];
+      if (this.foundServices.length == 0) {
+        this.openSnackBar("No services match your query", "Dismiss");
       }
-    )
+    },
+    (err) => {
+      this.openSnackBar("Search failed", "Dismiss");
+    });
   }
 
 }

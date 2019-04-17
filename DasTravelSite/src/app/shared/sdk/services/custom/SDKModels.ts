@@ -6,6 +6,12 @@ import { Room } from '../../models/Room';
 import { RentalService } from '../../models/RentalService';
 import { Branch } from '../../models/Branch';
 import { Car } from '../../models/Car';
+import { Airline } from '../../models/Airline';
+import { Flight } from '../../models/Flight';
+import { RoomPrice } from '../../models/RoomPrice';
+import { HotelSpecialOffer } from '../../models/HotelSpecialOffer';
+import { HotelDiscount } from '../../models/HotelDiscount';
+import { DiscountOffer } from '../../models/DiscountOffer';
 
 export interface Models { [name: string]: any }
 
@@ -19,6 +25,12 @@ export class SDKModels {
     RentalService: RentalService,
     Branch: Branch,
     Car: Car,
+    Airline: Airline,
+    Flight: Flight,
+    RoomPrice: RoomPrice,
+    HotelSpecialOffer: HotelSpecialOffer,
+    HotelDiscount: HotelDiscount,
+    DiscountOffer: DiscountOffer,
     
   };
 

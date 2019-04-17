@@ -512,6 +512,42 @@ export class RentalServiceApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} start 
+   *
+   * @param {date} end 
+   *
+   * @param {string} name 
+   *
+   * @param {string} address 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public getAvailableServices(start: any, end: any, name: any = {}, address: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/rentalServices/getAvailableServices";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof start !== 'undefined' && start !== null) _urlParams.start = start;
+    if (typeof end !== 'undefined' && end !== null) _urlParams.end = end;
+    if (typeof name !== 'undefined' && name !== null) _urlParams.name = name;
+    if (typeof address !== 'undefined' && address !== null) _urlParams.address = address;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in branches of this model.
    *
    * @param {any} id rentalService id

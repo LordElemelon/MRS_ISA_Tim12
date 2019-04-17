@@ -9,18 +9,18 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Room } from '../../models/Room';
+import { HotelDiscount } from '../../models/HotelDiscount';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { Hotel } from '../../models/Hotel';
-import { RoomPrice } from '../../models/RoomPrice';
-import { HotelDiscount } from '../../models/HotelDiscount';
+import { Room } from '../../models/Room';
+import { DiscountOffer } from '../../models/DiscountOffer';
 
 
 /**
- * Api services for the `Room` model.
+ * Api services for the `HotelDiscount` model.
  */
 @Injectable()
-export class RoomApi extends BaseLoopBackApi {
+export class HotelDiscountApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -35,7 +35,7 @@ export class RoomApi extends BaseLoopBackApi {
   /**
    * Fetches belongsTo relation hotel.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {boolean} refresh 
    *
@@ -45,13 +45,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
   public getHotel(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotel";
+    "/hotelDiscounts/:id/hotel";
     let _routeParams: any = {
       id: id
     };
@@ -63,11 +63,11 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for roomPrices.
+   * Fetches belongsTo relation room.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
-   * @param {any} fk Foreign key for roomPrices
+   * @param {boolean} refresh 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -75,13 +75,43 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
-  public findByIdRoomPrices(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public getRoom(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices/:fk";
+    "/hotelDiscounts/:id/room";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Find a related item by id for discountOffers.
+   *
+   * @param {any} id hotelDiscount id
+   *
+   * @param {any} fk Foreign key for discountOffers
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `HotelDiscount` object.)
+   * </em>
+   */
+  public findByIdDiscountOffers(id: any, fk: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/hotelDiscounts/:id/discountOffers/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -93,11 +123,11 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Delete a related item by id for roomPrices.
+   * Delete a related item by id for discountOffers.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
-   * @param {any} fk Foreign key for roomPrices
+   * @param {any} fk Foreign key for discountOffers
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -105,10 +135,10 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public destroyByIdRoomPrices(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public destroyByIdDiscountOffers(id: any, fk: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices/:fk";
+    "/hotelDiscounts/:id/discountOffers/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -120,11 +150,11 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Update a related item by id for roomPrices.
+   * Update a related item by id for discountOffers.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
-   * @param {any} fk Foreign key for roomPrices
+   * @param {any} fk Foreign key for discountOffers
    *
    * @param {object} data Request data.
    *
@@ -136,13 +166,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
-  public updateByIdRoomPrices(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public updateByIdDiscountOffers(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PUT";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices/:fk";
+    "/hotelDiscounts/:id/discountOffers/:fk";
     let _routeParams: any = {
       id: id,
       fk: fk
@@ -156,102 +186,9 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for hotelDiscounts.
+   * Queries discountOffers of hotelDiscount.
    *
-   * @param {any} id room id
-   *
-   * @param {any} fk Foreign key for hotelDiscounts
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
-   * </em>
-   */
-  public findByIdHotelDiscounts(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Delete a related item by id for hotelDiscounts.
-   *
-   * @param {any} id room id
-   *
-   * @param {any} fk Foreign key for hotelDiscounts
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public destroyByIdHotelDiscounts(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Update a related item by id for hotelDiscounts.
-   *
-   * @param {any} id room id
-   *
-   * @param {any} fk Foreign key for hotelDiscounts
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
-   * </em>
-   */
-  public updateByIdHotelDiscounts(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Queries roomPrices of room.
-   *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {object} filter 
    *
@@ -261,13 +198,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
-  public getRoomPrices(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+  public getDiscountOffers(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices";
+    "/hotelDiscounts/:id/discountOffers";
     let _routeParams: any = {
       id: id
     };
@@ -279,9 +216,9 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in roomPrices of this model.
+   * Creates a new instance in discountOffers of this model.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {object} data Request data.
    *
@@ -293,13 +230,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
-  public createRoomPrices(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
+  public createDiscountOffers(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices";
+    "/hotelDiscounts/:id/discountOffers";
     let _routeParams: any = {
       id: id
     };
@@ -312,9 +249,9 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Deletes all roomPrices of this model.
+   * Deletes all discountOffers of this model.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -322,10 +259,10 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * This method returns no data.
    */
-  public deleteRoomPrices(id: any, customHeaders?: Function): Observable<any> {
+  public deleteDiscountOffers(id: any, customHeaders?: Function): Observable<any> {
     let _method: string = "DELETE";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices";
+    "/hotelDiscounts/:id/discountOffers";
     let _routeParams: any = {
       id: id
     };
@@ -336,9 +273,9 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Counts roomPrices of room.
+   * Counts discountOffers of hotelDiscount.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {object} where Criteria to match model instances
    *
@@ -350,126 +287,10 @@ export class RoomApi extends BaseLoopBackApi {
    *
    *  - `count` – `{number}` - 
    */
-  public countRoomPrices(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+  public countDiscountOffers(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices/count";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Queries hotelDiscounts of room.
-   *
-   * @param {any} id room id
-   *
-   * @param {object} filter 
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
-   * </em>
-   */
-  public getHotelDiscounts(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Creates a new instance in hotelDiscounts of this model.
-   *
-   * @param {any} id room id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
-   * </em>
-   */
-  public createHotelDiscounts(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Deletes all hotelDiscounts of this model.
-   *
-   * @param {any} id room id
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public deleteHotelDiscounts(id: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Counts hotelDiscounts of room.
-   *
-   * @param {any} id room id
-   *
-   * @param {object} where Criteria to match model instances
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `count` – `{number}` - 
-   */
-  public countHotelDiscounts(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts/count";
+    "/hotelDiscounts/:id/discountOffers/count";
     let _routeParams: any = {
       id: id
     };
@@ -493,13 +314,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms";
+    "/hotelDiscounts";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -512,7 +333,7 @@ export class RoomApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {object} data Request data.
    *
@@ -524,13 +345,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id";
+    "/hotelDiscounts/:id";
     let _routeParams: any = {
       id: id
     };
@@ -543,42 +364,9 @@ export class RoomApi extends BaseLoopBackApi {
   }
 
   /**
-   * Creates a new instance in roomPrices of this model.
+   * Creates a new instance in discountOffers of this model.
    *
-   * @param {any} id room id
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
-   * </em>
-   */
-  public createManyRoomPrices(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/roomPrices";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Creates a new instance in hotelDiscounts of this model.
-   *
-   * @param {any} id room id
+   * @param {any} id hotelDiscount id
    *
    * @param {object} data Request data.
    *
@@ -590,13 +378,13 @@ export class RoomApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Room` object.)
+   * This usually means the response is a `HotelDiscount` object.)
    * </em>
    */
-  public createManyHotelDiscounts(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+  public createManyDiscountOffers(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/:id/hotelDiscounts";
+    "/hotelDiscounts/:id/discountOffers";
     let _routeParams: any = {
       id: id
     };
@@ -610,9 +398,9 @@ export class RoomApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Room`.
+   * i.e. `HotelDiscount`.
    */
   public getModelName() {
-    return "Room";
+    return "HotelDiscount";
   }
 }
