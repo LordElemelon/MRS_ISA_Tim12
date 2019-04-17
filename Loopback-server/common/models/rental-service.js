@@ -3,10 +3,6 @@
 module.exports = function(Rentalservice) {
     Rentalservice.getAvailableServices = function (start,  end, name, address, cb) {
         var searchObject = {};
-        console.log(start);
-        console.log(end);
-        console.log(name);
-        console.log(address);
         if (typeof name != 'undefined') {
             searchObject.name = name;
         }

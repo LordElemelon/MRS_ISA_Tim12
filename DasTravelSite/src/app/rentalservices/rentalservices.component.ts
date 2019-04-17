@@ -335,7 +335,6 @@ export class RentalservicesComponent implements OnInit {
     this.rentalServiceService.getAvailableServices(1000,
       2000, name, address)
     .subscribe((result) => {
-      console.log(result);
       this.foundServices = result.retval as RentalService[];
       if (this.foundServices.length == 0) {
         this.openSnackBar("No services match your query", "Dismiss");
