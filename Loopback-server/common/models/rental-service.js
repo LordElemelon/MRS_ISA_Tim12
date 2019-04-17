@@ -5,67 +5,43 @@ module.exports = function(Rentalservice) {
         Rentalservice.find({})
         .then((result) => {
             Rentalservice.getApp((err, app) => {
-                var to_do = result.length;
-                if (to_do == 0) {
-                    cb(null, "[]");
-                    return;
+                var promises = []
+                for (var service of result) {
+                    promises.push(
+                        new Promise(function(resolve, reject) {
+                            var myservice = service;
+                            app.models.Car.find({'where': {rentalServiceId: myservice.id}})
+                            .then((car_result) =>{
+                                if (car_result.length != 0) {
+                                    resolve(myservice); 
+                                } 
+                                else {
+                                    resolve(null);
+                                }
+                            },
+                            (err) => {
+                                reject();
+                            })
+                        })
+                    );
                 }
-                var retval = [];
-                var index = 0;
-                var recursive_method = function(index) {
-                    console.log("Index is " + index);
-                    app.models.Car.find({'where': {rentalServiceId: result[index].id}})
-                    .then((car_result) => {
-                        if (car_result.length > 0) {
-                            retval.push(result[index]);
+                Promise.all(promises)
+                .then((results) => {
+                    var myretval = [];
+                    for (var myresult of results) {
+                        if (myresult != null) {
+                            myretval.push(myresult);
                         }
-                        to_do--;
-                        if (to_do == 0) {
-                            cb(null, retval)
-                        } else {
-                            recursive_method(index + 1);
-                        }
-                    })
-                    .catch((err) => {
-                        cb(null, "{'msg': 'nou mimsey'}");
-                    });
-                }
-                recursive_method(index);
-            });
+                    }
+                    cb(null, myretval)
+                })
+                .catch((err) => {
+                    cb(null, "{}")
+                });    
+            })
         })
-        .catch((err) => {
-            cb(null, "{msg: 'Nou mimsey'}");
-        });
-
-        /*
-            for (var index in result) {
-                {
-                    const temp_var = Object.assign({}, result[index]);
-                    app.models.Car.find({'where': {rentalServiceId: temp_var.id}})
-                    .then((car_result) => {
-                        //will need to check reservations but for now, if there is a car
-                        //its good enough for now
-                        console.log(temp_var);
-                        console.log(car_result);
-                        console.log("To do " + to_do);
-                        console.log("--------------------");
-                        if (car_result.length > 0) {
-                            retval.push(temp_var);
-                        }
-                        to_do--;
-                        if (to_do == 0) {
-                            cb(null, retval);
-                        }
-                    })
-                    .catch((err) => {
-                        cb(null, "{msg: 'Nou mimsey'}")
-                    });
-                }
-            }
-        */
     }
-        
-    
+
     Rentalservice.remoteMethod('getAvailableServices',{
         accepts: [{arg: 'start', type: 'date'}, {arg: 'end', type: 'date'}],
         http: {path: '/getAvailableServices', verb: 'get' },
