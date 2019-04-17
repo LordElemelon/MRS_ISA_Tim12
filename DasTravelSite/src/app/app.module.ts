@@ -37,6 +37,7 @@ import { BranchesComponent } from './branches/branches.component';
 import { HotelApi } from './shared/sdk/services/custom/Hotel';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { HotelComponent } from './hotel/hotel.component';
+import { RegisterComponent } from './register/register.component';
 
 
 
@@ -50,7 +51,8 @@ import { HotelComponent } from './hotel/hotel.component';
     CarsComponent,
     RentalservicesComponent,
     BranchesComponent,
-    HotelComponent
+    HotelComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -78,6 +80,9 @@ import { HotelComponent } from './hotel/hotel.component';
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}
+  ],
+  entryComponents: [
+    RegisterComponent
   ],
   bootstrap: [AppComponent]
 })
