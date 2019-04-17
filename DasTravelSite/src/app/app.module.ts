@@ -14,6 +14,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material'
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -25,6 +27,7 @@ import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
 import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
+import { MatSnackBarModule } from '@angular/material';
 
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -53,6 +56,7 @@ import { RoomsListComponent } from './rooms-list/rooms-list.component';
   ],
   imports: [
     BrowserModule,
+    MatSnackBarModule,
     AppRoutingModule,
     FlexLayoutModule,
     MatToolbarModule,
@@ -60,6 +64,8 @@ import { RoomsListComponent } from './rooms-list/rooms-list.component';
     MatGridListModule,
     MatCardModule,
     MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,

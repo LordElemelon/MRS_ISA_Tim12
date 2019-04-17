@@ -4,7 +4,7 @@ import { LoopBackConfig } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { RentalServiceApi } from '../shared/sdk/services';
 import { RentalService } from '../shared/sdk/models/RentalService';
-
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   selector: 'app-rentalservices',
@@ -24,45 +24,68 @@ export class RentalservicesComponent implements OnInit {
   @ViewChild('changeform') changeFormDirective;
   toChangeService: RentalService;
 
+  searchForm: FormGroup;
+  @ViewChild('searchform') searchFormDirective;
+
   isAdd: boolean;
-  successfullAdd: boolean;
 
   isRemove: boolean;
-  successfullRemove: boolean;
 
   isChange: boolean;
-  successfullChange: boolean;
+
+  isSearch: boolean;
+  foundServices: RentalService[];
 
   constructor(@Inject('baseURL') private baseURL,
     private rentalServiceService: RentalServiceApi,
-    private fb: FormBuilder) { 
+    private fb: FormBuilder,
+    public snackBar: MatSnackBar) { 
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
       this.createRemoveForm();
       this.createChangeForm();
+      this.createSearchForm();
   }
+
+  
 
   ngOnInit() {
     
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
   }
 
   setToAdd() {
     this.isAdd = true;
     this.isRemove = null;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToRemove() {
     this.isAdd = null;
     this.isRemove = true;
     this.isChange = null;
+    this.isSearch = null;
   }
 
   setToChange() {
     this.isAdd = null;
     this.isRemove = null;
     this.isChange = true;
+    this.isSearch = null;
+  }
+
+  setToSearch() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isSearch = true;
   }
 
   addFormErrors = {
@@ -117,7 +140,13 @@ export class RentalservicesComponent implements OnInit {
   onAddSubmit() {
     this.toAddService = this.addForm.value;
     this.rentalServiceService.create(this.toAddService)
-    .subscribe((result) => { this.successfullAdd = true;setTimeout(() => this.successfullAdd = null, 5000);/* ukoliko result nije null uspesno je dodavanje */});
+    .subscribe(
+      (result) => {
+         this.openSnackBar("Adding succeded", "Dismiss");
+        },
+      (err) => {
+        this.openSnackBar("Adding failed", "Dimsiss");
+      });
     this.addForm.reset({
       name: '',
       address: '',
@@ -173,17 +202,21 @@ export class RentalservicesComponent implements OnInit {
       var myRentalService = rentalService as RentalService
       if (rentalService != null) {
         this.rentalServiceService.deleteById(myRentalService.id)
-        .subscribe((deletedRentalService) => {
-          if (deletedRentalService != null) {
-            this.successfullRemove = true;
-            setTimeout(()=> {this.successfullRemove = null;}, 5000)
-          }
+        .subscribe(
+        (deletedRentalService) => {
+          this.openSnackBar("Deletion successfull", "Dismiss");
           this.removeForm.reset({
             name: ''
           });
           this.removeFormDirective.resetForm();
+        },
+        (err) => {
+          this.openSnackBar("Deletion failed", "Dismiss");
         });
       }
+    },
+    (err) => {
+      this.openSnackBar("Deletion failed", "Dismiss");
     });
   }
 
@@ -239,33 +272,81 @@ export class RentalservicesComponent implements OnInit {
 
   changeGrabRental() {
     this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.name}})
-    .subscribe((rentalservice) => {
-      if (rentalservice != null) {
-        var myRentalService = rentalservice as RentalService;
-        this.toChangeService = myRentalService;
-        this.changeForm.controls['address'].setValue(myRentalService.address);
-        this.changeForm.controls['description'].setValue(myRentalService.description);
-      }
-    }, (err) => {});
+    .subscribe(
+      (rentalservice) => {
+        if (rentalservice != null) {
+          var myRentalService = rentalservice as RentalService;
+          this.toChangeService = myRentalService;
+          this.changeForm.controls['address'].setValue(myRentalService.address);
+          this.changeForm.controls['description'].setValue(myRentalService.description);
+        }
+      },
+      (err) => {
+        this.openSnackBar("This service does not exist", "Dismiss");
+      });
   }
 
   onChangeSubmit() {
     this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.name}})
-    .subscribe((rentalservice) => {
+    .subscribe(
+      (rentalservice) => {
       if (rentalservice != null) {
         var myRentalService = rentalservice as RentalService;
         myRentalService.address = this.changeForm.value.address;
         myRentalService.description = this.changeForm.value.description;
         console.log(myRentalService);
         this.rentalServiceService.updateAttributes(myRentalService.id, myRentalService)
-         .subscribe((result) => {
-           if (result != null) {
-              this.successfullChange = true;
-              setTimeout(() => {this.successfullChange = null;}, 5000);
-           }
-         }, (err) => {console.log(err);});
+         .subscribe(
+          (result) => {
+            if (result != null) {
+              this.openSnackBar("Change successfull", "Dismiss");
+            }
+            else {
+              this.openSnackBar("Change failed", "Dismiss");
+            }
+          },
+          (err) => {
+            this.openSnackBar("Change failed", "Dismiss");
+          });
       }
+    },
+    (err) => {
+      this.openSnackBar("This rental service does not exist", "Dismiss");
     });
+  }
+
+  createSearchForm() {
+    this.searchForm = this.fb.group({
+      name: [''],
+      address: ['']
+    })
+  }
+
+  onSearchSubmit() {
+    var searchObject : any = {}
+
+    if (this.searchForm.value.name != '') {
+      searchObject.name = this.searchForm.value.name;
+    }
+    if (this.searchForm.value.address != '') {
+      searchObject.address = this.searchForm.value.address;
+    }
+
+    this.rentalServiceService.find({
+      'where': searchObject
+    })
+    .subscribe(
+      (result) => {
+        this.foundServices = result as RentalService[];
+        console.log(this.foundServices);
+        if (this.foundServices.length == 0) {
+          this.openSnackBar("No services match your query", "Dismiss");
+        }
+      },
+      (err) => {
+        this.openSnackBar("Search failed", "Dismiss");
+      }
+    )
   }
 
 }

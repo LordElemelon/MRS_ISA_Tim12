@@ -37,44 +37,32 @@
           Submit
         </button>
       </form>
-      <div *ngIf="successfullAdd">
-          Branch added successfully.
-      </div>
-      <div *ngIf="failedAdd">
-         Branch was not added.
-      </div>
   </div>
 </div>
 
 <div *ngIf="isRemove">
   <div fxFlex fxFlexOffset="20px" class="form-size">
-      <form novalidate [formGroup]="removeForm" #changeform="ngForm" (ngSubmit)="onRemoveSubmit()">
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
-            <mat-error *ngIf="removeFormErrors.serviceName">
-              {{ removeFormErrors.serviceName }}
+    <form novalidate [formGroup]="removeForm" #changeform="ngForm" (ngSubmit)="onRemoveSubmit()">
+      <p>
+        <mat-form-field class="form-size">
+          <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
+          <mat-error *ngIf="removeFormErrors.serviceName">
+            {{ removeFormErrors.serviceName }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="form-size">
+            <input matInput formControlName="name" placeholder="Name" type="text">
+            <mat-error *ngIf="removeFormErrors.name">
+              {{ removeFormErrors.name }}
             </mat-error>
-          </mat-form-field>
-        </p>
-        <p>
-          <mat-form-field class="form-size">
-              <input matInput formControlName="name" placeholder="Name" type="text">
-              <mat-error *ngIf="removeFormErrors.name">
-                {{ removeFormErrors.name }}
-              </mat-error>
-          </mat-form-field>
-        </p>
-        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="removeForm.invalid">
-            Submit
-        </button>
-        </form>
-        <div *ngIf="successfullRemove">
-            Branch removed successfully.
-        </div>
-        <div *ngIf="failedRemove">
-           Branch was not removed.
-        </div>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="removeForm.invalid">
+          Submit
+      </button>
+      </form>
   </div>
 </div>
 
@@ -110,11 +98,5 @@
             Submit
           </button>
       </form>
-      <div *ngIf="successfullChange">
-        Branch changed successfully.
-      </div>
-      <div *ngIf="failedChange">
-          Branch was not changed.
-       </div>
   </div>
 </div>
