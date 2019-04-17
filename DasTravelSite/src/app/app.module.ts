@@ -37,6 +37,7 @@ import { BranchesComponent } from './branches/branches.component';
 import { HotelApi } from './shared/sdk/services/custom/Hotel';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { HotelComponent } from './hotel/hotel.component';
+import { AirlineComponent } from './airline/airline.component';
 
 
 
@@ -50,7 +51,8 @@ import { HotelComponent } from './hotel/hotel.component';
     CarsComponent,
     RentalservicesComponent,
     BranchesComponent,
-    HotelComponent
+    HotelComponent,
+    AirlineComponent
   ],
   imports: [
     BrowserModule,
