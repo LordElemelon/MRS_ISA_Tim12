@@ -7,7 +7,7 @@
   <div fxFlex>
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let room of rooms">
-        <mat-card routerLink="" class="pointer">
+        <mat-card [routerLink]="['/room', room.id]" class="pointer">
           <mat-card-content>
               {{room.number}} | {{room.beds}} | {{room.description}}
           </mat-card-content>

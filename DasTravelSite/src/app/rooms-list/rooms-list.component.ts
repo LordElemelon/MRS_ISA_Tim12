@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Room } from '../shared/sdk';
-
+import { Component, OnInit, Inject } from '@angular/core';
+import { Room, HotelApi } from '../shared/sdk';
+import { Hotel } from '../shared/sdk/models/';
 @Component({
   selector: 'app-rooms-list',
   templateUrl: './rooms-list.component.html',
@@ -8,21 +8,22 @@ import { Room } from '../shared/sdk';
 })
 export class RoomsListComponent implements OnInit {
   rooms: Room[];
+  hotel: Hotel;
 
+  constructor(@Inject('baseURL') private baseURL,
+  private hotelservice: HotelApi) {
 
-  constructor() {
-    this.rooms = [];
-    this.rooms.push(new Room());
-    this.rooms.push( {  "number": 1,
-    "description": 'oki',
-    "beds": 2,
-    "active": true,
-    "id": 'any',
-    "hotelId": 'any',
-    hotel: null});
    }
 
   ngOnInit() {
+    this.hotelservice.findOne({'where': {'name' : 'hotel1'}})
+    .subscribe((hotel: Hotel) => {
+      this.hotel = hotel;
+      this.hotelservice.getRooms(this.hotel.id)
+      .subscribe((result: Room[]) => {
+        this.rooms = result;
+      });
+    });
   }
 
 }

@@ -38,6 +38,7 @@ import { HotelApi } from './shared/sdk/services/custom/Hotel';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { HotelComponent } from './hotel/hotel.component';
 import { RoomsListComponent } from './rooms-list/rooms-list.component';
+import { RoomComponent } from './room/room.component';
 
 
 
@@ -52,7 +53,8 @@ import { RoomsListComponent } from './rooms-list/rooms-list.component';
     RentalservicesComponent,
     BranchesComponent,
     HotelComponent,
-    RoomsListComponent
+    RoomsListComponent,
+    RoomComponent
   ],
   imports: [
     BrowserModule,
