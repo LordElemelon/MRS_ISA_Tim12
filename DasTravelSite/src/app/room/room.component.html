@@ -1,0 +1,70 @@
+<div *ngIf="foundRoom">
+  <mat-toolbar color="primary">
+    <h3>Room {{room.number}}</h3>
+    <a mat-button (click) = "addPriceButton()"> Add a price</a>
+    <a mat-button (click) = "addDiscountButton()"> Add a discount </a>
+    <span class="flex-spacer"></span>
+  </mat-toolbar>
+  <div *ngIf="addPriceActive">
+    <div fxFlex>
+      <div>
+          <h3>Add a price for room</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="addPriceForm" #fformAddPrice="ngForm" (ngSubmit)="onAddPriceSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="price" placeholder="Price" type="number">
+
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+              <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+              <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+              <mat-datepicker #myDatepicker></mat-datepicker>
+
+              
+            </mat-form-field>
+        </p>         
+        <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+      </form>
+    </div>
+  </div>
+  <div *ngIf="addDiscountActive">
+    <div fxFlex>
+        <div>
+            <h3>Add a discount for room</h3>
+            <hr>
+        </div>
+      </div>
+  
+      <div fxFlex class="form-size">
+        <form novalidate [formGroup]="addDiscountForm" #fformAddDiscount="ngForm" (ngSubmit)="onAddDiscountSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="discount" placeholder="Discount" type="number">
+            </mat-form-field>
+          </p>
+          <p>
+              <mat-form-field class="half-width">
+                  <input matInput formControlName="startDate" [matDatepicker]="myDatepicker2" placeholder="Start time">
+                  <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+                  <mat-datepicker #myDatepicker2></mat-datepicker>
+                </mat-form-field>
+            </p>
+            <p>
+                <mat-form-field class="half-width">
+                    <input matInput formControlName="endDate" [matDatepicker]="myDatepicker3" placeholder="End time">
+                    <mat-datepicker-toggle [for]="myDatepicker3"></mat-datepicker-toggle>
+                    <mat-datepicker #myDatepicker3></mat-datepicker>
+                  </mat-form-field>
+              </p>  
+          <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+        </form>
+      </div>
+  </div>
+</div>
