@@ -4,6 +4,7 @@ import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi } from '../shared/sdk/services';
 import { Hotel } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HotelSpecialOfferApi } from '../shared/sdk/services/custom/HotelSpecialOffer';
 
 @Component({
   selector: 'app-hotels',
@@ -29,6 +30,9 @@ export class HotelsComponent implements OnInit {
   hotelsFound: Hotel[];
   @ViewChild('fformSearchHotels') searchHotelFormDirective;
 
+  addSpecialOfferForm: FormGroup;
+  @ViewChild('fformAddSpecialOffer') addSpecialOfferFormDirective;
+
   formErrors = {
     'name': '',
     'address': ''
@@ -48,13 +52,15 @@ export class HotelsComponent implements OnInit {
 
   constructor(@Inject('baseURL') private baseURL,
     private hotelservice: HotelApi,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private specialofferservice: HotelSpecialOfferApi
     ) {
 
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createForm();
       this.createSearchHotelForm();
+      this.createAddSpecialOfferForm();
    }
 
   ngOnInit() {
@@ -157,9 +163,26 @@ export class HotelsComponent implements OnInit {
       this.hotelservice.find()
       .subscribe((result: Hotel[]) =>{
         this.hotelsFound = result;
-      })
+      });
     }
+  }
 
+  createAddSpecialOfferForm() {
+    this.addSpecialOfferForm = this.fb.group({
+      'name': '',
+      'price': 0
+    });
+  }
+
+  onAddSpecialOfferSubmit(){
+    const specialOffer = this.addSpecialOfferForm.value;
+    this.specialofferservice.create({
+      'name': specialOffer.name,
+      'price' : specialOffer.price,
+      'hotelId' : this.foundHotels[0].id
+    }).subscribe(result => {
+      console.log(result);
+    });
   }
 
   addButton(){

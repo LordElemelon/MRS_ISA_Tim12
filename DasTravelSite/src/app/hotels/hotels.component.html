@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "addButton()"> Add</a>
-  <a mat-button (click) = "removeButton()"> Remove </a>
+  <a mat-button (click) = "removeButton()"> Add a special offer </a>
   <a mat-button (click) = "modifyButton()"> Search hotels </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
@@ -51,7 +51,33 @@
 </div>
 
 <div *ngIf = "removeActive">
-  This part of the site is still in development
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Add a special offer</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="addSpecialOfferForm" #fformAddSpecialOffer="ngForm" (ngSubmit)="onAddSpecialOfferSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="name" placeholder="Special Offer Name" type="text">
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="price" placeholder="Price" type="number">
+          </mat-form-field>
+        </p>         
+        <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+      </form>
+    </div>
+  </div>
 </div>
 
 <div *ngIf = "modifyActive" >
