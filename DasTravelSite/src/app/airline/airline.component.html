@@ -1,0 +1,49 @@
+<mat-toolbar color="primary">
+  <a mat-button (click) = "modifyButton()"> Update </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf = "modifyActive">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Modify your airline information</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+        <form novalidate [formGroup]="modifyAirlineForm" #fformModifyAirline="ngForm" (ngSubmit)="onModifyAirlineSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Airline Name" type="text">
+              <mat-error *ngIf="modifyAirlineFormErrors.name">
+                {{ modifyAirlineFormErrors.name }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="address" placeholder="Airline address" type="text">
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="full-width">
+              <textarea matInput formControlName="description" placeholder="Airline description" rows=10></textarea>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="destinations" placeholder="Airline destinations" type="text">
+            </mat-form-field>
+          </p>
+          <input hidden formControlName="id">
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="modifyAirlineForm.invalid">Submit</button>
+        </form>
+    </div>
+  </div>
+</div>

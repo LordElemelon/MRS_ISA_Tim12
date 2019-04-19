@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material'
+import {MatNativeDateModule} from '@angular/material';
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -37,6 +37,7 @@ import { BranchesComponent } from './branches/branches.component';
 import { HotelApi } from './shared/sdk/services/custom/Hotel';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { HotelComponent } from './hotel/hotel.component';
+import { AirlineComponent } from './airline/airline.component';
 import { RoomsListComponent } from './rooms-list/rooms-list.component';
 import { RoomComponent } from './room/room.component';
 
@@ -53,6 +54,7 @@ import { RoomComponent } from './room/room.component';
     RentalservicesComponent,
     BranchesComponent,
     HotelComponent,
+    AirlineComponent,
     RoomsListComponent,
     RoomComponent
   ],
