@@ -2,7 +2,8 @@
   <a mat-button (click) = "modifyButton()"> Change</a>
   <a mat-button (click) = "addRoomButton()"> Add a room</a>
   <a mat-button (click) = "removeRoomButton()"> Remove a room</a>
-  <a mat-button (click) = "modifyRoomButton()"> Modify a room </a>
+  <a mat-button (click) = "modifyRoomButton()"> Modify a room</a>
+  <a mat-button (click) = "addSpecialOfferButton()"> Add a special offer</a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
@@ -155,7 +156,7 @@
               <input matInput formControlName="beds" placeholder="Number of beds" type="number">
               <mat-error *ngIf="modifyRoomFormErrors.beds">
                   {{ modifyRoomFormErrors.beds }}
-                </mat-error>
+              </mat-error>
             </mat-form-field>
           </p>
           <p>
@@ -168,6 +169,42 @@
           <button type="submit" mat-button class="background-primary text-floral-white"
           [disabled]="modifyRoomForm.invalid">Submit</button>
         </form>
+    </div>
+  </div>
+</div>
+<div *ngIf="addSpecialOfferActive">
+  <div class="container"
+       fxLayout="column"
+       fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+        <h3>Add a special offer</h3>
+        <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="addSpecialOfferForm" #fformAddSpecialOffer="ngForm" (ngSubmit)="onAddSpecialOfferSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="name" placeholder="Special Offer Name" type="text">
+            <mat-error *ngIf="addSpecialOfferFormErrors.name">
+              {{ addSpecialOfferFormErrors.name }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="price" placeholder="Price" type="number">
+            <mat-error *ngIf="addSpecialOfferFormErrors.price">
+              {{ addSpecialOfferFormErrors.price }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+        [disabled]="addSpecialOfferForm.invalid">Submit</button>
+      </form>
     </div>
   </div>
 </div>
