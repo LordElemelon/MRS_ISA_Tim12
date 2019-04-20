@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoopBackConfig } from '../shared/sdk';
+import { LoopBackConfig, Flight } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { AirlineApi } from '../shared/sdk/services';
 import { Airline } from '../shared/sdk/models/Airline';
@@ -15,10 +15,12 @@ export class AirlineComponent implements OnInit {
   modifyActive = true;
 
   selectedAirline: Airline;
+  flightList: Flight[];
+  displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
 
   modifyAirlineForm: FormGroup;
-  toAddAirline: Airline;
-  @ViewChild('modifyform') modifyAirlineFormDirective;
+  @ViewChild('modifyAirlineForm') modifyAirlineFormDirective;
+  
 
   modifyAirlineFormErrors = {
     'name': ''
@@ -40,11 +42,20 @@ export class AirlineComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.airlineservice.findOne({'where': {'name' : 'airline1'}})
     .subscribe((airline: Airline) => {
       this.selectedAirline = airline;
       this.setValueModifyAirlineForm();
+
+      this.airlineservice.getFlights(this.selectedAirline.id)
+      .subscribe((flights: Flight[]) => {
+        this.flightList = flights;
+
+      });
+
     });
+    
   }
 
   onValueChangedModifyAirline(data?: any) {

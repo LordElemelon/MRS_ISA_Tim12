@@ -3,7 +3,9 @@
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
-<div *ngIf = "modifyActive">
+<div *ngIf = "modifyActive"
+  fxLayout="rows"
+  fxLayoutGap="80px">
   <div class="container"
     fxLayout="column"
     fxLayoutGap="10px">
@@ -44,6 +46,50 @@
           <button type="submit" mat-button class="background-primary text-floral-white"
           [disabled]="modifyAirlineForm.invalid">Submit</button>
         </form>
+    </div>
+  </div>
+
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="20px">
+
+    <div
+      class="column-title">
+      <h3>List of flights</h3>
+      <hr>
+    </div>
+
+    <div>
+      <table mat-table [dataSource]="flightList">
+
+        <ng-container matColumnDef="origin">
+          <th mat-header-cell *matHeaderCellDef> Origin </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.origin}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="destination">
+          <th mat-header-cell *matHeaderCellDef> Destination </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.destination}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="takeoffDate">
+          <th mat-header-cell *matHeaderCellDef> Takeoff </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.takeoffDate}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="landingDate">
+          <th mat-header-cell *matHeaderCellDef> Landing </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.landingDate}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Price </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.price}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>  
     </div>
   </div>
 </div>
