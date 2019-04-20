@@ -1,0 +1,47 @@
+{
+  "name": "CarPrice",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "indexes": {
+    "dateRentalIndex": {
+      "keys": {
+        "start": 1,
+        "rentalServiceId": -1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },  
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "start": {
+      "type": "date",
+      "required": true
+    },
+    "catAPrice": {
+      "type": "number",
+      "required": true
+    },
+    "catBPrice": {
+      "type": "number",
+      "required": true
+    },
+    "catCPrice": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "rentalService": {
+      "type": "belongsTo",
+      "model": "rentalService",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

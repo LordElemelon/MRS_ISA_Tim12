@@ -9,9 +9,9 @@
     "name": {
       "type": "string",
       "required": true,
-	  "index": {
-	    "unique": true
-	  }
+      "index": {
+        "unique": true
+      }
     },
     "address": {
       "type": "string",
@@ -32,6 +32,11 @@
     "cars": {
       "type": "hasMany",
       "model": "car",
+      "foreignKey": ""
+    },
+    "carPrices": {
+      "type": "hasMany",
+      "model": "CarPrice",
       "foreignKey": ""
     }
   },

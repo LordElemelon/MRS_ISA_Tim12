@@ -78,5 +78,9 @@
   "discountOffer": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "CarPrice": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
