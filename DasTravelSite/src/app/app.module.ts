@@ -40,6 +40,7 @@ import { HotelComponent } from './hotel/hotel.component';
 import { AirlineComponent } from './airline/airline.component';
 import { RoomsListComponent } from './rooms-list/rooms-list.component';
 import { RoomComponent } from './room/room.component';
+import { CarpricesComponent } from './carprices/carprices.component';
 
 
 
@@ -56,7 +57,8 @@ import { RoomComponent } from './room/room.component';
     HotelComponent,
     AirlineComponent,
     RoomsListComponent,
-    RoomComponent
+    RoomComponent,
+    CarpricesComponent
   ],
   imports: [
     BrowserModule,

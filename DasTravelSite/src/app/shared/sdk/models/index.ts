@@ -11,5 +11,6 @@ export * from './RoomPrice';
 export * from './HotelSpecialOffer';
 export * from './HotelDiscount';
 export * from './DiscountOffer';
+export * from './CarPrice';
 export * from './BaseModels';
 export * from './FireLoopRef';

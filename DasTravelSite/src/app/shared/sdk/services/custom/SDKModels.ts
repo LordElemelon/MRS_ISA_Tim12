@@ -12,6 +12,7 @@ import { RoomPrice } from '../../models/RoomPrice';
 import { HotelSpecialOffer } from '../../models/HotelSpecialOffer';
 import { HotelDiscount } from '../../models/HotelDiscount';
 import { DiscountOffer } from '../../models/DiscountOffer';
+import { CarPrice } from '../../models/CarPrice';
 
 export interface Models { [name: string]: any }
 
@@ -31,6 +32,7 @@ export class SDKModels {
     HotelSpecialOffer: HotelSpecialOffer,
     HotelDiscount: HotelDiscount,
     DiscountOffer: DiscountOffer,
+    CarPrice: CarPrice,
     
   };
 
