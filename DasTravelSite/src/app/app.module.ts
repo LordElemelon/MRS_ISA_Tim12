@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material';
+import {MatNativeDateModule, MatTableModule} from '@angular/material';
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -80,7 +80,8 @@ import { RoomComponent } from './room/room.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    SDKBrowserModule.forRoot()
+    SDKBrowserModule.forRoot(),
+    MatTableModule
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}
