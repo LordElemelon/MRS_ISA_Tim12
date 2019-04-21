@@ -326,10 +326,10 @@ export class CarsComponent implements OnInit {
 
   searchFormValidationMessages = {
     'startDate': {
-      'required': 'Service name is required'
+      'required': 'Start date is required'
     },
     'endDate': {
-      'required': 'Registration is required'
+      'required': 'End date is required'
     },
     'make': {
       'required': 'Make is required'
@@ -385,6 +385,9 @@ export class CarsComponent implements OnInit {
     .subscribe(
       (result) => {
         this.foundCars = result as Car[];
+        if (this.foundCars.length == 0) {
+          this.openSnackBar("No cars match search parameters", "Dismiss");
+        }
       },
       (err) => {
 

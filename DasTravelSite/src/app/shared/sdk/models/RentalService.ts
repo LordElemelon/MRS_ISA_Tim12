@@ -1,7 +1,8 @@
 /* tslint:disable */
 import {
   Branch,
-  Car
+  Car,
+  CarPrice
 } from '../index';
 
 declare var Object: any;
@@ -12,6 +13,7 @@ export interface RentalServiceInterface {
   "id"?: any;
   branches?: Branch[];
   cars?: Car[];
+  carPrices?: CarPrice[];
 }
 
 export class RentalService implements RentalServiceInterface {
@@ -21,6 +23,7 @@ export class RentalService implements RentalServiceInterface {
   "id": any;
   branches: Branch[];
   cars: Car[];
+  carPrices: CarPrice[];
   constructor(data?: RentalServiceInterface) {
     Object.assign(this, data);
   }
@@ -84,6 +87,14 @@ export class RentalService implements RentalServiceInterface {
           name: 'cars',
           type: 'Car[]',
           model: 'Car',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'rentalServiceId'
+        },
+        carPrices: {
+          name: 'carPrices',
+          type: 'CarPrice[]',
+          model: 'CarPrice',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'rentalServiceId'

@@ -1,0 +1,56 @@
+<mat-toolbar color="primary">
+  <a mat-button (click)="setToAdd()"> Add</a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf="isAdd">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+      <form novalidate [formGroup]="addForm" #addform="ngForm" (ngSubmit)="onAddSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
+            <mat-error *ngIf="addFormErrors.serviceName">
+              {{ addFormErrors.serviceName }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="start" [matDatepicker]="myDatepicker" placeholder="Start time">
+            <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+            <mat-error *ngIf="addFormErrors.start">
+              {{ addFormErrors.start }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="priceA" placeholder="A category price" pattern="[0-9]*" type="text">
+            <mat-error *ngIf="addFormErrors.priceA">
+              {{ addFormErrors.priceA }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="priceB" placeholder="B category price" pattern="[0-9]*" type="text">
+            <mat-error *ngIf="addFormErrors.priceB">
+              {{ addFormErrors.priceB }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="priceC" placeholder="C category price" pattern="[0-9]*" type="text">
+              <mat-error *ngIf="addFormErrors.priceC">
+                {{ addFormErrors.priceC }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="addForm.invalid">
+            Submit
+          </button>
+      </form>
+  </div>
+</div>
