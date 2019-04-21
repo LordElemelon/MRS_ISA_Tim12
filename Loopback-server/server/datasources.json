@@ -12,5 +12,21 @@
     "name": "MongoDB",
     "user": "",
     "connector": "mongodb"
+  },
+  "emailDataSource": {
+    "name": "emailDataSource",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.gmail.com",
+        "secure": true,
+        "port": 465,
+        "auth": {
+          "user": "DasTravelSite@gmail.com",
+          "pass": "password123#"
+        }
+      }
+    ]
   }
 }
