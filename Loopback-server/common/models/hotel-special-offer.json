@@ -2,6 +2,17 @@
   "name": "hotelSpecialOffer",
   "base": "PersistedModel",
   "idInjection": true,
+  "indexes": {
+    "nameHotelIndex": {
+      "keys": {
+        "name": 1,
+        "hotelId": -1
+      },
+      "options": {
+        "unique": true
+      }
+    }
+  },
   "options": {
     "validateUpsert": true
   },

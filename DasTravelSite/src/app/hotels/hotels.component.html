@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "addButton()"> Add</a>
-  <a mat-button (click) = "removeButton()"> Remove </a>
+  <a mat-button (click) = "removeButton()"> Remove a hotel </a>
   <a mat-button (click) = "modifyButton()"> Search hotels </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
@@ -51,7 +51,7 @@
 </div>
 
 <div *ngIf = "removeActive">
-  This part of the site is still in development
+
 </div>
 
 <div *ngIf = "modifyActive" >

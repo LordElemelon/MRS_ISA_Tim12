@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import { LoopBackConfig } from '../shared/sdk';
+import {HotelSpecialOfferApi, LoopBackConfig} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi, RoomApi } from '../shared/sdk/services';
 import { Hotel, Room } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-hotel',
@@ -16,6 +17,7 @@ export class HotelComponent implements OnInit {
   addRoomActive = false;
   removeRoomActive = false;
   modifyRoomActive = false;
+  addSpecialOfferActive = false;
 
   // form related objects
   modifyHotelForm: FormGroup;
@@ -37,6 +39,9 @@ export class HotelComponent implements OnInit {
   modifyRoomForm: FormGroup;
   modifiedRoom: Room;
   @ViewChild('fformModifyRoom') modifyRoomFormDirective;
+
+  addSpecialOfferForm: FormGroup;
+  @ViewChild('fformAddSpecialOffer') addSpecialOfferFormDirective;
 
   modifyHotelFormErrors = {
     'name': '',
@@ -63,8 +68,8 @@ export class HotelComponent implements OnInit {
       'min': 'Number of room must be higher than 0'
     },
     'beds': {
-      'required': 'Number of room is required',
-      'min': 'Number of room must be higher than 0'
+      'required': 'Number of beds is required',
+      'min': 'Number of beds must be higher than 0'
     }
   };
 
@@ -101,14 +106,31 @@ export class HotelComponent implements OnInit {
       'min': 'Number of room must be higher than 0'
     },
     'beds': {
-      'required': 'Number of room is required',
-      'min': 'Number of room must be higher than 0'
+      'required': 'Number of beds is required',
+      'min': 'Number of beds must be higher than 0'
+    }
+  };
+
+  addSpecialOfferFormErrors = {
+    'name': '',
+    'price': ''
+  };
+
+  addSpecialOfferFormValidationMessages = {
+    'name': {
+      'required': 'Name is required'
+    },
+    'price': {
+      'required': 'Price is required',
+      'min': 'Price must be higher than 0'
     }
   };
 
   constructor(@Inject('baseURL') private baseURL,
     private hotelservice: HotelApi,
     private roomservice: RoomApi,
+    private specialofferservice: HotelSpecialOfferApi,
+    public snackBar: MatSnackBar,
     private fb: FormBuilder
     ) {
       LoopBackConfig.setBaseURL(baseURL);
@@ -118,6 +140,7 @@ export class HotelComponent implements OnInit {
       this.createRemoveRoomForm();
       this.createGetRoomForm();
       this.createModifyRoomForm();
+      this.createAddSpecialOfferForm()
    }
 
   ngOnInit() {
@@ -125,6 +148,12 @@ export class HotelComponent implements OnInit {
     .subscribe((hotel: Hotel) => {
       this.modifiedHotel = hotel;
       this.setValueModifyHotelForm();
+    });
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
     });
   }
 
@@ -172,7 +201,11 @@ export class HotelComponent implements OnInit {
   onModifyHotelSubmit() {
     this.modifiedHotel = this.modifyHotelForm.value;
     this.hotelservice.updateAttributes(this.modifiedHotel.id, this.modifiedHotel)
-    .subscribe(result => {});
+    .subscribe(result => {
+      this.openSnackBar('Modified hotel succesfully', 'Dismiss');
+    }, err => {
+      this.openSnackBar('Can not modify the hotel. Check if the new name is already taken', 'Dismiss');
+    });
   }
 
   onValueChangedAddRoom(data?: any) {
@@ -209,7 +242,11 @@ export class HotelComponent implements OnInit {
   onAddRoomSubmit() {
     this.newRoom = this.addRoomForm.value;
     this.hotelservice.createRooms(this.modifiedHotel.id, this.newRoom)
-    .subscribe(result => {});
+    .subscribe(result => {
+      this.openSnackBar('Added a room succesfully', 'Dismiss');
+    }, err => {
+      this.openSnackBar('Can not add that room. Check if the room number is already taken.', 'Dismiss');
+    });
   }
 
   onValueChangedRemoveRoom(data?: any) {
@@ -244,9 +281,18 @@ export class HotelComponent implements OnInit {
     this.toRemoveRoomNumber = this.removeRoomForm.value.number;
     this.hotelservice.getRooms(this.modifiedHotel.id, {where : {number: this.toRemoveRoomNumber}})
     .subscribe(result => {
-      console.log(result);
-      this.hotelservice.destroyByIdRooms(this.modifiedHotel.id, result[0].id)
-      .subscribe(result => {console.log(result);});
+      if (result.length !== 0)  {
+        this.hotelservice.destroyByIdRooms(this.modifiedHotel.id, result[0].id)
+          .subscribe(result1 => {
+            this.openSnackBar('Removed succesfully', 'Dismiss');
+          }, err => {
+            this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
+          });
+      } else  {
+        this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
+      }
+    }, err => {
+      this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
     });
   }
 
@@ -290,14 +336,14 @@ export class HotelComponent implements OnInit {
   onValueChangedModifyRoom(data?: any) {
     if (!this.modifyRoomForm) {return; }
     const form = this.modifyRoomForm;
-    for (const field in this.modifyRoomFormErrors){
-      if (this.modifyRoomFormErrors.hasOwnProperty(field)){
+    for (const field in this.modifyRoomFormErrors)  {
+      if (this.modifyRoomFormErrors.hasOwnProperty(field))  {
         this.modifyRoomFormErrors[field] = '';
         const control = form.get(field);
         if (control && !control.valid) {
           const messages = this.modifyRoomFormValidationMessages[field];
-          for (const key in control.errors){
-            if (control.errors.hasOwnProperty(key)){
+          for (const key in control.errors)  {
+            if (control.errors.hasOwnProperty(key))  {
               this.modifyRoomFormErrors[field] += messages[key] + ' ';
             }
           }
@@ -331,38 +377,94 @@ export class HotelComponent implements OnInit {
 
   onModifyRoomSubmit() {
     this.modifiedRoom = this.modifyRoomForm.value;
-    console.log(this.modifiedRoom);
     this.roomservice.updateAttributes(this.modifiedRoom.id, this.modifiedRoom)
     .subscribe(result => {
-      console.log(result);
-    })
+      this.openSnackBar('Modified room succesfully', 'Dismiss');
+    }, err => {
+      this.openSnackBar('Can not modify the room. Check if the new room number is taken', 'Dismiss');
+    });
   }
 
-  modifyButton(){
+  onValueChangedAddSpecialOffer(data?: any) {
+    if (!this.addSpecialOfferForm) {return; }
+    const form = this.addSpecialOfferForm;
+    //  const errors = this.addSpecialOfferFormErrors;
+    for (const field in this.addSpecialOfferFormErrors)  {
+      if (this.addSpecialOfferFormErrors.hasOwnProperty(field))  {
+        this.addSpecialOfferFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.addSpecialOfferFormValidationMessages[field];
+          for (const key in control.errors)  {
+            if (control.errors.hasOwnProperty(key))  {
+              this.addSpecialOfferFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createAddSpecialOfferForm() {
+    this.addSpecialOfferForm = this.fb.group({
+      'name': ['', [Validators.required]],
+      'price': [0, [Validators.required, Validators.min(1)]]
+    });
+    this.addSpecialOfferForm.valueChanges
+      .subscribe(data => this.onValueChangedAddSpecialOffer(data));
+    this.onValueChangedAddSpecialOffer();
+  }
+
+  onAddSpecialOfferSubmit()  {
+    const specialOffer = this.addSpecialOfferForm.value;
+    this.specialofferservice.create({
+      'name': specialOffer.name,
+      'price' : specialOffer.price,
+      'hotelId' : this.modifiedHotel.id
+    }).subscribe(result => {
+      this.openSnackBar('Created a special offer succesfully', 'Dismiss');;
+    }, err => {
+      this.openSnackBar('Can not add this special offer. Check if an offer with that name already exists', 'Dismiss');
+    });
+  }
+
+  modifyButton() {
     this.modifyActive = true;
     this.addRoomActive = false;
     this.removeRoomActive = false;
     this.modifyRoomActive = false;
+    this.addSpecialOfferActive = false;
   }
 
-  addRoomButton(){
+  addRoomButton() {
     this.modifyActive = false;
     this.addRoomActive = true;
     this.removeRoomActive = false;
     this.modifyRoomActive = false;
+    this.addSpecialOfferActive = false;
   }
 
-  removeRoomButton(){
+  removeRoomButton() {
     this.modifyActive = false;
     this.addRoomActive = false;
     this.removeRoomActive = true;
     this.modifyRoomActive = false;
+    this.addSpecialOfferActive = false;
   }
 
-  modifyRoomButton(){
+  modifyRoomButton() {
     this.modifyActive = false;
     this.addRoomActive = false;
     this.removeRoomActive = false;
     this.modifyRoomActive = true;
+    this.addSpecialOfferActive = false;
+  }
+
+  addSpecialOfferButton() {
+    this.modifyActive = false;
+    this.addRoomActive = false;
+    this.removeRoomActive = false;
+    this.modifyRoomActive = false;
+    this.addSpecialOfferActive = true;
   }
 }

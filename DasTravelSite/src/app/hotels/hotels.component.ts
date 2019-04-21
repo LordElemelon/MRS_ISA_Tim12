@@ -4,6 +4,7 @@ import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi } from '../shared/sdk/services';
 import { Hotel } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-hotels',
@@ -41,14 +42,15 @@ export class HotelsComponent implements OnInit {
     'address': {
       'required' : 'Hotel address is required'
     }
-  }
+  };
 
-  searchHotelFormErrors = {}
-  searchHotelFormValidationMessages = {}
+  searchHotelFormErrors = {};
+  searchHotelFormValidationMessages = {};
 
   constructor(@Inject('baseURL') private baseURL,
     private hotelservice: HotelApi,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public snackBar: MatSnackBar
     ) {
 
       LoopBackConfig.setBaseURL(baseURL);
@@ -61,17 +63,23 @@ export class HotelsComponent implements OnInit {
     this.hotelservice.find().subscribe((hotels: Hotel[]) => this.foundHotels = hotels);
   }
 
-  onValueChanged(data?:any){
-    if (!this.hotelForm) {return;}
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
+  }
+
+  onValueChanged(data?: any)  {
+    if (!this.hotelForm) {return; }
     const form = this.hotelForm;
-    for (const field in this.formErrors){
-      if (this.formErrors.hasOwnProperty(field)){
+    for (const field in this.formErrors)  {
+      if (this.formErrors.hasOwnProperty(field))  {
         this.formErrors[field] = '';
         const control = form.get(field);
         if (control && !control.valid) {
           const messages = this.validationMessages[field];
-          for (const key in control.errors){
-            if (control.errors.hasOwnProperty(key)){
+          for (const key in control.errors)  {
+            if (control.errors.hasOwnProperty(key))  {
               this.formErrors[field] += messages[key] + ' ';
             }
           }
@@ -95,31 +103,32 @@ export class HotelsComponent implements OnInit {
   onSubmit() {
     this.newHotel = this.hotelForm.value;
     this.hotelservice.create(this.newHotel)
-    .subscribe(result =>{
+    .subscribe(result =>  {
       this.hotelForm.reset({
         name: '',
         address: '',
         description: '',
       });
       this.hotelFormDirective.resetForm();
-      this.added = true;
-      setTimeout(() =>{ this.added = false; }, 3000);
+      this.openSnackBar('Added a hotel succesfully', 'Dismiss');
+    }, err =>  {
+      this.openSnackBar('Can not add this hotel. Check if the name is already taken', 'Dismiss');
     });
 
   }
 
 
-  onValueChangedSearchHotels(data?:any){
-    if (!this.searchHotelForm) {return;}
+  onValueChangedSearchHotels(data?: any)  {
+    if (!this.searchHotelForm) {return; }
     const form = this.searchHotelForm;
-    for (const field in this.searchHotelFormErrors){
-      if (this.searchHotelFormErrors.hasOwnProperty(field)){
+    for (const field in this.searchHotelFormErrors)  {
+      if (this.searchHotelFormErrors.hasOwnProperty(field))  {
         this.searchHotelFormErrors[field] = '';
         const control = form.get(field);
         if (control && !control.valid) {
           const messages = this.searchHotelFormValidationMessages[field];
-          for (const key in control.errors){
-            if (control.errors.hasOwnProperty(key)){
+          for (const key in control.errors)  {
+            if (control.errors.hasOwnProperty(key))  {
               this.searchHotelFormErrors[field] += messages[key] + ' ';
             }
           }
@@ -148,33 +157,36 @@ export class HotelsComponent implements OnInit {
     if (this.searchHotelParameters.address != '' && this.searchHotelParameters.address != undefined){
       this.params['address'] = this.searchHotelParameters.address;
     }
-    if (this.params !== {}){
+    if (this.params !== {})  {
       this.hotelservice.find({where : this.params})
-      .subscribe((result: Hotel[]) =>{
+      .subscribe((result: Hotel[]) =>  {
         this.hotelsFound = result;
+      }, err => {
+        this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
       });
     } else{
       this.hotelservice.find()
-      .subscribe((result: Hotel[]) =>{
+      .subscribe((result: Hotel[]) =>  {
         this.hotelsFound = result;
-      })
+      }, err => {
+        this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
+      });
     }
-
   }
 
-  addButton(){
+  addButton()  {
     this.addActive = true;
     this.removeActive = false;
     this.modifyActive = false;
   }
 
-  removeButton(){
+  removeButton()  {
     this.addActive = false;
     this.removeActive = true;
     this.modifyActive = false;
   }
 
-  modifyButton(){
+  modifyButton()  {
     this.addActive = false;
     this.removeActive = false;
     this.modifyActive = true;

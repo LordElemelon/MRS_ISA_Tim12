@@ -1,0 +1,152 @@
+<div *ngIf="foundRoom">
+  <mat-toolbar color="primary">
+    <h3>Room {{room.number}}</h3>
+    <a mat-button (click) = "addPriceButton()"> Add a price</a>
+    <a mat-button (click) = "addDiscountButton()"> Add a discount </a>
+    <span class="flex-spacer"></span>
+  </mat-toolbar>
+  <div *ngIf="addPriceActive">
+    <div fxLayout="column">
+      <div fxFlex>
+        <div>
+            <h3>Add a price for room</h3>
+            <hr>
+        </div>
+      </div>
+      <div fxLayout="row">
+        <div fxFlex class="form-size">
+          <form novalidate [formGroup]="addPriceForm" #fformAddPrice="ngForm" (ngSubmit)="onAddPriceSubmit()">
+            <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="price" placeholder="Price" type="number">
+                <mat-error *ngIf="addPriceFormErrors.price">
+                  {{ addPriceFormErrors.price}}
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+                <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+                <mat-datepicker #myDatepicker></mat-datepicker>
+                <mat-error *ngIf="addPriceFormErrors.startDate">
+                  {{ addPriceFormErrors.startDate}}
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <button type="submit" mat-button class="background-primary text-floral-white"
+                      [disabled]="addPriceForm.invalid">Submit</button>
+            </p>
+          </form>
+        </div>
+        <div fxFlex>
+          <table #tableprices mat-table [dataSource]="room.roomPrices">
+            <ng-container matColumnDef="startDate">
+              <th mat-header-cell *matHeaderCellDef>Start Date</th>
+              <td mat-cell *matCellDef="let roomPrice">{{roomPrice.startDate | date:'dd/MM/yyyy'}}</td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef>Price</th>
+              <td mat-cell *matCellDef="let roomPrice">{{roomPrice.price}}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let roomPrice">Delete</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplayPrice"></tr>
+            <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayPrice"></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="addDiscountActive">
+    <div fxLayout="column">
+      <div fxFlex>
+          <div>
+              <h3>Add a discount for room</h3>
+              <hr>
+          </div>
+        </div>
+        <div fxLayout="row">
+          <div fxFlex class="form-size">
+            <form novalidate [formGroup]="addDiscountForm" #fformAddDiscount="ngForm" (ngSubmit)="onAddDiscountSubmit()">
+              <div fxLayout="row">
+                <div fxFlex>
+                  <p>
+                    <mat-form-field class="half-width">
+                      <input matInput formControlName="discount" placeholder="Discount" type="number">
+                      <mat-error *ngIf="addDiscountFormErrors.discount">
+                        {{ addDiscountFormErrors.discount}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field class="half-width">
+                      <input matInput formControlName="startDate" [matDatepicker]="myDatepicker2" placeholder="Start time">
+                      <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+                      <mat-datepicker #myDatepicker2></mat-datepicker>
+                      <mat-error *ngIf="addDiscountFormErrors.startDate">
+                        {{ addDiscountFormErrors.startDate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <p>
+                    <mat-form-field class="half-width">
+                      <input matInput formControlName="endDate" [matDatepicker]="myDatepicker3" placeholder="End time">
+                      <mat-datepicker-toggle [for]="myDatepicker3"></mat-datepicker-toggle>
+                      <mat-datepicker #myDatepicker3></mat-datepicker>
+                      <mat-error *ngIf="addDiscountFormErrors.endDate">
+                        {{ addDiscountFormErrors.endDate}}
+                      </mat-error>
+                    </mat-form-field>
+                  </p>
+                  <button type="submit" mat-button class="background-primary text-floral-white"
+                  [disabled]="addDiscountForm.invalid">Submit</button>
+                </div>
+                <div fxFlex>
+                  <table mat-table [dataSource]="hotel.hotelSpecialOffers">
+                    <ng-container matColumnDef="name">
+                      <th mat-header-cell *matHeaderCellDef>Name</th>
+                      <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}}</td>
+                    </ng-container>
+                    <ng-container matColumnDef="price">
+                      <th mat-header-cell *matHeaderCellDef>Price</th>
+                      <td mat-cell *matCellDef="let specialOffer">{{specialOffer.price}}</td>
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffer"></tr>
+                    <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffer"
+                        (click)="toggleRow(specialOffer.id)" class="pointer"
+                        [ngClass]="{selectedRow: selectedOffers.indexOf(specialOffer.id)>=0}"></tr>
+                  </table>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div fxFlex>
+            <table #tablediscounts mat-table [dataSource]="room.hotelDiscounts">
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                <td mat-cell *matCellDef="let hotelDiscount">{{hotelDiscount.startDate | date:'dd/MM/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="endDate">
+                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                <td mat-cell *matCellDef="let hotelDiscount">{{hotelDiscount.endDate | date:'dd/MM/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="discount">
+                <th mat-header-cell *matHeaderCellDef>Discount</th>
+                <td mat-cell *matCellDef="let hotelDiscount">{{hotelDiscount.discount}}</td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let hotelDiscount">Delete</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplayDiscount"></tr>
+              <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayDiscount"></tr>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
