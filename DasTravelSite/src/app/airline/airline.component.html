@@ -42,7 +42,6 @@
               <input matInput formControlName="destinations" placeholder="Airline destinations" type="text">
             </mat-form-field>
           </p>
-          <input hidden formControlName="id">
           <button type="submit" mat-button class="background-primary text-floral-white"
           [disabled]="modifyAirlineForm.invalid">Submit</button>
         </form>
@@ -60,7 +59,8 @@
     </div>
 
     <div>
-      <table mat-table [dataSource]="flightList">
+      <table mat-table [dataSource]="flightList"
+        class="flightTable">
 
         <ng-container matColumnDef="origin">
           <th mat-header-cell *matHeaderCellDef> Origin </th>
@@ -88,7 +88,7 @@
         </ng-container>
       
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="setClickedRow(row)" [class.active]="row == selectedFlight"></tr>
       </table>  
     </div>
   </div>

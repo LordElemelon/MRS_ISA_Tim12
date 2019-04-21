@@ -5,3 +5,8 @@
 .flightTableCell {
     padding: 15px;
 }
+
+.flightTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}

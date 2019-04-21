@@ -13,8 +13,14 @@ import { Airline } from '../shared/sdk/models/Airline';
 export class AirlineComponent implements OnInit {
 
   modifyActive = true;
+  addFlightActive = false;
+  alterFlightsActive = false;
+  modifyFlightActive = false;
+  
+  setClickedRow : Function;
 
   selectedAirline: Airline;
+  selectedFlight: Flight;
   flightList: Flight[];
   displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
 
@@ -39,6 +45,9 @@ export class AirlineComponent implements OnInit {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.createModifyAirlineForm();
+    this.setClickedRow = function(index){
+      this.selectedFlight = index;
+    }
   }
 
   ngOnInit() {
@@ -82,8 +91,7 @@ export class AirlineComponent implements OnInit {
       'name': ['', Validators.required],
       'address': '',
       'description': '',
-      'destinations' : '',
-      'id' : ''
+      'destinations' : ''
     });
 
     this.modifyAirlineForm.valueChanges
@@ -96,8 +104,7 @@ export class AirlineComponent implements OnInit {
       'name': this.selectedAirline.name,
       'address' : this.selectedAirline.address,
       'description' : this.selectedAirline.description,
-      'destinations' : this.selectedAirline.destinations,
-      'id' : this.selectedAirline.id
+      'destinations' : this.selectedAirline.destinations
     });
   }
 
