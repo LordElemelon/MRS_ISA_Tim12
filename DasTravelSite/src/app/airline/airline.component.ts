@@ -13,19 +13,23 @@ import { Airline } from '../shared/sdk/models/Airline';
 export class AirlineComponent implements OnInit {
 
   modifyActive = true;
-  addFlightActive = false;
-  alterFlightsActive = false;
+  flightsActive = false;
   modifyFlightActive = false;
+  homeActive = false;
   
   setClickedRow : Function;
 
   selectedAirline: Airline;
-  selectedFlight: Flight;
+  selectedFlight: Flight = null;
+  newFlight: Flight;
   flightList: Flight[];
   displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
 
   modifyAirlineForm: FormGroup;
   @ViewChild('modifyAirlineForm') modifyAirlineFormDirective;
+
+  addFlightForm: FormGroup;
+  @ViewChild('fformAddFlight') addFlightFormDirective;
   
 
   modifyAirlineFormErrors = {
@@ -38,6 +42,33 @@ export class AirlineComponent implements OnInit {
     }
   };
 
+  addFlightFormErrors = {
+    'origin': '',
+    'destination': '',
+    'takeoffDate': '',
+    'landingDate': '',
+    'price': ''
+  };
+
+  addFlightFormValidationMessages = {
+    'origin': {
+      'required': 'Origin of flight is required'
+    },
+    'destination': {
+      'required': 'Destination of flight is required'
+    },
+    'takeoffDate': {
+      'required': 'Takeoff time of flight is required'
+    },
+    'landingDate': {
+      'required': 'Landing time of flight is required'
+    },
+    'price': {
+      'required': 'Price of flight is required',
+      'min': 'Price of flight must be higher than 0'
+    }
+  };
+
   constructor(@Inject('baseURL') private baseURL,
     private airlineservice: AirlineApi,
     private fb: FormBuilder
@@ -45,9 +76,17 @@ export class AirlineComponent implements OnInit {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.createModifyAirlineForm();
+    this.createAddFlightForm();
     this.setClickedRow = function(index){
       this.selectedFlight = index;
     }
+  }
+
+  refreshFlights() {
+    this.airlineservice.getFlights(this.selectedAirline.id)
+    .subscribe((flights: Flight[]) => {
+      this.flightList = flights;
+    });
   }
 
   ngOnInit() {
@@ -57,12 +96,7 @@ export class AirlineComponent implements OnInit {
       this.selectedAirline = airline;
       this.setValueModifyAirlineForm();
 
-      this.airlineservice.getFlights(this.selectedAirline.id)
-      .subscribe((flights: Flight[]) => {
-        this.flightList = flights;
-
-      });
-
+      this.refreshFlights();
     });
     
   }
@@ -111,7 +145,91 @@ export class AirlineComponent implements OnInit {
   onModifyAirlineSubmit() {
     this.selectedAirline = this.modifyAirlineForm.value;
     this.airlineservice.updateAttributes(this.selectedAirline.id, this.selectedAirline)
-    .subscribe(result => {});
+    .subscribe(result => {
+      this.refreshFlights();
+    });
+  }
+
+  onValueChangedAddFlight(data?: any) {
+    if (!this.addFlightForm) {return; }
+    const form = this.addFlightForm;
+    for (const field in this.addFlightFormErrors){
+      if (this.addFlightFormErrors.hasOwnProperty(field)){
+        this.addFlightFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.addFlightFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.addFlightFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createAddFlightForm() {
+    this.addFlightForm = this.fb.group({
+      'origin': ['', Validators.required],
+      'destination': ['', Validators.required],
+      'takeoffDate': ['', Validators.required],
+      'landingDate': ['', Validators.required],
+      'duration': 0,
+      'length': 0,
+      'layover': '',
+      'price': [0, [Validators.required, Validators.min(1)]]
+    });
+    this.addFlightForm.valueChanges
+    .subscribe(data => this.onValueChangedAddFlight(data));
+    this.onValueChangedAddFlight();
+  }
+
+  onAddFlightSubmit() {
+    this.newFlight = this.addFlightForm.value;
+    this.airlineservice.createFlights(this.selectedAirline.id, this.newFlight)
+    .subscribe(result => {
+      this.refreshValues();
+    });
+  }
+
+
+
+  modifyButton(){
+    this.modifyActive = true;
+    this.flightsActive = false;
+    this.modifyFlightActive = false;
+    this.homeActive = false;
+  }
+
+  flightsButton(){
+    this.modifyActive = false;
+    this.flightsActive = true;
+    this.modifyFlightActive = false;
+    this.homeActive = false;
+    this.refreshValues();
+  }
+
+  modifyFlightButton(){
+    this.modifyActive = false;
+    this.flightsActive = true;
+    this.modifyFlightActive = true;
+    this.homeActive = false;
+  }
+
+  cancelModifyFlightButton(){
+    this.modifyActive = false;
+    this.flightsActive = true;
+    this.modifyFlightActive = false;
+    this.homeActive = false;
+    this.selectedFlight = null;
+  }
+
+  homeButton(){
+    this.modifyActive = false;
+    this.flightsActive = false;
+    this.modifyFlightActive = false;
+    this.homeActive = true;
   }
 
 }

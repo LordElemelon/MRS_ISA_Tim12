@@ -1,5 +1,6 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "modifyButton()"> Update </a>
+  <a mat-button (click) = "flightsButton()"> Flights </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
@@ -58,6 +59,94 @@
       <hr>
     </div>
 
+    
+  </div>
+</div>
+
+<div *ngIf = "flightsActive"
+  fxLayout="rows"
+  fxLayoutGap="80px">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Add a flight to your airline</h3>
+          <hr>
+      </div>
+    </div>
+    <div fxFlex class="form-size">
+      <form novalidate [formGroup]="addFlightForm" #fformAddFlight="ngForm" (ngSubmit)="onAddFlightSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="origin" placeholder="Flight origin" type="text">
+            <mat-error *ngIf="addFlightFormErrors.origin">
+              {{ addFlightFormErrors.origin }}
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="destination" placeholder="Flight destination" type="text">
+            <mat-error *ngIf="addFlightFormErrors.destination">
+              {{ addFlightFormErrors.destination }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="takeoffDate" [matDatepicker]="takeoffDatepicker" placeholder="Takeoff time">
+            <mat-datepicker-toggle [for]="takeoffDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #takeoffDatepicker></mat-datepicker>
+            <mat-error *ngIf="addFlightFormErrors.takeoffDate">
+              {{ addFlightFormErrors.takeoffDate }}
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="landingDate" [matDatepicker]="landingDatepicker" placeholder="Landing time">
+            <mat-datepicker-toggle [for]="landingDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #landingDatepicker></mat-datepicker>
+            <mat-error *ngIf="addFlightFormErrors.landingDate">
+              {{ addFlightFormErrors.landingDate }}
+            </mat-error>
+          </mat-form-field>
+        </p> 
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="duration" placeholder="Flight duration" type="number">
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="length" placeholder="Flight length" type="number">
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="layover" placeholder="Flight layover" type="text">
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="price" placeholder="Flight price" type="number">
+            <mat-error *ngIf="addFlightFormErrors.price">
+              {{ addFlightFormErrors.price }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+        [disabled]="addFlightForm.invalid">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="20px">
+
+    <div
+      class="column-title">
+      <h3>List of flights</h3>
+      <hr>
+    </div>
+
     <div>
       <table mat-table [dataSource]="flightList"
         class="flightTable">
@@ -91,5 +180,8 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="setClickedRow(row)" [class.active]="row == selectedFlight"></tr>
       </table>  
     </div>
+
+
+
   </div>
 </div>
