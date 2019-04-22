@@ -11,6 +11,7 @@ export interface RentalServiceInterface {
   "address": string;
   "description": string;
   "id"?: any;
+  "myuserId"?: any;
   branches?: Branch[];
   cars?: Car[];
   carPrices?: CarPrice[];
@@ -21,6 +22,7 @@ export class RentalService implements RentalServiceInterface {
   "address": string;
   "description": string;
   "id": any;
+  "myuserId": any;
   branches: Branch[];
   cars: Car[];
   carPrices: CarPrice[];
@@ -71,6 +73,10 @@ export class RentalService implements RentalServiceInterface {
         },
         "id": {
           name: 'id',
+          type: 'any'
+        },
+        "myuserId": {
+          name: 'myuserId',
           type: 'any'
         },
       },
