@@ -14,25 +14,25 @@
     ]
   },
   "User": {
-    "dataSource": "db"
+    "dataSource": "MongoDB"
   },
   "AccessToken": {
-    "dataSource": "db",
+    "dataSource": "MongoDB",
     "public": false
   },
   "ACL": {
-    "dataSource": "db",
+    "dataSource": "MongoDB",
     "public": false
   },
   "RoleMapping": {
-    "dataSource": "db",
+    "dataSource": "MongoDB",
     "public": false,
     "options": {
       "strictObjectIDCoercion": true
     }
   },
   "Role": {
-    "dataSource": "db",
+    "dataSource": "MongoDB",
     "public": false
   },
   "hotel": {
@@ -80,6 +80,13 @@
     "public": true
   },
   "CarPrice": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "Email": {
+    "dataSource": "myemailsource"
+  },
+  "myuser": {
     "dataSource": "MongoDB",
     "public": true
   }
