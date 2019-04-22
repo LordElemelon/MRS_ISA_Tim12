@@ -184,27 +184,43 @@
       </div>
     </div>
 
-    <div fxFlex class="form-size">
-      <form novalidate [formGroup]="addSpecialOfferForm" #fformAddSpecialOffer="ngForm" (ngSubmit)="onAddSpecialOfferSubmit()">
-        <p>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="name" placeholder="Special Offer Name" type="text">
-            <mat-error *ngIf="addSpecialOfferFormErrors.name">
-              {{ addSpecialOfferFormErrors.name }}
-            </mat-error>
-          </mat-form-field>
-        </p>
-        <p>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="price" placeholder="Price" type="number">
-            <mat-error *ngIf="addSpecialOfferFormErrors.price">
-              {{ addSpecialOfferFormErrors.price }}
-            </mat-error>
-          </mat-form-field>
-        </p>
-        <button type="submit" mat-button class="background-primary text-floral-white"
-        [disabled]="addSpecialOfferForm.invalid">Submit</button>
-      </form>
+    <div fxFlex fxLayout="row">
+      <div fxFlex class="form-size">
+        <form novalidate [formGroup]="addSpecialOfferForm" #fformAddSpecialOffer="ngForm" (ngSubmit)="onAddSpecialOfferSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Special Offer Name" type="text">
+              <mat-error *ngIf="addSpecialOfferFormErrors.name">
+                {{ addSpecialOfferFormErrors.name }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="price" placeholder="Price" type="number">
+              <mat-error *ngIf="addSpecialOfferFormErrors.price">
+                {{ addSpecialOfferFormErrors.price }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="addSpecialOfferForm.invalid">Submit</button>
+        </form>
+      </div>
+      <div fxFlex>
+        <table mat-table #tablespecialoffers [dataSource] = "myHotel.hotelSpecialOffers">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.price}}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers"></tr>
+          <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplaySpecialOffers"></tr>        
+        </table>
+      </div>
     </div>
   </div>
 </div>

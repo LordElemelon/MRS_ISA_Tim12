@@ -2,9 +2,9 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import {HotelSpecialOfferApi, LoopBackConfig} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi, RoomApi } from '../shared/sdk/services';
-import { Hotel, Room } from '../shared/sdk/models/';
+import { Hotel, Room, HotelSpecialOffer } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatTable} from '@angular/material';
 
 @Component({
   selector: 'app-hotel',
@@ -18,10 +18,10 @@ export class HotelComponent implements OnInit {
   removeRoomActive = false;
   modifyRoomActive = false;
   addSpecialOfferActive = false;
-
+  columnsToDisplaySpecialOffers = ['name', 'price'];
   // form related objects
   modifyHotelForm: FormGroup;
-  modifiedHotel: Hotel;
+  myHotel: Hotel;
   @ViewChild('fformModifyHotel') modifyHotelFormDirective;
 
   addRoomForm: FormGroup;
@@ -42,6 +42,8 @@ export class HotelComponent implements OnInit {
 
   addSpecialOfferForm: FormGroup;
   @ViewChild('fformAddSpecialOffer') addSpecialOfferFormDirective;
+
+  @ViewChild('tablespecialoffers') tableSpecialOffers: MatTable<any>;
 
   modifyHotelFormErrors = {
     'name': '',
@@ -144,9 +146,9 @@ export class HotelComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.hotelservice.findOne({'where': {'name' : 'hotel1'}})
+    this.hotelservice.findOne({'where': {'name' : 'hotel1'}, 'include': 'hotelSpecialOffers'})
     .subscribe((hotel: Hotel) => {
-      this.modifiedHotel = hotel;
+      this.myHotel = hotel;
       this.setValueModifyHotelForm();
     });
   }
@@ -191,16 +193,16 @@ export class HotelComponent implements OnInit {
 
   setValueModifyHotelForm() {
     this.modifyHotelForm.setValue({
-      'name': this.modifiedHotel.name,
-      'address' : this.modifiedHotel.address,
-      'description' : this.modifiedHotel.description,
-      'id' : this.modifiedHotel.id
+      'name': this.myHotel.name,
+      'address' : this.myHotel.address,
+      'description' : this.myHotel.description,
+      'id' : this.myHotel.id
     });
   }
 
   onModifyHotelSubmit() {
-    this.modifiedHotel = this.modifyHotelForm.value;
-    this.hotelservice.updateAttributes(this.modifiedHotel.id, this.modifiedHotel)
+    this.myHotel = this.modifyHotelForm.value;
+    this.hotelservice.updateAttributes(this.myHotel.id, this.myHotel)
     .subscribe(result => {
       this.openSnackBar('Modified hotel succesfully', 'Dismiss');
     }, err => {
@@ -241,7 +243,7 @@ export class HotelComponent implements OnInit {
 
   onAddRoomSubmit() {
     this.newRoom = this.addRoomForm.value;
-    this.hotelservice.createRooms(this.modifiedHotel.id, this.newRoom)
+    this.hotelservice.createRooms(this.myHotel.id, this.newRoom)
     .subscribe(result => {
       this.openSnackBar('Added a room succesfully', 'Dismiss');
     }, err => {
@@ -279,10 +281,10 @@ export class HotelComponent implements OnInit {
 
   onRemoveRoomSubmit() {
     this.toRemoveRoomNumber = this.removeRoomForm.value.number;
-    this.hotelservice.getRooms(this.modifiedHotel.id, {where : {number: this.toRemoveRoomNumber}})
+    this.hotelservice.getRooms(this.myHotel.id, {where : {number: this.toRemoveRoomNumber}})
     .subscribe(result => {
       if (result.length !== 0)  {
-        this.hotelservice.destroyByIdRooms(this.modifiedHotel.id, result[0].id)
+        this.hotelservice.destroyByIdRooms(this.myHotel.id, result[0].id)
           .subscribe(result1 => {
             this.openSnackBar('Removed succesfully', 'Dismiss');
           }, err => {
@@ -326,7 +328,7 @@ export class HotelComponent implements OnInit {
 
   onGetRoomSubmit() {
     this.toGetRoomNumber = this.getRoomForm.value.number;
-    this.hotelservice.getRooms(this.modifiedHotel.id, {where : {number: this.toGetRoomNumber}})
+    this.hotelservice.getRooms(this.myHotel.id, {where : {number: this.toGetRoomNumber}})
     .subscribe(result => {
       this.modifiedRoom = result[0];
       this.setValueModifyRoomForm();
@@ -420,8 +422,10 @@ export class HotelComponent implements OnInit {
     this.specialofferservice.create({
       'name': specialOffer.name,
       'price' : specialOffer.price,
-      'hotelId' : this.modifiedHotel.id
-    }).subscribe(result => {
+      'hotelId' : this.myHotel.id
+    }).subscribe((result: HotelSpecialOffer) => {
+      this.myHotel.hotelSpecialOffers.push(result);
+      this.tableSpecialOffers.renderRows();
       this.openSnackBar('Created a special offer succesfully', 'Dismiss');;
     }, err => {
       this.openSnackBar('Can not add this special offer. Check if an offer with that name already exists', 'Dismiss');
