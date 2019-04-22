@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoopBackConfig, Flight } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
-import { AirlineApi } from '../shared/sdk/services';
+import { AirlineApi, FlightApi } from '../shared/sdk/services';
 import { Airline } from '../shared/sdk/models/Airline';
 
 @Component({
@@ -30,6 +30,9 @@ export class AirlineComponent implements OnInit {
 
   addFlightForm: FormGroup;
   @ViewChild('fformAddFlight') addFlightFormDirective;
+  
+  modifyFlightForm: FormGroup;
+  @ViewChild('fformModifyFlight') modifyFlightFormDirective;
   
 
   modifyAirlineFormErrors = {
@@ -69,14 +72,43 @@ export class AirlineComponent implements OnInit {
     }
   };
 
+  modifyFlightFormErrors = {
+    'origin': '',
+    'destination': '',
+    'takeoffDate': '',
+    'landingDate': '',
+    'price': ''
+  };
+
+  modifyFlightFormValidationMessages = {
+    'origin': {
+      'required': 'Origin of flight is required'
+    },
+    'destination': {
+      'required': 'Destination of flight is required'
+    },
+    'takeoffDate': {
+      'required': 'Takeoff time of flight is required'
+    },
+    'landingDate': {
+      'required': 'Landing time of flight is required'
+    },
+    'price': {
+      'required': 'Price of flight is required',
+      'min': 'Price of flight must be higher than 0'
+    }
+  };
+
   constructor(@Inject('baseURL') private baseURL,
     private airlineservice: AirlineApi,
+    private flightservice: FlightApi,
     private fb: FormBuilder
   ) {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.createModifyAirlineForm();
     this.createAddFlightForm();
+    this.createModifyFlightForm();
     this.setClickedRow = function(index){
       this.selectedFlight = index;
     }
@@ -189,8 +221,67 @@ export class AirlineComponent implements OnInit {
     this.newFlight = this.addFlightForm.value;
     this.airlineservice.createFlights(this.selectedAirline.id, this.newFlight)
     .subscribe(result => {
-      this.refreshValues();
+      this.refreshFlights();
     });
+  }
+
+  onValueChangedModifyFlight(data?: any) {
+    if (!this.modifyFlightForm) {return; }
+    const form = this.modifyFlightForm;
+    for (const field in this.modifyFlightFormErrors){
+      if (this.modifyFlightFormErrors.hasOwnProperty(field)){
+        this.modifyFlightFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.modifyFlightFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.modifyFlightFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createModifyFlightForm() {
+    this.modifyFlightForm = this.fb.group({
+      'origin': ['', Validators.required],
+      'destination': ['', Validators.required],
+      'takeoffDate': ['', Validators.required],
+      'landingDate': ['', Validators.required],
+      'duration': 0,
+      'length': 0,
+      'layover': '',
+      'price': [0, [Validators.required, Validators.min(1)]]
+    });
+    this.modifyFlightForm.valueChanges
+    .subscribe(data => this.onValueChangedModifyFlight(data));
+    this.onValueChangedModifyFlight();
+  }
+
+  setValueModifyFlightForm() {
+    this.modifyFlightForm.setValue({
+      'origin': this.selectedFlight.origin,
+      'destination': this.selectedFlight.destination,
+      'takeoffDate': this.selectedFlight.takeoffDate,
+      'landingDate': this.selectedFlight.landingDate,
+      'duration': this.selectedFlight.duration,
+      'length': this.selectedFlight.length,
+      'layover': this.selectedFlight.layover,
+      'price': this.selectedFlight.price
+    });
+  }
+
+  onModifyFlightSubmit() {
+    const toModify = this.modifyFlightForm.value;
+    toModify.airlineId = this.selectedAirline.id;
+    console.log(this.selectedFlight);
+    this.flightservice.updateAttributes(this.selectedFlight.id, toModify)
+    .subscribe(result => {
+      console.log(result);
+      this.cancelModifyFlightButton();
+    })
   }
 
 
@@ -207,14 +298,27 @@ export class AirlineComponent implements OnInit {
     this.flightsActive = true;
     this.modifyFlightActive = false;
     this.homeActive = false;
-    this.refreshValues();
+    this.refreshFlights();
   }
 
   modifyFlightButton(){
-    this.modifyActive = false;
-    this.flightsActive = true;
-    this.modifyFlightActive = true;
-    this.homeActive = false;
+    if (this.selectedFlight != null) {
+      this.modifyActive = false;
+      this.flightsActive = false;
+      this.modifyFlightActive = true;
+      this.homeActive = false;
+      this.setValueModifyFlightForm();
+    }
+  }
+
+  deleteFlightButton(){
+    if (this.selectedFlight != null) {
+      this.flightservice.deleteById(this.selectedFlight.id)
+      .subscribe(result => {
+        console.log(result);
+        this.refreshFlights();
+      });
+    }
   }
 
   cancelModifyFlightButton(){
@@ -223,6 +327,7 @@ export class AirlineComponent implements OnInit {
     this.modifyFlightActive = false;
     this.homeActive = false;
     this.selectedFlight = null;
+    this.refreshFlights();
   }
 
   homeButton(){
