@@ -12,7 +12,7 @@
         "unique": true
       }
     }
-  },  
+  },
   "options": {
     "validateUpsert": true
   },
