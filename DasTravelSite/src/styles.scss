@@ -48,3 +48,28 @@ $divider-color:        #BDBDBD;
 .pointer{ 
   cursor: pointer; 
 }
+
+td.mat-cell {
+  padding: 15px;
+}
+
+th.mat-header-cell {
+  padding: 15px;
+}
+
+.selectedRow{
+  background-color: #512DA8;
+}
+
+.half-width{
+  width : 45%;
+  margin-right: 5%;
+}
+
+.full-width{
+  width: 100%;
+}
+
+.container{
+  width : 100%;
+}
