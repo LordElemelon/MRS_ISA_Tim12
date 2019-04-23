@@ -5,6 +5,7 @@ import { HotelApi } from '../shared/sdk/services';
 import { Hotel } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatSnackBar} from '@angular/material';
+import {LoginServiceService} from '../login-service.service';
 
 @Component({
   selector: 'app-hotels',
@@ -18,6 +19,7 @@ export class HotelsComponent implements OnInit {
   removeActive = false;
   modifyActive = false;
   added = false;
+  userType: string;
 
   // form related objects
   hotelForm: FormGroup;
@@ -50,6 +52,7 @@ export class HotelsComponent implements OnInit {
   constructor(@Inject('baseURL') private baseURL,
     private hotelservice: HotelApi,
     private fb: FormBuilder,
+    private loginService: LoginServiceService,
     public snackBar: MatSnackBar
     ) {
 
@@ -57,6 +60,11 @@ export class HotelsComponent implements OnInit {
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createForm();
       this.createSearchHotelForm();
+      this.loginService.user.subscribe(data => {
+        if (data) {
+          this.userType = data.user.type;
+        }
+      });
    }
 
   ngOnInit() {

@@ -23,7 +23,6 @@ import { MatSelectModule} from '@angular/material/select';
 import { MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTableModule } from '@angular/material/table';
 import { FlightsComponent } from './flights/flights.component';
 import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
@@ -45,7 +44,7 @@ import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-
+import { LoginServiceService } from './login-service.service';
 
 
 @NgModule({
@@ -94,7 +93,8 @@ import { LoginComponent } from './login/login.component';
     MatTableModule
   ],
   providers: [
-    {provide: 'baseURL', useValue: baseURL}
+    {provide: 'baseURL', useValue: baseURL},
+    LoginServiceService
   ],
   entryComponents: [
     RegisterComponent, LoginComponent
