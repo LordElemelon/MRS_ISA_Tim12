@@ -65,11 +65,10 @@
       "property": "create"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "hotelAdmin",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
+      "permission": "ALLOW"
     }
   ],
   "methods": {}

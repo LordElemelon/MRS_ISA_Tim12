@@ -49,11 +49,10 @@
       "property": "create"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "airportAdmin",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
+      "permission": "ALLOW"
     }
   ],
   "methods": {}
