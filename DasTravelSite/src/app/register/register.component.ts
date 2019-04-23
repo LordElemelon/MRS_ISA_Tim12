@@ -19,7 +19,7 @@ export class RegisterComponent implements OnInit {
   constructor(@Inject('baseURL') private baseURL,
     private myUserService: MyuserApi,
     private fb: FormBuilder,
-    public dialogRef: MatDialogRef<LoginComponent>,
+    public dialogRef: MatDialogRef<RegisterComponent>,
     public snackBar: MatSnackBar) {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
@@ -94,6 +94,7 @@ export class RegisterComponent implements OnInit {
     .subscribe(
       (result) => {
         this.openSnackBar("Registration successfull", "Dismiss");
+        this.dialogRef.close();
       },
       (err) => {
         this.openSnackBar("Registration failed", "Dismiss");
