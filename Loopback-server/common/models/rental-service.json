@@ -61,11 +61,10 @@
       "property": "create"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "WRITE",
       "principalType": "ROLE",
-      "principalId": "rentalServiceAdming",
-      "permission": "ALLOW",
-      "property": "updateAttributes"
+      "principalId": "rentalServiceAdmin",
+      "permission": "ALLOW"
     }
   ],
   "methods": {}
