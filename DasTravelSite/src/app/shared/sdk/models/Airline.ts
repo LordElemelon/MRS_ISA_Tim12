@@ -10,6 +10,7 @@ export interface AirlineInterface {
   "description"?: string;
   "destinations"?: string;
   "id"?: any;
+  "myuserId"?: any;
   flights?: Flight[];
 }
 
@@ -19,6 +20,7 @@ export class Airline implements AirlineInterface {
   "description": string;
   "destinations": string;
   "id": any;
+  "myuserId": any;
   flights: Flight[];
   constructor(data?: AirlineInterface) {
     Object.assign(this, data);
@@ -71,6 +73,10 @@ export class Airline implements AirlineInterface {
         },
         "id": {
           name: 'id',
+          type: 'any'
+        },
+        "myuserId": {
+          name: 'myuserId',
           type: 'any'
         },
       },

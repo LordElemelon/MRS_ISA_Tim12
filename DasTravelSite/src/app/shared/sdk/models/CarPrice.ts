@@ -5,7 +5,7 @@ import {
 
 declare var Object: any;
 export interface CarPriceInterface {
-  "start": Date;
+  "start"?: Date;
   "catAPrice": number;
   "catBPrice": number;
   "catCPrice": number;

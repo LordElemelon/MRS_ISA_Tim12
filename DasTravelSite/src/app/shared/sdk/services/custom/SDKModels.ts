@@ -13,6 +13,8 @@ import { HotelSpecialOffer } from '../../models/HotelSpecialOffer';
 import { HotelDiscount } from '../../models/HotelDiscount';
 import { DiscountOffer } from '../../models/DiscountOffer';
 import { CarPrice } from '../../models/CarPrice';
+import { Email } from '../../models/Email';
+import { Myuser } from '../../models/Myuser';
 
 export interface Models { [name: string]: any }
 
@@ -33,6 +35,8 @@ export class SDKModels {
     HotelDiscount: HotelDiscount,
     DiscountOffer: DiscountOffer,
     CarPrice: CarPrice,
+    Email: Email,
+    Myuser: Myuser,
     
   };
 

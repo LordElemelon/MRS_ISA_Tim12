@@ -12,6 +12,7 @@ export interface HotelInterface {
   "address": string;
   "description"?: string;
   "id"?: any;
+  "myuserId"?: any;
   rooms?: Room[];
   roomPrices?: RoomPrice[];
   hotelSpecialOffers?: HotelSpecialOffer[];
@@ -23,6 +24,7 @@ export class Hotel implements HotelInterface {
   "address": string;
   "description": string;
   "id": any;
+  "myuserId": any;
   rooms: Room[];
   roomPrices: RoomPrice[];
   hotelSpecialOffers: HotelSpecialOffer[];
@@ -74,6 +76,10 @@ export class Hotel implements HotelInterface {
         },
         "id": {
           name: 'id',
+          type: 'any'
+        },
+        "myuserId": {
+          name: 'myuserId',
           type: 'any'
         },
       },

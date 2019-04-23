@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { RegisterComponent } from '../register/register.component';
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-header',
@@ -7,9 +10,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
+  }
+
+  openRegisterForm() {
+    this.dialog.open(RegisterComponent, {width: '500px', height: '450 px'});
+  }
+
+  openLoginForm() {
+    this.dialog.open(LoginComponent, {width: '500px', height: '450 px'});
   }
 
 }
