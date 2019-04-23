@@ -3,23 +3,32 @@
   <span class="flex-spacer"></span>
   <button mat-button mat-dialog-close>&times;</button>
 </mat-toolbar>
-<form novalidate>
+<form novalidate [formGroup]="registerForm" #registerform="ngForm" (ngSubmit)="onRegisterSubmit()">
   <p>
   <mat-form-field class="form-size">
-      <input matInput placeholder="E-mail" type="text">
+      <input matInput formControlName="email" placeholder="E-mail" type="text">
+      <mat-error *ngIf="registerFormErrors.email">
+        {{ registerFormErrors.email }}
+      </mat-error>
   </mat-form-field>
   </p>
   <p>
   <mat-form-field class="form-size">
-      <input matInput placeholder="Username" type="text">
+      <input matInput formControlName="username" placeholder="Username" type="text">
+      <mat-error *ngIf="registerFormErrors.username">
+        {{ registerFormErrors.username }}
+      </mat-error>
   </mat-form-field>
   </p>
   <p>
     <mat-form-field class="form-size">
-        <input matInput placeholder="Password" type="text">
+        <input matInput formControlName="password" placeholder="Password" type="password">
+        <mat-error *ngIf="registerFormErrors.password">
+          {{ registerFormErrors.password }}
+        </mat-error>
     </mat-form-field>
   </p>
-  <button type="submit" mat-button class="background-primary text-floral-white">
+  <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="registerForm.invalid">
     Submit
   </button>
 </form>

@@ -3,7 +3,7 @@ import { LoopBackConfig } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { MyuserApi } from '../shared/sdk/services'
 
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,9 @@ export class LoginComponent implements OnInit {
 
   constructor(@Inject('baseURL') private baseURL,
     private myUserService: MyuserApi,
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    public dialogRef: MatDialogRef<LoginComponent>,
+    public snackBar: MatSnackBar) {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createLoginForm();
@@ -28,7 +30,10 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       'username': ['', Validators.required],
       'password': ['', Validators.required]
-    })
+    });
+    this.loginForm.valueChanges
+    .subscribe((data) => this.onLoginValueChanged(data));
+    this.onLoginValueChanged();
   }
 
   loginFormErrors = {
@@ -68,16 +73,23 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
   }
 
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
+  }
+
   onLoginSubmit() {
     this.myUserService.login({
       'username': this.loginForm.value.username,
       'password': this.loginForm.value.password})
     .subscribe((result) => {
-      console.log("Login successfull");
+      this.dialogRef.close();
+      this.openSnackBar("Successfully loged in, welcome", "Dismiss");
     },
     (err) => {
-      console.log("Login failed");
-    })
+      this.openSnackBar("Wrong credentials, try again", "Dismiss");
+    });
   }
 
 }
