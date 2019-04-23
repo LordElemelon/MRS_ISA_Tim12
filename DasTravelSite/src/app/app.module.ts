@@ -22,6 +22,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule} from '@angular/material/select';
 import { MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTableModule } from '@angular/material/table';
 import { FlightsComponent } from './flights/flights.component';
 import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
@@ -83,6 +85,8 @@ import { LoginComponent } from './login/login.component';
     MatSelectModule,
     MatSlideToggleModule,
     MatProgressSpinnerModule,
+    MatDividerModule,
+    MatTableModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
