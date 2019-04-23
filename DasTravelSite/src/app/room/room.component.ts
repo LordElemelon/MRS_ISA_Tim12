@@ -215,9 +215,7 @@ export class RoomComponent implements OnInit {
       'hotelId': this.hotel.id,
       'roomId': this.room.id
     }).subscribe((result: HotelDiscount) =>  {
-      console.log(this.room.hotelDiscounts);
       this.room.hotelDiscounts.push(result);
-      console.log(this.room.hotelDiscounts);
       this.tableDiscounts.renderRows();
       this.selectedOffers.forEach(offerId => {
         this.discountofferservice.create({
@@ -240,7 +238,6 @@ export class RoomComponent implements OnInit {
     } else  {
       this.selectedOffers.push(id);
     }
-    console.log(this.selectedOffers);
   }
 
   addPriceButton()  {

@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  Log in
+  <span class="flex-spacer"></span>
+  <button mat-button mat-dialog-close>&times;</button>
+</mat-toolbar>
+<form novalidate [formGroup]="loginForm" #loginform="ngForm" (ngSubmit)="onLoginSubmit()" >
+  <p>
+  <mat-form-field class="form-size">
+      <input matInput formControlName="username" placeholder="Username" type="text">
+      <mat-error *ngIf="loginFormErrors.username">
+        {{ loginFormErrors.username}}
+      </mat-error>
+  </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field class="form-size">
+        <input matInput formControlName="password" placeholder="Password" type="password">
+        <mat-error *ngIf="loginFormErrors.password">
+          {{ loginFormErrors.password}}
+        </mat-error>
+    </mat-form-field>
+  </p>
+  <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="loginForm.invalid">
+    Submit
+  </button>
+</form>

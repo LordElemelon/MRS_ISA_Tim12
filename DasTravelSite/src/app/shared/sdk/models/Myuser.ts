@@ -1,7 +1,13 @@
 /* tslint:disable */
+import {
+  Hotel,
+  Airline,
+  RentalService
+} from '../index';
 
 declare var Object: any;
-export interface UserInterface {
+export interface MyuserInterface {
+  "type": string;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -9,9 +15,13 @@ export interface UserInterface {
   "id"?: any;
   "password"?: string;
   accessTokens?: any[];
+  hotel?: Hotel;
+  airline?: Airline;
+  rentalService?: RentalService;
 }
 
-export class User implements UserInterface {
+export class Myuser implements MyuserInterface {
+  "type": string;
   "realm": string;
   "username": string;
   "email": string;
@@ -19,24 +29,27 @@ export class User implements UserInterface {
   "id": any;
   "password": string;
   accessTokens: any[];
-  constructor(data?: UserInterface) {
+  hotel: Hotel;
+  airline: Airline;
+  rentalService: RentalService;
+  constructor(data?: MyuserInterface) {
     Object.assign(this, data);
   }
   /**
    * The name of the model represented by this $resource,
-   * i.e. `User`.
+   * i.e. `Myuser`.
    */
   public static getModelName() {
-    return "User";
+    return "Myuser";
   }
   /**
   * @method factory
   * @author Jonathan Casarrubias
   * @license MIT
-  * This method creates an instance of User for dynamic purposes.
+  * This method creates an instance of Myuser for dynamic purposes.
   **/
-  public static factory(data: UserInterface): User{
-    return new User(data);
+  public static factory(data: MyuserInterface): Myuser{
+    return new Myuser(data);
   }
   /**
   * @method getModelDefinition
@@ -47,11 +60,16 @@ export class User implements UserInterface {
   **/
   public static getModelDefinition() {
     return {
-      name: 'User',
-      plural: 'Users',
-      path: 'Users',
+      name: 'Myuser',
+      plural: 'Myusers',
+      path: 'Myusers',
       idName: 'id',
       properties: {
+        "type": {
+          name: 'type',
+          type: 'string',
+          default: 'registeredUser'
+        },
         "realm": {
           name: 'realm',
           type: 'string'
@@ -85,6 +103,30 @@ export class User implements UserInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'userId'
+        },
+        hotel: {
+          name: 'hotel',
+          type: 'Hotel',
+          model: 'Hotel',
+          relationType: 'hasOne',
+                  keyFrom: 'id',
+          keyTo: 'myuserId'
+        },
+        airline: {
+          name: 'airline',
+          type: 'Airline',
+          model: 'Airline',
+          relationType: 'hasOne',
+                  keyFrom: 'id',
+          keyTo: 'myuserId'
+        },
+        rentalService: {
+          name: 'rentalService',
+          type: 'RentalService',
+          model: 'RentalService',
+          relationType: 'hasOne',
+                  keyFrom: 'id',
+          keyTo: 'myuserId'
         },
       }
     }

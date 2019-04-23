@@ -12,5 +12,7 @@ export * from './HotelSpecialOffer';
 export * from './HotelDiscount';
 export * from './DiscountOffer';
 export * from './CarPrice';
+export * from './Email';
+export * from './Myuser';
 export * from './SDKModels';
 export * from './logger.service';

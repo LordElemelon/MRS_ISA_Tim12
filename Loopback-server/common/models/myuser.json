@@ -5,9 +5,45 @@
   "options": {
     "validateUpsert": true
   },
-  "properties": {},
+  "properties": {
+    "type": {
+      "type": "string",
+      "required": true,
+      "default": "registeredUser"
+    }
+  },
   "validations": [],
-  "relations": {},
-  "acls": [],
+  "relations": {
+    "hotel": {
+      "type": "hasOne",
+      "model": "hotel",
+      "foreignKey": ""
+    },
+    "airline": {
+      "type": "hasOne",
+      "model": "airline",
+      "foreignKey": ""
+    },
+    "rentalService": {
+      "type": "hasOne",
+      "model": "rentalService",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "registerAnAdmin"
+    }
+  ],
   "methods": {}
 }

@@ -43,6 +43,8 @@ import { AirlineComponent } from './airline/airline.component';
 import { RoomsListComponent } from './rooms-list/rooms-list.component';
 import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 
 
 
@@ -60,7 +62,9 @@ import { CarpricesComponent } from './carprices/carprices.component';
     AirlineComponent,
     RoomsListComponent,
     RoomComponent,
-    CarpricesComponent
+    CarpricesComponent,
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -91,6 +95,9 @@ import { CarpricesComponent } from './carprices/carprices.component';
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}
+  ],
+  entryComponents: [
+    RegisterComponent, LoginComponent
   ],
   bootstrap: [AppComponent]
 })

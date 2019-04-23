@@ -201,7 +201,9 @@ export class HotelComponent implements OnInit {
   }
 
   onModifyHotelSubmit() {
-    this.myHotel = this.modifyHotelForm.value;
+    this.myHotel.address = this.modifyHotelForm.value.address;
+    this.myHotel.name = this.modifyHotelForm.value.name;
+    this.myHotel.description = this.modifyHotelForm.value.description;
     this.hotelservice.updateAttributes(this.myHotel.id, this.myHotel)
     .subscribe(result => {
       this.openSnackBar('Modified hotel succesfully', 'Dismiss');
@@ -243,7 +245,8 @@ export class HotelComponent implements OnInit {
 
   onAddRoomSubmit() {
     this.newRoom = this.addRoomForm.value;
-    this.hotelservice.createRooms(this.myHotel.id, this.newRoom)
+    this.newRoom.hotelId = this.myHotel.id;
+    this.roomservice.create(this.newRoom)
     .subscribe(result => {
       this.openSnackBar('Added a room succesfully', 'Dismiss');
     }, err => {
@@ -284,7 +287,7 @@ export class HotelComponent implements OnInit {
     this.hotelservice.getRooms(this.myHotel.id, {where : {number: this.toRemoveRoomNumber}})
     .subscribe(result => {
       if (result.length !== 0)  {
-        this.hotelservice.destroyByIdRooms(this.myHotel.id, result[0].id)
+        this.roomservice.deleteById(result[0].id)
           .subscribe(result1 => {
             this.openSnackBar('Removed succesfully', 'Dismiss');
           }, err => {
@@ -330,8 +333,10 @@ export class HotelComponent implements OnInit {
     this.toGetRoomNumber = this.getRoomForm.value.number;
     this.hotelservice.getRooms(this.myHotel.id, {where : {number: this.toGetRoomNumber}})
     .subscribe(result => {
-      this.modifiedRoom = result[0];
-      this.setValueModifyRoomForm();
+      if (result.length !== 0) {
+        this.modifiedRoom = result[0];
+        this.setValueModifyRoomForm();
+      }
     });
   }
 
