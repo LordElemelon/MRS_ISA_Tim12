@@ -1,11 +1,11 @@
 <mat-toolbar color="primary">
-  <a mat-button (click) = "addButton()"> Add</a>
-  <a mat-button (click) = "removeButton()"> Remove a hotel </a>
-  <a mat-button (click) = "modifyButton()"> Search hotels </a>
+  <a mat-button (click) = "addButton()" *ngIf="userType==='admin'"> Add</a>
+  <a mat-button (click) = "removeButton()" *ngIf="userType==='admin'"> Remove a hotel </a>
+  <a mat-button (click) = "modifyButton()"> Search </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
-<div *ngIf = "addActive">
+<div *ngIf = "addActive&&userType==='admin'">
   <div class="container"
     fxLayout="column"
     fxLayoutGap="10px">
