@@ -1,58 +1,58 @@
 'use strict'
 
-module.exports = function(app) {
+module.exports = function (app) {
   var Myuser = app.models.Myuser;
   var Role = app.models.Role;
-  Role.findOne({where: {name: 'admin'}}, (err, role, next) =>  {
+  Role.findOne({where: {name: 'admin'}}, (err, role, next) => {
     if (!role) {
       Role.create({
         name: 'admin',
-      }, (err, role) =>  {
+      }, (err, role) => {
         if (err) next(err);
         else {
           insertAdmin(app, Myuser, Role);
         }
       });
-    } else{
+    } else {
       insertAdmin(app, Myuser, Role);
     }
   });
 
-  Role.findOne({where: {name: 'registeredUser'}}, (err, role, next) =>  {
+  Role.findOne({where: {name: 'registeredUser'}}, (err, role, next) => {
     if (!role) {
       Role.create({
         name: 'registeredUser',
-      }, (err, role) =>  {
+      }, (err, role) => {
         if (err) next(err);
       });
     }
   });
 
-  Role.findOne({where: {name: 'airportAdmin'}}, (err, role, next) =>  {
+  Role.findOne({where: {name: 'airportAdmin'}}, (err, role, next) => {
     if (!role) {
       Role.create({
         name: 'airportAdmin',
-      }, (err, role) =>  {
+      }, (err, role) => {
         if (err) next(err);
       });
     }
   });
 
-  Role.findOne({where: {name: 'hotelAdmin'}}, (err, role, next) =>  {
+  Role.findOne({where: {name: 'hotelAdmin'}}, (err, role, next) => {
     if (!role) {
       Role.create({
         name: 'hotelAdmin',
-      }, (err, role) =>  {
+      }, (err, role) => {
         if (err) next(err);
       });
     }
   });
 
-  Role.findOne({where: {name: 'rentalServiceAdmin'}}, (err, role, next) =>  {
+  Role.findOne({where: {name: 'rentalServiceAdmin'}}, (err, role, next) => {
     if (!role) {
       Role.create({
         name: 'rentalServiceAdmin',
-      }, (err, role) =>  {
+      }, (err, role) => {
         if (err) next(err);
       });
     }
@@ -65,7 +65,7 @@ function insertAdmin(app, Myuser, Role) {
       Myuser.create([
         {
           username: 'Admin', 'type': 'admin', email: 'dusanpanda@gmail.com',
-          password: 'password', emailVerified: true
+          password: 'password', emailVerified: true,
         },
       ], (err, users) => {
         if (err) next(err);

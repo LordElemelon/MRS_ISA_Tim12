@@ -40,9 +40,9 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
-      "principalId": "$everyone",
+      "principalId": "admin",
       "permission": "ALLOW",
-      "property": "create"
+      "property": "registerAnAdmin"
     }
   ],
   "methods": {}
