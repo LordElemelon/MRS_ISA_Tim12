@@ -23,7 +23,6 @@ import { MatSelectModule} from '@angular/material/select';
 import { MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatTableModule } from '@angular/material/table';
 import { FlightsComponent } from './flights/flights.component';
 import { HotelsComponent } from './hotels/hotels.component';
 import { CarsComponent } from './cars/cars.component';
@@ -45,6 +44,7 @@ import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { UserComponent } from './user/user.component';
 
 
 
@@ -64,7 +64,8 @@ import { LoginComponent } from './login/login.component';
     RoomComponent,
     CarpricesComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -90,8 +91,7 @@ import { LoginComponent } from './login/login.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    SDKBrowserModule.forRoot(),
-    MatTableModule
+    SDKBrowserModule.forRoot()
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}

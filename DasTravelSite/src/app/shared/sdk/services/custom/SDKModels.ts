@@ -15,6 +15,7 @@ import { DiscountOffer } from '../../models/DiscountOffer';
 import { CarPrice } from '../../models/CarPrice';
 import { Email } from '../../models/Email';
 import { Myuser } from '../../models/Myuser';
+import { UserInfo } from '../../models/UserInfo';
 
 export interface Models { [name: string]: any }
 
@@ -37,6 +38,7 @@ export class SDKModels {
     CarPrice: CarPrice,
     Email: Email,
     Myuser: Myuser,
+    UserInfo: UserInfo,
     
   };
 
