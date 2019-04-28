@@ -89,5 +89,13 @@
   "myuser": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "carReservation": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "carid": {
+    "dataSource": "postgres",
+    "public": true
   }
 }

@@ -15,4 +15,10 @@ module.exports = function(Car) {
             });
         }
     });
+    Car.observe('after save', function saveInPostgre(ctx, next) {
+        Car.app.models.Carid.create({'carId': ctx.instance.id}, (err, result) => {
+            if (err) next(err);
+            else next();
+        });
+    });
 };

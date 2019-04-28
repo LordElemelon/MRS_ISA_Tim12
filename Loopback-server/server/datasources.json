@@ -28,5 +28,15 @@
         }
       }
     ]
+  },
+  "postgres": {
+    "host": "localhost",
+    "port": 5432,
+    "url": "",
+    "database": "reservations",
+    "password": "sys",
+    "name": "postgres",
+    "user": "myuser",
+    "connector": "postgresql"
   }
 }
