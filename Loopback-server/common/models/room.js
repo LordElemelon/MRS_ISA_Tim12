@@ -29,5 +29,11 @@ module.exports = function (Room) {
       }
     }
   });
+  Room.observe('after save', function saveInPostgre(ctx, next) {
+	Room.app.models.Roomid.create({'roomId': ctx.instance.id}, (err, result) => {
+		if (err) next(err);
+		else next();
+	});
+  });
 };
 

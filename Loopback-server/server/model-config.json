@@ -97,5 +97,13 @@
   "carid": {
     "dataSource": "postgres",
     "public": true
+  },
+  "roomid": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "roomReservation": {
+    "dataSource": "postgres",
+    "public": true
   }
 }
