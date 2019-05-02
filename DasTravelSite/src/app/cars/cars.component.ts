@@ -1,10 +1,11 @@
-import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { LoopBackConfig, RentalService } from '../shared/sdk';
-import { API_VERSION } from '../shared/baseUrl';
-import { CarApi, RentalServiceApi } from '../shared/sdk/services';
-import { Car } from '../shared/sdk/models/Car';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material';
+import {Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {LoopBackConfig, RentalService} from '../shared/sdk';
+import {API_VERSION} from '../shared/baseUrl';
+import {CarApi, RentalServiceApi} from '../shared/sdk/services';
+import {Car} from '../shared/sdk/models/Car';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
+import {LoginServiceService} from '../login-service.service';
 
 @Component({
   selector: 'app-cars',
@@ -14,7 +15,7 @@ import { MatSnackBar } from '@angular/material';
 export class CarsComponent implements OnInit {
 
   foundCars: Car[];
-
+  userType: string;
   addForm: FormGroup;
   @ViewChild('addform') addFormDirective;
 
@@ -37,17 +38,23 @@ export class CarsComponent implements OnInit {
   isSearch: boolean;
 
   constructor(@Inject('baseURL') private baseURL,
-    private carservice: CarApi,
-    private fb: FormBuilder,
-    private rentalServiceService: RentalServiceApi,
-    public snackBar: MatSnackBar) { 
-      LoopBackConfig.setBaseURL(baseURL);
-      LoopBackConfig.setApiVersion(API_VERSION);
-      this.createAddForm();
-      this.createRemoveForm();
-      this.createChangeForm();
-      this.createSearchForm();
-    }
+              private carservice: CarApi,
+              private fb: FormBuilder,
+              private rentalServiceService: RentalServiceApi,
+              private loginService: LoginServiceService,
+              public snackBar: MatSnackBar) {
+    LoopBackConfig.setBaseURL(baseURL);
+    LoopBackConfig.setApiVersion(API_VERSION);
+    this.createAddForm();
+    this.createRemoveForm();
+    this.createChangeForm();
+    this.createSearchForm();
+    this.loginService.user.subscribe(data => {
+      if (data) {
+        this.userType = data.user.type;
+      }
+    });
+  }
 
   ngOnInit() {
   }
@@ -82,7 +89,7 @@ export class CarsComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-       duration: 2000,
+      duration: 2000,
     });
   }
 
@@ -90,8 +97,8 @@ export class CarsComponent implements OnInit {
     'serviceName': '',
     'registration': '',
     'make': '',
-    'seats': '' 
-  }
+    'seats': ''
+  };
 
   addFormValidationMessages = {
     'serviceName': {
@@ -107,10 +114,12 @@ export class CarsComponent implements OnInit {
       'required': 'Seats are required',
       'pattern': 'Seats have to be a number'
     }
-  }
+  };
 
-  onAddValueChanged(data?:any) {
-    if (!this.addForm) { return; }
+  onAddValueChanged(data?: any) {
+    if (!this.addForm) {
+      return;
+    }
     const form = this.addForm;
     for (const field in this.addFormErrors) {
       if (this.addFormErrors.hasOwnProperty(field)) {
@@ -154,30 +163,32 @@ export class CarsComponent implements OnInit {
         });
         o2.subscribe(
           (result) => {
-            this.openSnackBar("Car added successfully", "Dismiss");
+            this.openSnackBar('Car added successfully', 'Dismiss');
           },
           (err) => {
-            this.openSnackBar("Failed to add car", "Dismiss");
+            this.openSnackBar('Failed to add car', 'Dismiss');
           });
       },
       (err) => {
-        this.openSnackBar("Rental service does not exist", "Dismiss");
+        this.openSnackBar('Rental service does not exist', 'Dismiss');
       }
-    )
+    );
   }
 
   removeFormErrors = {
     'registration': ''
-  }
+  };
 
   removeFormValidationMessages = {
     'registration': {
       'required': 'Registration is required'
     }
-  }
+  };
 
-  onRemoveValueChanged(data?:any) {
-    if (!this.removeForm) { return; }
+  onRemoveValueChanged(data?: any) {
+    if (!this.removeForm) {
+      return;
+    }
     const form = this.removeForm;
     for (const field in this.removeFormErrors) {
       if (this.removeFormErrors.hasOwnProperty(field)) {
@@ -206,31 +217,31 @@ export class CarsComponent implements OnInit {
   }
 
   onRemoveSubmit() {
-    var o1 = this.carservice.findOne({'where': {'registration' : this.removeForm.value.registration}});
+    var o1 = this.carservice.findOne({'where': {'registration': this.removeForm.value.registration}});
     o1.subscribe(
       (result) => {
         var mycar = result as Car;
         var o2 = this.carservice.deleteById(mycar.id);
         o2.subscribe(
           (result) => {
-            this.openSnackBar("Car deleted successfuly", "Dismiss");
+            this.openSnackBar('Car deleted successfuly', 'Dismiss');
           },
           (err) => {
-            this.openSnackBar("Could not delete car", "Dismiss");
+            this.openSnackBar('Could not delete car', 'Dismiss');
           });
       },
       (err) => {
-        this.openSnackBar("This car does not exist", "Dismiss");
+        this.openSnackBar('This car does not exist', 'Dismiss');
       }
-    )
+    );
   }
 
   changeFormErrors = {
     'serviceName': '',
     'registration': '',
     'make': '',
-    'seats': '' 
-  }
+    'seats': ''
+  };
 
   changeFormValidationMessages = {
     'serviceName': {
@@ -246,10 +257,12 @@ export class CarsComponent implements OnInit {
       'required': 'Seats are required',
       'pattern': 'Seats have to be a number'
     }
-  }
+  };
 
   onChangeValueChanged(data?: any) {
-    if (!this.changeForm) { return; }
+    if (!this.changeForm) {
+      return;
+    }
     const form = this.changeForm;
     for (const field in this.changeFormErrors) {
       if (this.changeFormErrors.hasOwnProperty(field)) {
@@ -289,14 +302,14 @@ export class CarsComponent implements OnInit {
         var o2 = this.carservice.updateAttributes(mycar.id, mycar);
         o2.subscribe(
           (result) => {
-            this.openSnackBar("Car changed successfully", "Dismiss");
+            this.openSnackBar('Car changed successfully', 'Dismiss');
           },
           (err) => {
-            this.openSnackBar("Failed to change car", "Dismiss");
+            this.openSnackBar('Failed to change car', 'Dismiss');
           });
       },
       (err) => {
-        this.openSnackBar("Could not find car with that registration", "Dismiss");
+        this.openSnackBar('Could not find car with that registration', 'Dismiss');
       });
   }
 
@@ -309,7 +322,7 @@ export class CarsComponent implements OnInit {
         this.changeForm.controls['seats'].setValue(mycar.seats);
       },
       (err) => {
-        this.openSnackBar("Could not find car with that registration", "Dismiss");
+        this.openSnackBar('Could not find car with that registration', 'Dismiss');
         this.changeForm.controls['make'].setValue('');
         this.changeForm.controls['seats'].setValue('');
       }
@@ -320,9 +333,9 @@ export class CarsComponent implements OnInit {
     'startDate': '',
     'endDate': '',
     'make': '',
-    'seats': '' ,
+    'seats': '',
     'rentalService': ''
-  }
+  };
 
   searchFormValidationMessages = {
     'startDate': {
@@ -338,13 +351,13 @@ export class CarsComponent implements OnInit {
       'required': 'Seats are required',
       'pattern': 'Seats have to be a number'
     },
-    'rentalService': {
-      
-    }
-  }
+    'rentalService': {}
+  };
 
   onSearchValueChanged(data?: any) {
-    if (!this.searchForm) { return; }
+    if (!this.searchForm) {
+      return;
+    }
     const form = this.searchForm;
     for (const field in this.searchFormErrors) {
       if (this.searchFormErrors.hasOwnProperty(field)) {
@@ -382,22 +395,22 @@ export class CarsComponent implements OnInit {
     this.carservice.find({
       'where': searchObject
     })
-    .subscribe(
-      (result) => {
-        this.foundCars = result as Car[];
-        if (this.foundCars.length == 0) {
-          this.openSnackBar("No cars match search parameters", "Dismiss");
-        }
-      },
-      (err) => {
+      .subscribe(
+        (result) => {
+          this.foundCars = result as Car[];
+          if (this.foundCars.length == 0) {
+            this.openSnackBar('No cars match search parameters', 'Dismiss');
+          }
+        },
+        (err) => {
 
-      }
-    )
+        }
+      );
   }
 
   onSearchSubmit() {
-  
-    var searchObject : any = {}
+
+    var searchObject: any = {};
 
     if (this.searchForm.value.make != '') {
       searchObject.make = this.searchForm.value.make;
@@ -411,20 +424,19 @@ export class CarsComponent implements OnInit {
           'name': this.searchForm.value.rentalService
         }
       })
-      .subscribe(
-        (result) => {
-          console.log("Found it mate");
-          var myrentalservice = result as RentalService;
-          searchObject.rentalServiceId = myrentalservice.id;
-          this.getCars(searchObject);
-        },
-        (err) => {
-          //this rental service does not exist, try without one or with another rental service
-          //need dialog component
-        }
-      )
-    } 
-    else {
+        .subscribe(
+          (result) => {
+            console.log('Found it mate');
+            var myrentalservice = result as RentalService;
+            searchObject.rentalServiceId = myrentalservice.id;
+            this.getCars(searchObject);
+          },
+          (err) => {
+            //this rental service does not exist, try without one or with another rental service
+            //need dialog component
+          }
+        );
+    } else {
       this.getCars(searchObject);
     }
   }

@@ -45,7 +45,7 @@ import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
-
+import { LoginServiceService } from './login-service.service';
 
 
 @NgModule({
@@ -94,7 +94,8 @@ import { UserComponent } from './user/user.component';
     SDKBrowserModule.forRoot()
   ],
   providers: [
-    {provide: 'baseURL', useValue: baseURL}
+    {provide: 'baseURL', useValue: baseURL},
+    LoginServiceService
   ],
   entryComponents: [
     RegisterComponent, LoginComponent

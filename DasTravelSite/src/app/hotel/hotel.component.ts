@@ -5,6 +5,7 @@ import { HotelApi, RoomApi } from '../shared/sdk/services';
 import { Hotel, Room, HotelSpecialOffer } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatSnackBar, MatTable} from '@angular/material';
+import {LoginServiceService} from '../login-service.service';
 
 @Component({
   selector: 'app-hotel',
@@ -18,6 +19,7 @@ export class HotelComponent implements OnInit {
   removeRoomActive = false;
   modifyRoomActive = false;
   addSpecialOfferActive = false;
+  userType: string;
   columnsToDisplaySpecialOffers = ['name', 'price'];
   // form related objects
   modifyHotelForm: FormGroup;
@@ -133,6 +135,7 @@ export class HotelComponent implements OnInit {
     private roomservice: RoomApi,
     private specialofferservice: HotelSpecialOfferApi,
     public snackBar: MatSnackBar,
+    private loginService: LoginServiceService,
     private fb: FormBuilder
     ) {
       LoopBackConfig.setBaseURL(baseURL);
@@ -142,7 +145,12 @@ export class HotelComponent implements OnInit {
       this.createRemoveRoomForm();
       this.createGetRoomForm();
       this.createModifyRoomForm();
-      this.createAddSpecialOfferForm()
+      this.createAddSpecialOfferForm();
+      loginService.user.subscribe(data => {
+        if (data) {
+          this.userType = data.user.type;
+        }
+      });
    }
 
   ngOnInit() {
