@@ -1,3 +1,73 @@
-<p>
-  flights works!
-</p>
+<mat-toolbar color="primary">
+  <a mat-button (click)="setToSearch()"> Search </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf="isSearch">
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="onewaySearchForm" #onewaySearchform="ngForm" (ngSubmit)="onOnewaySearchSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="origin" placeholder="From" type="text">
+          <mat-error *ngIf="onewaySearchFormErrors.origin">
+            {{ onewaySearchFormErrors.origin }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="destination" placeholder="To" type="text">
+          <mat-error *ngIf="onewaySearchFormErrors.destination">
+            {{ onewaySearchFormErrors.destination }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="takeoffDate" [matDatepicker]="takeoffDatepicker" placeholder="Takeoff Date">
+          <mat-datepicker-toggle [for]="takeoffDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #takeoffDatepicker></mat-datepicker>
+          <mat-error *ngIf="onewaySearchFormErrors.takeoffDate">
+            {{ onewaySearchFormErrors.takeoffDate }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="onewaySearchForm.invalid">
+          Submit
+      </button>
+    </form>
+  </div>
+  <div fxFlex>
+    <table #onewayFlightTable mat-table [dataSource]="onewayFlightList"
+        class="flightTable">
+
+        <ng-container matColumnDef="origin">
+          <th mat-header-cell *matHeaderCellDef> Origin </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.origin}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="destination">
+          <th mat-header-cell *matHeaderCellDef> Destination </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.destination}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="takeoffDate">
+          <th mat-header-cell *matHeaderCellDef> Takeoff </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.takeoffDate}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="landingDate">
+          <th mat-header-cell *matHeaderCellDef> Landing </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.landingDate}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Price </th>
+          <td mat-cell *matCellDef="let flight" class="flightTableCell"> {{flight.price}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="setClickedRow(row)" [class.active]="row == selectedFlight"></tr>
+      </table>  
+  </div>
+</div>
