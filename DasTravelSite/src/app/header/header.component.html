@@ -56,6 +56,7 @@
   </div>
 
   <span class="flex-spacer"></span>
+  <a mat-button routerLink='/user' *ngIf="userType">User</a>
   <a mat-button (click)="logout()" *ngIf="userType">Logout</a>
   <a mat-button (click)="openLoginForm()" *ngIf="!userType">Login</a>
   <a mat-button (click)="openRegisterForm()" *ngIf="!userType">Register</a>

@@ -882,6 +882,50 @@ export class MyuserApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `username` – `{string}` - 
+   *
+   *  - `password` – `{string}` - 
+   *
+   *  - `type` – `{string}` - 
+   *
+   *  - `email` – `{string}` - 
+   *
+   *  - `realm` – `{string}` - 
+   *
+   *  - `emailVerified` – `{boolean}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public registerAnAdmin(username: any, password: any, type: any, email: any, realm: any = {}, emailVerified: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/myusers/registerAnAdmin";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof username !== 'undefined' && username !== null) _urlParams.username = username;
+    if (typeof password !== 'undefined' && password !== null) _urlParams.password = password;
+    if (typeof type !== 'undefined' && type !== null) _urlParams.type = type;
+    if (typeof email !== 'undefined' && email !== null) _urlParams.email = email;
+    if (typeof realm !== 'undefined' && realm !== null) _urlParams.realm = realm;
+    if (typeof emailVerified !== 'undefined' && emailVerified !== null) _urlParams.emailVerified = emailVerified;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in hotel of this model.
    *
    * @param {any} id myuser id

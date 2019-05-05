@@ -89,5 +89,9 @@
   "myuser": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "UserInfo": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }

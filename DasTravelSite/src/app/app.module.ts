@@ -44,6 +44,7 @@ import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
 
 
@@ -63,7 +64,8 @@ import { LoginServiceService } from './login-service.service';
     RoomComponent,
     CarpricesComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -89,8 +91,7 @@ import { LoginServiceService } from './login-service.service';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    SDKBrowserModule.forRoot(),
-    MatTableModule
+    SDKBrowserModule.forRoot()
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL},
