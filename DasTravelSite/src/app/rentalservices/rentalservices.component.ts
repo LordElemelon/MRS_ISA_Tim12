@@ -37,6 +37,8 @@ export class RentalservicesComponent implements OnInit {
   isSearch: boolean;
   foundServices: RentalService[];
 
+  islist: boolean;
+
   constructor(@Inject('baseURL') private baseURL,
     private rentalServiceService: RentalServiceApi,
     private loginService: LoginServiceService,
@@ -72,6 +74,7 @@ export class RentalservicesComponent implements OnInit {
     this.isRemove = null;
     this.isChange = null;
     this.isSearch = null;
+    this.islist = null;
   }
 
   setToRemove() {
@@ -79,6 +82,7 @@ export class RentalservicesComponent implements OnInit {
     this.isRemove = true;
     this.isChange = null;
     this.isSearch = null;
+    this.islist = null;
   }
 
   setToChange() {
@@ -86,6 +90,7 @@ export class RentalservicesComponent implements OnInit {
     this.isRemove = null;
     this.isChange = true;
     this.isSearch = null;
+    this.islist = null;
   }
 
   setToSearch() {
@@ -93,6 +98,15 @@ export class RentalservicesComponent implements OnInit {
     this.isRemove = null;
     this.isChange = null;
     this.isSearch = true;
+    this.islist = null;
+  }
+
+  setToList() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isSearch = null;
+    this.islist = true;
   }
 
   addFormErrors = {

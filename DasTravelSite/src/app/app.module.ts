@@ -46,6 +46,7 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
+import { ListallservicesComponent } from './listallservices/listallservices.component';
 
 
 @NgModule({
@@ -65,7 +66,8 @@ import { LoginServiceService } from './login-service.service';
     CarpricesComponent,
     RegisterComponent,
     LoginComponent,
-    UserComponent
+    UserComponent,
+    ListallservicesComponent
   ],
   imports: [
     BrowserModule,
