@@ -44,6 +44,8 @@ import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
+import { ReservecarComponent } from './reservecar/reservecar.component';
+import { ItemService } from './services/item.service';
 
 
 
@@ -63,7 +65,8 @@ import { LoginComponent } from './login/login.component';
     RoomComponent,
     CarpricesComponent,
     RegisterComponent,
-    LoginComponent
+    LoginComponent,
+    ReservecarComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +96,7 @@ import { LoginComponent } from './login/login.component';
     MatTableModule
   ],
   providers: [
-    {provide: 'baseURL', useValue: baseURL}
+    {provide: 'baseURL', useValue: baseURL}, ItemService
   ],
   entryComponents: [
     RegisterComponent, LoginComponent

@@ -5,6 +5,8 @@ import { CarApi, RentalServiceApi } from '../shared/sdk/services';
 import { Car } from '../shared/sdk/models/Car';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-cars',
@@ -40,7 +42,9 @@ export class CarsComponent implements OnInit {
     private carservice: CarApi,
     private fb: FormBuilder,
     private rentalServiceService: RentalServiceApi,
-    public snackBar: MatSnackBar) { 
+    public snackBar: MatSnackBar,
+    private _router: Router,
+    private itemService: ItemService) { 
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
@@ -427,6 +431,18 @@ export class CarsComponent implements OnInit {
     else {
       this.getCars(searchObject);
     }
+  }
+
+  inspect(clicked_card: any) {
+    var to_parse = clicked_card.target.innerText;
+    var parts = to_parse.split('|');
+    var car = {
+      'make': parts[1],
+      'registration': parts[0],
+      'seats': parts[2]
+    };
+    this.itemService.setReservableCar(car as Car);
+    this._router.navigate(['/carreservation']);
   }
 
 }
