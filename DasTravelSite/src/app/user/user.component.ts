@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { LoopBackConfig, UserInfo, UserInfoApi, Myuser, MyuserApi } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { MatSelectModule} from '@angular/material/select';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-user',
@@ -13,6 +14,7 @@ export class UserComponent implements OnInit {
 
   modifyActive = true;
   homeActive = false;
+  changePasswordActive = false;
 
   loggedUser: Myuser;
   userInfo: UserInfo;
@@ -32,17 +34,37 @@ export class UserComponent implements OnInit {
   modifyUserFormErrors = [];
   modifyUserFormValidationMessages = [];
 
+  changePasswordFormErrors = {
+    'oldPassword': '',
+    'newPassword': ''
+  };
+
+  changePasswordFormValidationMessages = {
+    'oldPassword': {
+      'required': 'Old password has to be filled in',
+    },
+    'newPassword': {
+      'required': 'New password has to be filled in'
+    }
+  };
+
+
   modifyUserForm: FormGroup;
   @ViewChild('modifyUserForm') modifyUserFormDirective;
+
+  changePasswordForm: FormGroup;
+  @ViewChild('changepasswordform') changePasswordFormDirective;
 
   constructor(@Inject('baseURL') private baseURL,
     private userinfoservice: UserInfoApi,
     private myuserservice: MyuserApi,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public snackBar: MatSnackBar
   ) { 
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.createModifyUserForm();
+    this.createChangePasswordForm();
   }
 
   ngOnInit() {
@@ -82,6 +104,12 @@ export class UserComponent implements OnInit {
     );*/
   }
 
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+       duration: 2000,
+    });
+  }
+
   onValueChangedModifyUser(data?: any) {
     if (!this.modifyUserForm) {return; }
     const form = this.modifyUserForm;
@@ -101,6 +129,25 @@ export class UserComponent implements OnInit {
     }
   }
 
+  onValueChangedChangePassword(data?: any) {
+    if (!this.changePasswordForm) {return; }
+    const form = this.changePasswordForm;
+    for (const field in this.changePasswordFormErrors){
+      if (this.changePasswordFormErrors.hasOwnProperty(field)){
+        this.changePasswordFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.changePasswordFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.changePasswordFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
   createModifyUserForm() {
     this.modifyUserForm = this.fb.group({
       'firstName': '',
@@ -110,10 +157,19 @@ export class UserComponent implements OnInit {
       'phoneNumber' : '',
       'aboutMe' : ''
     });
-
     this.modifyUserForm.valueChanges
       .subscribe(data => this.onValueChangedModifyUser(data));
     this.onValueChangedModifyUser();
+  }
+
+  createChangePasswordForm() {
+    this.changePasswordForm = this.fb.group({
+      'oldPassword': ['', Validators.required],
+      'newPassword': ['', Validators.required]
+    });
+    this.changePasswordForm.valueChanges
+    .subscribe(data => this.onValueChangedChangePassword(data));
+    this.onValueChangedChangePassword();
   }
 
   setValueModifyUserForm() {
@@ -150,9 +206,29 @@ export class UserComponent implements OnInit {
     
   }
 
+  onChangePasswordSubmit() {
+    this.myuserservice.changePassword(this.changePasswordForm.value.oldPassword, this.changePasswordForm.value.newPassword)
+    .subscribe(
+      (result) => {
+        this.openSnackBar("Password successfully changed", "Dismiss");
+      },
+      (err) => {
+        this.openSnackBar("Failed to change password", "Dismiss");
+      }
+    )
+  }
+
   modifyButton(){
     this.modifyActive = true;
     this.homeActive = false;
+    this.changePasswordActive = false;
+  }
+
+  changePasswordButton() {
+    this.changePasswordActive = true;
+    this.modifyActive = false;
+    this.homeActive = false;
+
   }
 
 }

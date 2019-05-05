@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
   @ViewChild('loginform') loginFormDirective;
-
+  
   constructor(@Inject('baseURL') private baseURL,
               private myUserService: MyuserApi,
               private loginService: LoginServiceService,
