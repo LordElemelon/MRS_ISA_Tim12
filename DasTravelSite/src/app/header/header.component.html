@@ -14,20 +14,51 @@
   <div fxFlex></div>
 </div>
 <mat-toolbar color="primary">
-  <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
-  <a mat-button routerLink='/flights'> Flights </a>
-  <a mat-button routerLink='/hotels'> Hotels </a>
-  <a mat-button routerLink='/rentalServices'> Rental Services </a>
-  <a mat-button routerLink='/carPrices'>Car prices</a>
-  <a mat-button routerLink='/branches'> Branches </a>
-  <a mat-button routerLink='/hotel'> Hotel </a>
-  <a mat-button routerLink='/cars'> Cars </a>
-  <a mat-button routerLink='/airline'> Airline </a>
-  <a mat-button routerLink='/rooms'> Rooms </a>
+  <div *ngIf="!userType">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/flights'> Flights </a>
+    <a mat-button routerLink='/hotels'> Hotels </a>
+    <a mat-button routerLink='/rentalServices'> Rental Services </a>
+    <a mat-button routerLink='/cars'> Cars </a>
+    <span class="flex-spacer"></span>
+
+
+  </div>
+  <div *ngIf="userType==='registeredUser'">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/flights'> Flights </a>
+    <a mat-button routerLink='/hotels'> Hotels </a>
+    <a mat-button routerLink='/rentalServices'> Rental Services </a>
+    <a mat-button routerLink='/cars'> Cars </a>
+  </div>
+  <div *ngIf="userType==='airportAdmin'">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/flights'> Flights </a>
+    <a mat-button routerLink='/airline'> Airline </a>
+  </div>
+  <div *ngIf="userType==='hotelAdmin'">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/hotel'> Hotel </a>
+    <a mat-button routerLink='/rooms'> Rooms </a>
+  </div>
+  <div *ngIf="userType==='rentalServiceAdmin'">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/rentalServices'> Rental Services </a>
+    <a mat-button routerLink='/carPrices'>Car prices</a>
+    <a mat-button routerLink='/branches'> Branches </a>
+    <a mat-button routerLink='/cars'> Cars </a>
+  </div>
+  <div *ngIf="userType==='admin'">
+    <a mat-button routerLink='/home' routerLinkActive='active'> Home</a>
+    <a mat-button routerLink='/hotels'> Hotels </a>
+    <a mat-button routerLink='/rentalServices'> Rental Services </a>
+
+  </div>
+
   <span class="flex-spacer"></span>
-  <a mat-button (click)="openRegisterForm()">Register</a>
-  <a mat-button (click)="openLoginForm()">Login</a>
-  <a mat-button (click)="logout()">Logout</a>
-  <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
+  <a mat-button (click)="logout()" *ngIf="userType">Logout</a>
+  <a mat-button (click)="openLoginForm()" *ngIf="!userType">Login</a>
+  <a mat-button (click)="openRegisterForm()" *ngIf="!userType">Register</a>
+    <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
 

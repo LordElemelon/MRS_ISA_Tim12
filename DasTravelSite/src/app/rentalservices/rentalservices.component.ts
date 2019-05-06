@@ -5,6 +5,7 @@ import { API_VERSION } from '../shared/baseUrl';
 import { RentalServiceApi } from '../shared/sdk/services';
 import { RentalService } from '../shared/sdk/models/RentalService';
 import { MatSnackBar } from "@angular/material";
+import {LoginServiceService} from '../login-service.service';
 
 @Component({
   selector: 'app-rentalservices',
@@ -12,7 +13,7 @@ import { MatSnackBar } from "@angular/material";
   styleUrls: ['./rentalservices.component.scss']
 })
 export class RentalservicesComponent implements OnInit {
-
+  userType: string;
   addForm: FormGroup;
   toAddService: RentalService;
   @ViewChild('addform') addFormDirective;
@@ -38,6 +39,7 @@ export class RentalservicesComponent implements OnInit {
 
   constructor(@Inject('baseURL') private baseURL,
     private rentalServiceService: RentalServiceApi,
+    private loginService: LoginServiceService,
     private fb: FormBuilder,
     public snackBar: MatSnackBar) { 
       LoopBackConfig.setBaseURL(baseURL);
@@ -46,6 +48,11 @@ export class RentalservicesComponent implements OnInit {
       this.createRemoveForm();
       this.createChangeForm();
       this.createSearchForm();
+      this.loginService.user.subscribe(data => {
+        if (data) {
+          this.userType = data.user.type;
+        }
+      });
   }
 
   

@@ -47,6 +47,7 @@ import { LoginComponent } from './login/login.component';
 import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
+import { LoginServiceService } from './login-service.service';
 
 
 @NgModule({
@@ -96,7 +97,8 @@ import { ItemService } from './services/item.service';
     MatTableModule
   ],
   providers: [
-    {provide: 'baseURL', useValue: baseURL}, ItemService
+    {provide: 'baseURL', useValue: baseURL}, ItemService,
+    LoginServiceService
   ],
   entryComponents: [
     RegisterComponent, LoginComponent
