@@ -1,13 +1,13 @@
 <mat-toolbar color="primary">
-    <a mat-button (click)="setToAdd()"> Add</a>
-    <a mat-button (click)="setToRemove()"> Remove </a>
-    <a mat-button (click)="setToChange()"> Change </a>
+    <a mat-button (click)="setToAdd()" *ngIf="userType==='rentalServiceAdmin'"> Add</a>
+    <a mat-button (click)="setToRemove()" *ngIf="userType==='rentalServiceAdmin'"> Remove </a>
+    <a mat-button (click)="setToChange()" *ngIf="userType==='rentalServiceAdmin'"> Change </a>
     <a mat-button (click)="setToSearch()"> Search </a>
     <span class="flex-spacer"></span>
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
 
-<div *ngIf="isAdd">
+<div *ngIf="isAdd&&userType==='rentalServiceAdmin'" >
     <div fxFlex fxFlexOffset="20px" class="form-size">
       <form novalidate [formGroup]="addForm" #addform="ngForm" (ngSubmit)="onAddSubmit()">
           <p>
@@ -49,7 +49,7 @@
     </div>
 </div>
 
-<div *ngIf="isRemove">
+<div *ngIf="isRemove&&userType==='rentalServiceAdmin'">
   <div fxFlex fxFlexOffset="20px" class="form-size">
     <form novalidate [formGroup]="removeForm" #removeform="ngForm" (ngSubmit)="onRemoveSubmit()">
       <p>
@@ -67,7 +67,7 @@
   </div>
 </div>
 
-<div *ngIf="isChange">
+<div *ngIf="isChange&&userType==='rentalServiceAdmin'">
   <div fxFlex fxFlexOffset="20px" class="form-size">
     <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
       <p>
