@@ -388,7 +388,17 @@ export class CarsComponent implements OnInit {
     })
     .subscribe(
       (result) => {
+        this.itemService.getPrices()
+        .subscribe(
+          (result) => {
+            console.log(result);
+          },
+          (err) => {
+
+          }
+        )
         this.foundCars = result as Car[];
+
         if (this.foundCars.length == 0) {
           this.openSnackBar("No cars match search parameters", "Dismiss");
         }
@@ -423,8 +433,7 @@ export class CarsComponent implements OnInit {
           this.getCars(searchObject);
         },
         (err) => {
-          //this rental service does not exist, try without one or with another rental service
-          //need dialog component
+          this.openSnackBar("This rental service does not exist", "Dismiss");
         }
       )
     } 
