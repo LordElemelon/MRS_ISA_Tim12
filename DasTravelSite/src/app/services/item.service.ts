@@ -10,11 +10,11 @@ export class ItemService {
 
   constructor(private carPriceService : CarPriceApi) { }
 
-  toReserve: Car;
+  toReserve;
 
-  carPrices: CarPrice[];
+  carPrices: CarPrice[] = [];
 
-  setReservableCar(car: Car) {
+  setReservableCar(car) {
     this.toReserve = car;
   }
 
@@ -24,7 +24,7 @@ export class ItemService {
 
   getPrices() {
     const my_observable = new Observable(observer => {
-      if (this.carPrices) {
+      if (this.carPrices.length != 0) {
         observer.next(this.carPrices);
       } else {
         this.carPriceService.find()
@@ -34,7 +34,7 @@ export class ItemService {
             observer.next(this.carPrices);
           },
           (err) => {
-            observer.next(null);
+            observer.next([]);
           }
         )
       }

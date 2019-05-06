@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { LoopBackConfig, RentalService } from '../shared/sdk';
+import { LoopBackConfig, RentalService, CarPrice } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { CarApi, RentalServiceApi } from '../shared/sdk/services';
 import { Car } from '../shared/sdk/models/Car';
@@ -399,38 +399,43 @@ export class CarsComponent implements OnInit {
     this.carservice.find({
       'where': searchObject
     })
-<<<<<<< HEAD
     .subscribe(
       (result) => {
         this.itemService.getPrices()
         .subscribe(
-          (result) => {
-            console.log(result);
+          (result_prices) => {
+            var result_cars = result as Car[];
+            this.matchCarsAndPrices(result_cars, result_prices as CarPrice[], this.searchForm.value.startDate);
+            this.foundCars = result_cars;
+            if (this.foundCars.length == 0) {
+              this.openSnackBar("No cars match search parameters", "Dismiss");
+            }
           },
           (err) => {
-
+            this.openSnackBar("Could not get car prices, stopping search", "Dismiss");
           }
         )
-        this.foundCars = result as Car[];
-
-        if (this.foundCars.length == 0) {
-          this.openSnackBar("No cars match search parameters", "Dismiss");
-        }
       },
       (err) => {
-=======
-      .subscribe(
-        (result) => {
-          this.foundCars = result as Car[];
-          if (this.foundCars.length == 0) {
-            this.openSnackBar('No cars match search parameters', 'Dismiss');
-          }
-        },
-        (err) => {
->>>>>>> 3a60e64abb76031a7640d6c2da9c3ff1e46e3fe7
 
         }
       );
+  }
+
+  matchCarsAndPrices(cars, prices: CarPrice[], start) {
+    for (let car of cars) {
+      car.price = 0;
+      car.start = new Date(0);
+      car.category = "B"; //ovaj red treba izbaciti, tu je zarad testiranja
+      for (let price of prices) {
+        if (car.rentalServiceId == price.rentalServiceId) {
+          if (start > price.start && car.start < price.start) {
+            car.start = price.start;
+            car.price = price['cat' + car.category + 'Price'];
+          }
+        }
+      }
+    }
   }
 
   onSearchSubmit() {
@@ -470,11 +475,15 @@ export class CarsComponent implements OnInit {
     var to_parse = clicked_card.target.innerText;
     var parts = to_parse.split('|');
     var car = {
-      'make': parts[1],
-      'registration': parts[0],
-      'seats': parts[2]
+      'make': parts[1].split(':')[1],
+      'registration': parts[0].split(':')[1],
+      'seats': parts[2].split(':')[1],
+      'price': parts[3].split(':')[1],
+      'category': parts[4].split(':')[1],
+      'start': this.searchForm.value.startDate,
+      'end': this.searchForm.value.endDate
     };
-    this.itemService.setReservableCar(car as Car);
+    this.itemService.setReservableCar(car);
     this._router.navigate(['/carreservation']);
   }
 
