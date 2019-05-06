@@ -20,7 +20,7 @@ module.exports = function(Roomreservation) {
 						else {
 							Roomreservation.find({
 								where: {
-									roomid: '\"' + roomId + '\"',
+									roomId: '\"' + roomId + '\"',
 									startDate: {
 										lte: endDate
 									},

@@ -12,7 +12,7 @@
     },
     "endDate": {
       "type": "date",
-	  "required": true
+      "required": true
     },
     "price": {
       "type": "number",
@@ -21,7 +21,7 @@
   },
   "validations": [],
   "relations": {
-     "room": {
+    "room": {
       "type": "belongsTo",
       "model": "room",
       "foreignKey": ""

@@ -52,6 +52,11 @@
       "type": "hasMany",
       "model": "hotelDiscount",
       "foreignKey": ""
+    },
+    "roomReservations": {
+      "type": "hasMany",
+      "model": "roomReservation",
+      "foreignKey": ""
     }
   },
   "acls": [
