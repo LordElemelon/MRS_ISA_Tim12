@@ -19,6 +19,7 @@ export class FlightsComponent implements OnInit {
   @ViewChild('onewaySearchForm') onewaySearchFormDirective;
 
   @ViewChild('onewayFlightTable') onewayFlightTable: MatTable<any>;
+  displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
 
   isSearch: boolean;
   
@@ -121,6 +122,7 @@ export class FlightsComponent implements OnInit {
       .subscribe(
         (result) => {
           let fullFlightList: Flight[] = result as Flight[];
+          this.onewayFlightList = [];
           if (fullFlightList.length == 0) {
             this.openSnackBar('No flights match search parameters', 'Dismiss');
           }
@@ -134,12 +136,14 @@ export class FlightsComponent implements OnInit {
             console.log("Date to check for > " + compareDateStart.toLocaleDateString());
 
             fullFlightList.forEach((flight) => {
-              console.log("Flight date > " + flight.takeoffDate.toDateString());
-              if (compareDateStart.toLocaleDateString() == flight.takeoffDate.toDateString()) {
+              let fDate: Date = new Date(flight.takeoffDate)
+              console.log("Flight date > " + fDate.toLocaleDateString());
+              if (compareDateStart.toLocaleDateString() == fDate.toLocaleDateString()) {
                 this.onewayFlightList.push(flight);
+                console.log(flight)
               }
-              this.onewayFlightTable.renderRows();
             });
+            this.onewayFlightTable.renderRows();
           }
         },
         (err) => {
