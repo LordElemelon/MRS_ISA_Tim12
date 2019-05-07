@@ -15,6 +15,10 @@ import { DiscountOffer } from '../../models/DiscountOffer';
 import { CarPrice } from '../../models/CarPrice';
 import { Email } from '../../models/Email';
 import { Myuser } from '../../models/Myuser';
+import { CarReservation } from '../../models/CarReservation';
+import { Carid } from '../../models/Carid';
+import { Roomid } from '../../models/Roomid';
+import { RoomReservation } from '../../models/RoomReservation';
 
 export interface Models { [name: string]: any }
 
@@ -37,6 +41,10 @@ export class SDKModels {
     CarPrice: CarPrice,
     Email: Email,
     Myuser: Myuser,
+    CarReservation: CarReservation,
+    Carid: Carid,
+    Roomid: Roomid,
+    RoomReservation: RoomReservation,
     
   };
 

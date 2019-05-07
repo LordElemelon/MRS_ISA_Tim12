@@ -1,3 +1,47 @@
-Registration: {{car.registration}} <br>
-Make: {{car.make}} <br>
-Seats: {{car.make}} <br>
+<form (ngSubmit)="onSubmit()">
+    <p>
+        Registration: 
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.registration}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Make:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.make}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Seats:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.seats}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Category:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.category}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Start date:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.start}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        End date:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.end}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Total days:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.days}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
+        Submit
+    </button>
+</form>

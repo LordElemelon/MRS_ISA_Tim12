@@ -8,6 +8,7 @@ export interface CarInterface {
   "make": string;
   "registration": string;
   "seats": number;
+  "category": string;
   "id"?: any;
   "rentalServiceId"?: any;
   rentalService?: RentalService;
@@ -17,6 +18,7 @@ export class Car implements CarInterface {
   "make": string;
   "registration": string;
   "seats": number;
+  "category": string;
   "id": any;
   "rentalServiceId": any;
   rentalService: RentalService;
@@ -64,6 +66,10 @@ export class Car implements CarInterface {
         "seats": {
           name: 'seats',
           type: 'number'
+        },
+        "category": {
+          name: 'category',
+          type: 'string'
         },
         "id": {
           name: 'id',
