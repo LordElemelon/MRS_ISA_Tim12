@@ -16,6 +16,7 @@ module.exports = function(Carreservation) {
 							cb(err, null);
 						}
 						else{
+							//var car_promise = Carreservation.apnbvcnbcp.models.car.find({where: {id: '\"' + carId + '\"'}});
 							Carreservation.find({
 								where: {
 									carsId: '\"' + carId + '\"',

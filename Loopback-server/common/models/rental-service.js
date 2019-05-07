@@ -43,7 +43,7 @@ module.exports = function(Rentalservice) {
                     cb(null, myretval)
                 })
                 .catch((err) => {
-                    cb(null, "{}")
+                    cb(err, null)
                 });    
             })
         })

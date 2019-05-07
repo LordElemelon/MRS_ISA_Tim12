@@ -393,35 +393,6 @@ export class CarsComponent implements OnInit {
     this.onSearchValueChanged();
   }
 
-  //no logic for checking reservations because reservations are not implemented yet
-
-  getCars(searchObject: any) {
-    this.carservice.find({
-      'where': searchObject
-    })
-    .subscribe(
-      (result) => {
-        this.itemService.getPrices()
-        .subscribe(
-          (result_prices) => {
-            var result_cars = result as Car[];
-            this.matchCarsAndPrices(result_cars, result_prices as CarPrice[], this.searchForm.value.startDate);
-            this.foundCars = result_cars;
-            if (this.foundCars.length == 0) {
-              this.openSnackBar("No cars match search parameters", "Dismiss");
-            }
-          },
-          (err) => {
-            this.openSnackBar("Could not get car prices, stopping search", "Dismiss");
-          }
-        )
-      },
-      (err) => {
-
-        }
-      );
-  }
-
   matchCarsAndPrices(cars, prices: CarPrice[], start) {
     for (let car of cars) {
       car.price = 0;
@@ -440,35 +411,44 @@ export class CarsComponent implements OnInit {
 
   onSearchSubmit() {
 
-    var searchObject: any = {};
+    var make = null;
+    var seats = null;
+    var rentalService = null;
+    var startDate = new Date(this.searchForm.value.startDate).toJSON();
+    var endDate = new Date(this.searchForm.value.endDate).toJSON();
 
     if (this.searchForm.value.make != '') {
-      searchObject.make = this.searchForm.value.make;
+      make = this.searchForm.value.make;
     }
     if (this.searchForm.value.seats != '') {
-      searchObject.seats = this.searchForm.value.seats;
+      seats = this.searchForm.value.seats;
     }
     if (this.searchForm.value.rentalService != '') {
-      this.rentalServiceService.findOne({
-        'where': {
-          'name': this.searchForm.value.rentalService
-        }
-      })
-      .subscribe(
-        (result) => {
-          console.log("Found it mate");
-          var myrentalservice = result as RentalService;
-          searchObject.rentalServiceId = myrentalservice.id;
-          this.getCars(searchObject);
-        },
-        (err) => {
-          this.openSnackBar("This rental service does not exist", "Dismiss");
-        }
-      )
-    } 
-    else {
-      this.getCars(searchObject);
+      rentalService = this.searchForm.value.rentalService;
     }
+
+    this.carservice.searchCars(startDate, endDate, make, seats, rentalService)
+    .subscribe(
+      (result) => {
+        result = result.retval
+        this.itemService.getPrices()
+        .subscribe(
+          (result_prices) => {
+            var result_cars = result as Car[];
+            this.matchCarsAndPrices(result_cars, result_prices as CarPrice[], this.searchForm.value.startDate);
+            this.foundCars = result_cars;
+            if (this.foundCars.length == 0) {
+              this.openSnackBar("No cars match search parameters", "Dismiss");
+            }
+          },
+          (err) => {
+            this.openSnackBar("Could not get car prices, stopping search", "Dismiss");
+          }
+        )
+      },
+      (err) => {
+        }
+      );
   }
 
   inspect(clicked_card: any) {
