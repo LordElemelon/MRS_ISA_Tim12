@@ -3,10 +3,10 @@
 module.exports = function(Rentalservice) {
     Rentalservice.getAvailableServices = function (start,  end, name, address, cb) {
         var searchObject = {};
-        if (typeof name != 'undefined') {
+        if (name) {
             searchObject.name = name;
         }
-        if (typeof address != 'undefined') {
+        if (address) {
             searchObject.address = address;
         }
         Rentalservice.find({where: searchObject})
@@ -19,12 +19,36 @@ module.exports = function(Rentalservice) {
                             var myservice = service;
                             app.models.Car.find({'where': {rentalServiceId: myservice.id}})
                             .then((car_result) =>{
-                                if (car_result.length != 0) {
-                                    resolve(myservice); 
-                                } 
-                                else {
-                                    resolve(null);
+                                var car_id_list = [];
+                                for (var car of car_result) {
+                                    car_id_list.push('\"' + car.id + '\"');
                                 }
+                                app.models.carReservation.find({
+                                    'where': {
+                                        carsId: car_id_list,
+                                        startDate: {
+                                            lte: end
+                                        },
+                                        endDate: {
+                                            gte: start
+                                        }
+                                    },
+                                    'fields' : {
+                                        carsId: true
+                                    }
+                                })
+                                .then((reservation_result) => {
+                                    console.log("Pronadjenih kola" + reservation_result.length);
+                                    console.log("Ukupno kola" + car_id_list);
+                                    if (reservation_result.length < car_id_list.length) {
+                                        resolve(myservice);
+                                    } else {
+                                        resolve(null);
+                                    }
+                                })
+                                .catch((err) => {
+                                    reject();
+                                });
                             },
                             (err) => {
                                 reject();

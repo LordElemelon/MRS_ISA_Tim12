@@ -75,7 +75,8 @@ module.exports = function(Car) {
 						(err) => {
 							reject();
 						});
-					}));
+					})
+				);
 			}
 			Promise.all(promises)
 			.then((result) => {

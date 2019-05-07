@@ -99,16 +99,36 @@
   <div fxFlex fxFlexOffset="20px" class="form-size" >
     <form novalidate [formGroup]="searchForm" #searchform="ngForm" (ngSubmit)="onSearchSubmit()">
       <p>
-        <mat-form-field class="form-size">
+          <mat-form-field class="half-width">
+            <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+            <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+            <mat-error *ngIf="searchFormErrors.startDate">
+              {{ searchFormErrors.startDate }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" placeholder="End time">
+            <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker2></mat-datepicker>
+            <mat-error *ngIf="searchFormErrors.startDate">
+              {{ searchFormErrors.endDate }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+      <p>
+        <mat-form-field class="half-width">
           <input matInput formControlName="name" placeholder="Name" type="text">
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field class="form-size">
+        <mat-form-field class="half-width">
           <input matInput formControlName="address" placeholder="Address" type="text">
         </mat-form-field>
       </p>
-      <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()">
+      <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()" [disabled]="searchForm.invalid">
           Submit
       </button>
     </form>
