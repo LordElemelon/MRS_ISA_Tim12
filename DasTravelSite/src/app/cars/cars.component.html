@@ -120,7 +120,7 @@
           <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" placeholder="Return time">
           <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
           <mat-datepicker #myDatepicker2></mat-datepicker>
-          <mat-error *ngIf="searchFormErrors.startDate">
+          <mat-error *ngIf="searchFormErrors.endDate">
             {{ searchFormErrors.endDate }}
           </mat-error>
         </mat-form-field>
