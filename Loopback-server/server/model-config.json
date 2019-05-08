@@ -105,5 +105,9 @@
   "roomReservation": {
     "dataSource": "postgres",
     "public": true
+  },
+  "UserInfo": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }

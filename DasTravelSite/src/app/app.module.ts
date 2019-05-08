@@ -47,6 +47,7 @@ import { LoginComponent } from './login/login.component';
 import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
+import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
 
 
@@ -67,7 +68,8 @@ import { LoginServiceService } from './login-service.service';
     CarpricesComponent,
     RegisterComponent,
     LoginComponent,
-    ReservecarComponent
+    ReservecarComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -93,8 +95,7 @@ import { LoginServiceService } from './login-service.service';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    SDKBrowserModule.forRoot(),
-    MatTableModule
+    SDKBrowserModule.forRoot()
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}, ItemService,

@@ -1,0 +1,38 @@
+{
+  "name": "UserInfo",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "firstName": {
+      "type": "string"
+    },
+    "lastName": {
+      "type": "string"
+    },
+    "dateOfBirth": {
+      "type": "date"
+    },
+    "phoneNumber": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string"
+    },
+    "aboutMe": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "userId": {
+      "type": "belongsTo",
+      "model": "myuser",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

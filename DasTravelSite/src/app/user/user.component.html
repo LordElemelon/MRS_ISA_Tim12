@@ -1,0 +1,97 @@
+<mat-toolbar color="primary">
+  <a mat-button (click) = "modifyButton()"> Update </a>
+  <a mat-button (click) = "changePasswordButton()"> Change password </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf = "modifyActive"
+  fxLayout="rows"
+  fxLayoutGap="80px">
+  <div class="container"
+    fxLayout="column"
+    fxLayoutGap="10px">
+
+    <div fxFlex>
+      <div>
+          <h3>Modify your information</h3>
+          <hr>
+      </div>
+    </div>
+
+    <div fxFlex class="form-size">
+        <form novalidate [formGroup]="modifyUserForm" #fformModifyUser="ngForm" (ngSubmit)="onModifyUserSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="firstName" placeholder="First name" type="text">
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="lastName" placeholder="Last name" type="text">
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option *ngFor="let gender of genders" [value]="gender.value">
+                  {{gender.viewValue}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="dateOfBirth" [matDatepicker]="birthDatepicker" placeholder="Date of birth">
+              <mat-datepicker-toggle [for]="birthDatepicker"></mat-datepicker-toggle>
+              <mat-datepicker #birthDatepicker></mat-datepicker>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="phoneNumber" placeholder="Phone number" type="text">
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <textarea matInput formControlName="aboutMe" placeholder="About me" rows=6></textarea>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-button class="background-primary text-floral-white"
+          [disabled]="modifyUserForm.invalid">Submit</button>
+        </form>
+    </div>
+  </div>
+</div>
+
+<div *ngIf = "changePasswordActive" fxLayout="rows" fxLayoutGap="80px">
+  <div class="container" fxLayout="column" fxLayoutGap="10px">
+    <div fxFlex>
+        <div>
+            <h3>Change your password</h3>
+            <hr>
+        </div>
+      </div>
+      <div fxFlex class="form-size">
+        <form novalidate [formGroup]="changePasswordForm" #changepaswordform="ngForm" (ngSubmit)="onChangePasswordSubmit()">
+          <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="oldPassword" placeholder="Old password" type="password">
+                <mat-error *ngIf="changePasswordFormErrors.oldPassword">
+                  {{ changePasswordFormErrors.oldPassword }}
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="newPassword" placeholder="New password" type="password">
+                <mat-error *ngIf="changePasswordFormErrors.newPassword">
+                  {{ changePasswordFormErrors.newPassword }}
+                </mat-error>
+              </mat-form-field>
+            </p>
+            <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changePasswordForm.invalid">Submit</button>
+        </form>
+      </div>
+  </div>
+</div>
