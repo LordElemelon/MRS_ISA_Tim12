@@ -11,7 +11,7 @@ export class ItemService {
   constructor(private carPriceService : CarPriceApi) { }
 
   toReserve;
-
+  roomToReserve: any;
   carPrices: CarPrice[] = [];
 
   setReservableCar(car) {
@@ -41,7 +41,11 @@ export class ItemService {
     });
     return my_observable;
   }
+  setReservableRoom(room: any) {
+    this.roomToReserve = room;
+  }
 
-
-
+  getReservableRoom() {
+    return this.roomToReserve;
+  }
 }

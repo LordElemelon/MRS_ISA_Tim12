@@ -26,7 +26,7 @@
             </p>
             <p>
               <mat-form-field class="half-width">
-                <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+                <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" readonly placeholder="Start time">
                 <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
                 <mat-datepicker #myDatepicker></mat-datepicker>
                 <mat-error *ngIf="addPriceFormErrors.startDate">
@@ -84,7 +84,7 @@
                   </p>
                   <p>
                     <mat-form-field class="half-width">
-                      <input matInput formControlName="startDate" [matDatepicker]="myDatepicker2" placeholder="Start time">
+                      <input matInput formControlName="startDate" [matDatepicker]="myDatepicker2" readonly placeholder="Start time">
                       <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
                       <mat-datepicker #myDatepicker2></mat-datepicker>
                       <mat-error *ngIf="addDiscountFormErrors.startDate">
@@ -94,7 +94,7 @@
                   </p>
                   <p>
                     <mat-form-field class="half-width">
-                      <input matInput formControlName="endDate" [matDatepicker]="myDatepicker3" placeholder="End time">
+                      <input matInput formControlName="endDate" [matDatepicker]="myDatepicker3" readonly placeholder="End time">
                       <mat-datepicker-toggle [for]="myDatepicker3"></mat-datepicker-toggle>
                       <mat-datepicker #myDatepicker3></mat-datepicker>
                       <mat-error *ngIf="addDiscountFormErrors.endDate">

@@ -48,6 +48,7 @@ import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
 import { LoginServiceService } from './login-service.service';
+import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { LoginServiceService } from './login-service.service';
     CarpricesComponent,
     RegisterComponent,
     LoginComponent,
-    ReservecarComponent
+    ReservecarComponent,
+    ReserveRoomComponent
   ],
   imports: [
     BrowserModule,

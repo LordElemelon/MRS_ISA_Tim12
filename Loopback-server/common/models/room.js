@@ -49,11 +49,17 @@ module.exports = function(Room) {
             let retval = [];
             var done = new Promise((resolve, reject) => {
               let indexHotels = 0;
+              if (hotels.length === 0){
+                resolve();
+              }
               for (let hotel of hotels) {
                 hotel.rooms.find({where: {beds: beds},
                   include: ['roomReservations', 'roomPrices']})
                   .then(rooms => {
                     var doneRooms = new Promise((resolve1, reject1) => {
+                      if (rooms.length === 0)  {
+                        resolve1();
+                      }
                       let indexRooms = 0;
                       for (let room of rooms) {
                         room.roomPrices.findOne({
@@ -75,13 +81,21 @@ module.exports = function(Room) {
                                     retval.push({'hotel': hotel.name,
                                       'room': {'number': room.number,
                                         'description': room.description,
-                                        'beds': room.beds},
+                                        'beds': room.beds,
+										'id': room.id},
                                       'price': roomPrice.price});
                                   }
                                   indexRooms++;
-                                  if (indexRooms === rooms.length) resolve1();
+                                  if (indexRooms === rooms.length)  {
+                                    resolve1();
+                                  }
                                 })
                                 .catch(err => cb(err, null));
+                            } else {
+                              indexRooms++;
+                              if (indexRooms === rooms.length)  {
+                                resolve1();
+                              }
                             }
                           })
                           .catch(err => cb(err, null));
@@ -89,7 +103,9 @@ module.exports = function(Room) {
                     });
                     doneRooms.then(() => {
                       indexHotels++;
-                      if (indexHotels === hotels.length) resolve();
+                      if (indexHotels === hotels.length) {
+                        resolve();
+                      }
                     });
                   })
                   .catch(err => cb(err, null));
@@ -108,7 +124,7 @@ module.exports = function(Room) {
     accepts: [
       {arg: 'start', type: 'date', required: true},
       {arg: 'end', type: 'date', required: true},
-      {arg: 'location', type: 'string', required: true},
+      {arg: 'location', type: 'string', required: false},
       {arg: 'price', type: 'number', required: false},
       {arg: 'beds', type: 'number', required: true},
     ],
