@@ -18,5 +18,6 @@ export * from './CarReservation';
 export * from './Carid';
 export * from './Roomid';
 export * from './RoomReservation';
+export * from './UserInfo';
 export * from './SDKModels';
 export * from './logger.service';

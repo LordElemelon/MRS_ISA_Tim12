@@ -324,9 +324,48 @@ export class RentalservicesComponent implements OnInit {
 
   createSearchForm() {
     this.searchForm = this.fb.group({
+      startDate: ['', Validators.required],
+      endDate: ['', Validators.required],
       name: [''],
       address: ['']
     })
+    this.searchForm.valueChanges
+    .subscribe(data => this.onSearchValueChanged(data));
+    this.onSearchValueChanged();
+  }
+
+  searchFormErrors = {
+    'startDate': '',
+    'endDate': ''
+  }
+
+  searchFormValidationMessages = {
+    'startDate': {
+      'required': 'Start date is required for search'
+    },
+    'endDate': {
+      'required': 'End date is required for search'
+    }
+  }
+
+  onSearchValueChanged(data?:any) {
+    if (!this.searchForm) { return; }
+    const form = this.searchForm;
+    for (const field in this.searchFormErrors) {
+      if (this.searchFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.searchFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.searchFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.searchFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
   }
 
   onSearchSubmit() {
@@ -338,9 +377,13 @@ export class RentalservicesComponent implements OnInit {
     if (this.searchForm.value.address != '') {
       address = this.searchForm.value.address
     }
+
+    var startDate = new Date(this.searchForm.value.startDate).toJSON();
+    var endDate = new Date(this.searchForm.value.endDate).toJSON();
+
     //these two values will change once we actually have resrvations
-    this.rentalServiceService.getAvailableServices(1000,
-      2000, name, address)
+    this.rentalServiceService.getAvailableServices(startDate,
+      endDate, name, address)
     .subscribe((result) => {
       this.foundServices = result.retval as RentalService[];
       if (this.foundServices.length == 0) {

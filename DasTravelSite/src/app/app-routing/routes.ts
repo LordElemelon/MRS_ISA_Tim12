@@ -12,6 +12,7 @@ import { RoomComponent } from '../room/room.component';
 import { CarpricesComponent } from  '../carprices/carprices.component';
 import { ReservecarComponent } from '../reservecar/reservecar.component';
 import { ReserveRoomComponent } from '../reserve-room/reserve-room.component';
+import { UserComponent } from  '../user/user.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -28,4 +29,6 @@ export const routes: Routes = [
     {path: 'carPrices', component: CarpricesComponent},
     {path: 'carreservation', component: ReservecarComponent},
     {path: 'roomreservation', component: ReserveRoomComponent}
+];
+    {path: 'user', component: UserComponent}
 ];

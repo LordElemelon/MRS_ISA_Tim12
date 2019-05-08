@@ -47,6 +47,7 @@ import { LoginComponent } from './login/login.component';
 import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
+import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 
@@ -69,7 +70,8 @@ import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
     RegisterComponent,
     LoginComponent,
     ReservecarComponent,
-    ReserveRoomComponent
+    ReserveRoomComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -95,8 +97,7 @@ import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    SDKBrowserModule.forRoot(),
-    MatTableModule
+    SDKBrowserModule.forRoot()
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}, ItemService,

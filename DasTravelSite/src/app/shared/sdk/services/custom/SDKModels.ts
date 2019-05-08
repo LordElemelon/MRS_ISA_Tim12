@@ -19,6 +19,7 @@ import { CarReservation } from '../../models/CarReservation';
 import { Carid } from '../../models/Carid';
 import { Roomid } from '../../models/Roomid';
 import { RoomReservation } from '../../models/RoomReservation';
+import { UserInfo } from '../../models/UserInfo';
 
 export interface Models { [name: string]: any }
 
@@ -45,6 +46,7 @@ export class SDKModels {
     Carid: Carid,
     Roomid: Roomid,
     RoomReservation: RoomReservation,
+    UserInfo: UserInfo,
     
   };
 

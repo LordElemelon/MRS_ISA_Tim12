@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = function(Carreservation) {
-	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, cb) {
+	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
 			postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + carId + "\"' FOR UPDATE;", null, (err, result) => {
@@ -16,6 +16,7 @@ module.exports = function(Carreservation) {
 							cb(err, null);
 						}
 						else{
+							//var car_promise = Carreservation.apnbvcnbcp.models.car.find({where: {id: '\"' + carId + '\"'}});
 							Carreservation.find({
 								where: {
 									carsId: '\"' + carId + '\"',
@@ -35,8 +36,9 @@ module.exports = function(Carreservation) {
 											tx.rollback();
 											cb(new Error('Can not reserve on this date'), null);
 										}else{
+											console.log(rentalid);
 											Carreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, carsId: carId}, {transaction: tx},
+												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid}, {transaction: tx},
 											(err, res) => {
 												if (err) {
 													tx.rollback();
@@ -63,7 +65,8 @@ module.exports = function(Carreservation) {
 				  {arg: 'endDate', type: 'date', required: true},
 				  {arg:'carId', type: 'string', required: true},
 				  {arg:'userId', type: 'string', required: true},
-				  {arg: 'price', type: 'number', required: true}],
+				  {arg: 'price', type: 'number', required: true},
+				  {arg: 'rentalid', type: 'string', required: true}],
         http: {path: '/makeReservation', verb: 'post' },
         returns: {type: 'object', arg: 'retval'}
     })

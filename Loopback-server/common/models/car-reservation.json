@@ -30,6 +30,11 @@
       "type": "belongsTo",
       "model": "myuser",
       "foreignKey": ""
+    },
+    "rentalService": {
+      "type": "belongsTo",
+      "model": "rentalService",
+      "foreignKey": ""
     }
   },
   "acls": [],

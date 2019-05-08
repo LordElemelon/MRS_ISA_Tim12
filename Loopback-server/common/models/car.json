@@ -21,10 +21,10 @@
       "type": "number",
       "required": true
     },
-	"category": {
-		"type": "string",
-		"required": true
-	}
+    "category": {
+      "type": "string",
+      "required": true
+    }
   },
   "validations": [],
   "relations": {
@@ -52,6 +52,13 @@
       "principalType": "ROLE",
       "principalId": "rentalServiceAdmin",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "searchCars"
     }
   ],
   "methods": {}

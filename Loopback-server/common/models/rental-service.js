@@ -2,11 +2,13 @@
 
 module.exports = function(Rentalservice) {
     Rentalservice.getAvailableServices = function (start,  end, name, address, cb) {
+        var start_string = new Date(start).toISOString().slice(0, 19).replace('T', ' ');
+        var end_string = new Date(end).toISOString().slice(0, 19).replace('T', ' ');
         var searchObject = {};
-        if (typeof name != 'undefined') {
+        if (name) {
             searchObject.name = name;
         }
-        if (typeof address != 'undefined') {
+        if (address) {
             searchObject.address = address;
         }
         Rentalservice.find({where: searchObject})
@@ -17,18 +19,28 @@ module.exports = function(Rentalservice) {
                     promises.push(
                         new Promise(function(resolve, reject) {
                             var myservice = service;
-                            app.models.Car.find({'where': {rentalServiceId: myservice.id}})
-                            .then((car_result) =>{
-                                if (car_result.length != 0) {
-                                    resolve(myservice); 
-                                } 
-                                else {
+                            const mongo = Rentalservice.app.dataSources.MongoDB;
+                            var carCollection = mongo.connector.collection(app.models.Car.modelName);
+                            carCollection.count({'rentalServiceId': myservice.id})
+                            .then((car_count) => {
+                                if (car_count == 0) {
                                     resolve(null);
+                                } else {
+                                    var query_string = "SELECT COUNT (DISTINCT carsid) FROM carreservation WHERE startdate < DATE(\'"
+                                     + end_string + "\') and enddate > (\'"  + start_string + "\') and rentalserviceid = '\"" + myservice.id + "\"';";
+                                     const postgres = Rentalservice.app.dataSources.postgres;
+                                     postgres.connector.execute(query_string, null, (err, result) => {
+                                         if (result[0].count < car_count) {
+                                             resolve(myservice);
+                                         } else {
+                                             resolve(null);
+                                         }
+                                    });
                                 }
-                            },
-                            (err) => {
-                                reject();
                             })
+                            .catch((err) => {
+                                reject();
+                            });
                         })
                     );
                 }
@@ -43,7 +55,7 @@ module.exports = function(Rentalservice) {
                     cb(null, myretval)
                 })
                 .catch((err) => {
-                    cb(null, "{}")
+                    cb(err, null)
                 });    
             })
         })

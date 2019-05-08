@@ -1,7 +1,8 @@
 /* tslint:disable */
 import {
   Car,
-  Myuser
+  Myuser,
+  RentalService
 } from '../index';
 
 declare var Object: any;
@@ -12,8 +13,10 @@ export interface CarReservationInterface {
   "id"?: number;
   "carsId"?: any;
   "myuserId"?: any;
+  "rentalServiceId"?: any;
   cars?: Car;
   myuser?: Myuser;
+  rentalService?: RentalService;
 }
 
 export class CarReservation implements CarReservationInterface {
@@ -23,8 +26,10 @@ export class CarReservation implements CarReservationInterface {
   "id": number;
   "carsId": any;
   "myuserId": any;
+  "rentalServiceId": any;
   cars: Car;
   myuser: Myuser;
+  rentalService: RentalService;
   constructor(data?: CarReservationInterface) {
     Object.assign(this, data);
   }
@@ -82,6 +87,10 @@ export class CarReservation implements CarReservationInterface {
           name: 'myuserId',
           type: 'any'
         },
+        "rentalServiceId": {
+          name: 'rentalServiceId',
+          type: 'any'
+        },
       },
       relations: {
         cars: {
@@ -98,6 +107,14 @@ export class CarReservation implements CarReservationInterface {
           model: 'Myuser',
           relationType: 'belongsTo',
                   keyFrom: 'myuserId',
+          keyTo: 'id'
+        },
+        rentalService: {
+          name: 'rentalService',
+          type: 'RentalService',
+          model: 'RentalService',
+          relationType: 'belongsTo',
+                  keyFrom: 'rentalServiceId',
           keyTo: 'id'
         },
       }

@@ -67,6 +67,7 @@ import { CarReservationApi } from './services/custom/CarReservation';
 import { CaridApi } from './services/custom/Carid';
 import { RoomidApi } from './services/custom/Roomid';
 import { RoomReservationApi } from './services/custom/RoomReservation';
+import { UserInfoApi } from './services/custom/UserInfo';
 /**
 * @module SDKBrowserModule
 * @description
@@ -116,6 +117,7 @@ export class SDKBrowserModule {
         CaridApi,
         RoomidApi,
         RoomReservationApi,
+        UserInfoApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
