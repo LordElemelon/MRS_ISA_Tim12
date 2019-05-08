@@ -196,7 +196,7 @@ export class RoomComponent implements OnInit {
   createAddDiscountForm() {
     this.addDiscountForm = this.fb.group({
       discount : [0, [Validators.required, Validators.min(1), Validators.max(100)]],
-      startDate: [new Date, [Validators.required]],
+      startDate: [new Date(), [Validators.required]],
       endDate: [new Date(), [Validators.required]]
     });
     this.addDiscountForm.valueChanges

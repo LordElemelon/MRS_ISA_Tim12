@@ -1,0 +1,19 @@
+{
+  "name": "carid",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "car": {
+      "type": "belongsTo",
+      "model": "car",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

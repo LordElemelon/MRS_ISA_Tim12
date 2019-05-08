@@ -72,13 +72,15 @@ module.exports = function (Myuser) {
       type: type, email: email, realm: realm, emailVerified: emailVerified};
     Myuser.create(user)
       .then((result, err) =>{
-        let retval = result;
-        Myuser.getApp((err, app) => {
-          if (err) return cb(err, null);
-          else {
-            var Role = app.models.Role;
-            var RoleMapping = app.models.RoleMapping;
-            Role.findOne({where: {name: user.type}},
+        if (err) return cb(err, null)
+        else {
+          let retval = result;
+          Myuser.getApp((err, app) => {
+            if (err) return cb(err, null);
+            else {
+              var Role = app.models.Role;
+              var RoleMapping = app.models.RoleMapping;
+              Role.findOne({where: {name: user.type}},
               (err, role) => {
                 if (err) return cb(err, null);
                 else {
@@ -101,8 +103,9 @@ module.exports = function (Myuser) {
                   }
                 }
               });
-          }
-        });
+            }
+          });
+        }
       }, err => cb(err, null));
   };
 

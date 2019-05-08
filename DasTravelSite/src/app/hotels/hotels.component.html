@@ -1,7 +1,8 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "addButton()" *ngIf="userType==='admin'"> Add</a>
   <a mat-button (click) = "removeButton()" *ngIf="userType==='admin'"> Remove a hotel </a>
-  <a mat-button (click) = "modifyButton()"> Search </a>
+  <a mat-button (click) = "searchButton()"> Search </a>
+  <a mat-button (click) = "searchRoomsButton()"> Rooms </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
@@ -54,41 +55,109 @@
 
 </div>
 
-<div *ngIf = "modifyActive" >
+<div *ngIf = "searchActive">
   <div class="container"
   fxLayout="column"
   fxLayoutGap="10px">
     <div fxFlex>
-        <div>
-          <h3>Search for a hotel</h3>
-        </div>
-        <div>
-          <form novalidate [formGroup]="searchHotelForm" #fformSearchHotels="ngForm" (ngSubmit)="onSearchHotelsSubmit()">
-            <p>
-              <mat-form-field class="half-width">
-                <input matInput formControlName="name" placeholder="Hotel Name" type="text">
-              </mat-form-field>
-              <mat-form-field class="half-width">
-                <input matInput formControlName="address" placeholder="Address" type="text">
-              </mat-form-field>
-            </p>
-            <p>
-              <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
-            </p>
-            <hr>
-          </form>
-        </div>
+      <div>
+        <form novalidate [formGroup]="searchHotelForm" #fformSearchHotels="ngForm" (ngSubmit)="onSearchHotelsSubmit()">
+          <mat-form-field class="half-width">
+            <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+          </mat-form-field>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="address" placeholder="Address" type="text">
+          </mat-form-field>
+          <p>
+            <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
+          </p>
+          <hr>
+        </form>
+      </div>
     </div>
     <div fxFlex>
       <mat-grid-list cols="3" rowHeight="200px">
         <mat-grid-tile *ngFor="let hotel of hotelsFound">
           <mat-card routerLink="" class="pointer">
             <mat-card-content>
-                {{hotel.name}} | {{hotel.address}} | {{hotel.description}}
+              {{hotel.name}} | {{hotel.address}} | {{hotel.description}}
             </mat-card-content>
           </mat-card>
         </mat-grid-tile>
-      </mat-grid-list>         
+      </mat-grid-list>
     </div>
   </div>
+</div>
+
+<div *ngIf="searchRoomsActive">
+  <div class="container"
+       fxLayout="column"
+       fxLayoutGap="10px">
+    <div fxFlex>
+      <div>
+        <form novalidate [formGroup]="searchRoomsForm" #fformSearchRooms="ngForm" (ngSubmit)="onSearchRoomsSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="startDate" [matDatepicker]="myDatepicker1" readonly placeholder="Start date">
+              <mat-datepicker-toggle [for]="myDatepicker1"></mat-datepicker-toggle>
+              <mat-datepicker #myDatepicker1></mat-datepicker>
+              <mat-error *ngIf="searchRoomsFormErrors.startDate">
+                {{ searchRoomsFormErrors.startDate}}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" readonly placeholder="End date">
+              <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+              <mat-datepicker #myDatepicker2></mat-datepicker>
+              <mat-error *ngIf="searchRoomsFormErrors.endDate">
+                {{ searchRoomsFormErrors.endDate}}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width" style="height:50%">
+              <input matInput formControlName="beds" placeholder="Number of beds" type="number">
+              <mat-error *ngIf="searchRoomsFormErrors.beds">
+                {{ searchRoomsFormErrors.beds}}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="price" placeholder="Max price" type="number">
+              <mat-error *ngIf="searchRoomsFormErrors.price">
+                {{ searchRoomsFormErrors.price}}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="address" placeholder="Address" type="text">
+            </mat-form-field>
+          <p>
+            <button type="submit" mat-button class="background-primary text-floral-white"
+            [disabled]="searchRoomsForm.invalid">Submit</button>
+          </p>
+          <hr>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="searchDone">
+  <mat-grid-list cols="3" rowHeight="200px">
+    <mat-grid-tile *ngFor="let room of foundRooms">
+      <mat-card class="pointer" (click) ="clickRoom(foundRooms.indexOf(room))">
+        <mat-card-content>
+          <h3>{{foundRooms.indexOf(room)}}</h3>
+          Hotel: {{room.hotel}} <br>
+          Room number: {{room.room.number}} <br>
+          Room description: {{room.room.description}} <br>
+          Price: {{room.price}}
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
 </div>
