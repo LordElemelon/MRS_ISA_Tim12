@@ -1,0 +1,42 @@
+{
+  "name": "carReservation",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    },
+    "price": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cars": {
+      "type": "belongsTo",
+      "model": "car",
+      "foreignKey": ""
+    },
+    "myuser": {
+      "type": "belongsTo",
+      "model": "myuser",
+      "foreignKey": ""
+    },
+    "rentalService": {
+      "type": "belongsTo",
+      "model": "rentalService",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

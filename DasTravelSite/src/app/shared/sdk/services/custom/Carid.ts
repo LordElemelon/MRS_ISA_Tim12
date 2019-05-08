@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Car } from '../../models/Car';
+import { Carid } from '../../models/Carid';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { RentalService } from '../../models/RentalService';
+import { Car } from '../../models/Car';
 
 
 /**
- * Api services for the `Car` model.
+ * Api services for the `Carid` model.
  */
 @Injectable()
-export class CarApi extends BaseLoopBackApi {
+export class CaridApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -31,9 +31,9 @@ export class CarApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation rentalService.
+   * Fetches belongsTo relation car.
    *
-   * @param {any} id car id
+   * @param {any} id carid id
    *
    * @param {boolean} refresh 
    *
@@ -43,13 +43,13 @@ export class CarApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Car` object.)
+   * This usually means the response is a `Carid` object.)
    * </em>
    */
-  public getRentalService(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+  public getCar(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/cars/:id/rentalService";
+    "/carids/:id/car";
     let _routeParams: any = {
       id: id
     };
@@ -73,13 +73,13 @@ export class CarApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Car` object.)
+   * This usually means the response is a `Carid` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/cars";
+    "/carids";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -92,7 +92,7 @@ export class CarApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id car id
+   * @param {any} id carid id
    *
    * @param {object} data Request data.
    *
@@ -104,13 +104,13 @@ export class CarApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Car` object.)
+   * This usually means the response is a `Carid` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/cars/:id";
+    "/carids/:id";
     let _routeParams: any = {
       id: id
     };
@@ -123,51 +123,10 @@ export class CarApi extends BaseLoopBackApi {
   }
 
   /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   *  - `startDate` – `{date}` - 
-   *
-   *  - `endDate` – `{date}` - 
-   *
-   *  - `make` – `{string}` - 
-   *
-   *  - `seats` – `{number}` - 
-   *
-   *  - `rentalservice` – `{string}` - 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `retval` – `{object}` - 
-   */
-  public searchCars(startDate: any, endDate: any, make: any = {}, seats: any = {}, rentalservice: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/cars/searchCars";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
-    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
-    if (typeof make !== 'undefined' && make !== null) _urlParams.make = make;
-    if (typeof seats !== 'undefined' && seats !== null) _urlParams.seats = seats;
-    if (typeof rentalservice !== 'undefined' && rentalservice !== null) _urlParams.rentalservice = rentalservice;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * The name of the model represented by this $resource,
-   * i.e. `Car`.
+   * i.e. `Carid`.
    */
   public getModelName() {
-    return "Car";
+    return "Carid";
   }
 }

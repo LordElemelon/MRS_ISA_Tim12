@@ -1,10 +1,12 @@
-import {Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy} from '@angular/core';
-import {LoopBackConfig, RentalService} from '../shared/sdk';
-import {API_VERSION} from '../shared/baseUrl';
-import {CarApi, RentalServiceApi} from '../shared/sdk/services';
-import {Car} from '../shared/sdk/models/Car';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { LoopBackConfig, RentalService, CarPrice } from '../shared/sdk';
+import { API_VERSION } from '../shared/baseUrl';
+import { CarApi, RentalServiceApi } from '../shared/sdk/services';
+import { Car } from '../shared/sdk/models/Car';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material';
+import { Router } from '@angular/router';
+import { ItemService } from '../services/item.service';
 import {LoginServiceService} from '../login-service.service';
 
 @Component({
@@ -42,7 +44,9 @@ export class CarsComponent implements OnInit {
               private fb: FormBuilder,
               private rentalServiceService: RentalServiceApi,
               private loginService: LoginServiceService,
-              public snackBar: MatSnackBar) {
+              public snackBar: MatSnackBar,
+              private _router: Router,
+              private itemService: ItemService) {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
     this.createAddForm();
@@ -389,56 +393,78 @@ export class CarsComponent implements OnInit {
     this.onSearchValueChanged();
   }
 
-  //no logic for checking reservations because reservations are not implemented yet
-
-  getCars(searchObject: any) {
-    this.carservice.find({
-      'where': searchObject
-    })
-      .subscribe(
-        (result) => {
-          this.foundCars = result as Car[];
-          if (this.foundCars.length == 0) {
-            this.openSnackBar('No cars match search parameters', 'Dismiss');
+  matchCarsAndPrices(cars, prices: CarPrice[], start) {
+    for (let car of cars) {
+      car.price = 0;
+      car.start = new Date(0);
+      car.category = "B"; //ovaj red treba izbaciti, tu je zarad testiranja
+      for (let price of prices) {
+        if (car.rentalServiceId == price.rentalServiceId) {
+          if (start > price.start && car.start < price.start) {
+            car.start = price.start;
+            car.price = price['cat' + car.category + 'Price'];
           }
-        },
-        (err) => {
-
         }
-      );
+      }
+    }
   }
 
   onSearchSubmit() {
 
-    var searchObject: any = {};
+    var make = null;
+    var seats = null;
+    var rentalService = null;
+    var startDate = new Date(this.searchForm.value.startDate).toJSON();
+    var endDate = new Date(this.searchForm.value.endDate).toJSON();
 
     if (this.searchForm.value.make != '') {
-      searchObject.make = this.searchForm.value.make;
+      make = this.searchForm.value.make;
     }
     if (this.searchForm.value.seats != '') {
-      searchObject.seats = this.searchForm.value.seats;
+      seats = this.searchForm.value.seats;
     }
     if (this.searchForm.value.rentalService != '') {
-      this.rentalServiceService.findOne({
-        'where': {
-          'name': this.searchForm.value.rentalService
-        }
-      })
+      rentalService = this.searchForm.value.rentalService;
+    }
+
+    this.carservice.searchCars(startDate, endDate, make, seats, rentalService)
+    .subscribe(
+      (result) => {
+        result = result.retval
+        this.itemService.getPrices()
         .subscribe(
-          (result) => {
-            console.log('Found it mate');
-            var myrentalservice = result as RentalService;
-            searchObject.rentalServiceId = myrentalservice.id;
-            this.getCars(searchObject);
+          (result_prices) => {
+            var result_cars = result as Car[];
+            this.matchCarsAndPrices(result_cars, result_prices as CarPrice[], this.searchForm.value.startDate);
+            this.foundCars = result_cars;
+            if (this.foundCars.length == 0) {
+              this.openSnackBar("No cars match search parameters", "Dismiss");
+            }
           },
           (err) => {
-            //this rental service does not exist, try without one or with another rental service
-            //need dialog component
+            this.openSnackBar("Could not get car prices, stopping search", "Dismiss");
           }
-        );
-    } else {
-      this.getCars(searchObject);
-    }
+        )
+      },
+      (err) => {
+        }
+      );
+  }
+
+  inspect(clicked_card: any) {
+    var to_parse = clicked_card.target.innerText;
+    var parts = to_parse.split('|');
+    var car = {
+      'make': parts[1].split(':')[1],
+      'registration': parts[0].split(':')[1],
+      'seats': parts[2].split(':')[1],
+      'price': parts[3].split(':')[1],
+      'category': parts[4].split(':')[1],
+      'start': this.searchForm.value.startDate,
+      'end': this.searchForm.value.endDate
+    };
+    this.itemService.setReservableCar(car);
+    this._router.navigate(['/carreservation']);
   }
 
 }

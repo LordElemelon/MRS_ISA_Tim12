@@ -90,6 +90,22 @@
     "dataSource": "MongoDB",
     "public": true
   },
+  "carReservation": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "carid": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "roomid": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "roomReservation": {
+    "dataSource": "postgres",
+    "public": true
+  },
   "UserInfo": {
     "dataSource": "MongoDB",
     "public": true

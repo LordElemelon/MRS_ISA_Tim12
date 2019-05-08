@@ -54,8 +54,13 @@ module.exports = function (app) {
         name: 'rentalServiceAdmin',
       }, (err, role) => {
         if (err) next(err);
+		else {
+			//insertRentalAdmin(app, Myuser, Role);
+		}
       });
-    }
+    } else {
+		//insertRentalAdmin(app, Myuser, Role);
+	}
   });
 };
 
@@ -72,8 +77,9 @@ function insertAdmin(app, Myuser, Role) {
 
         var RoleMapping = app.models.RoleMapping;
 
-        RoleMapping.destroyAll();
+		RoleMapping.destroyAll();
 
+				
         Role.findOne({where: {name: 'admin'}}, (err, role) => {
           if (!role) {
             Role.create({
@@ -100,3 +106,44 @@ function insertAdmin(app, Myuser, Role) {
     }
   });
 }
+/*  za sada odustajem od ovog cuda, baguje
+function insertRentalAdmin(app, Myuser, Role) {
+	Myuser.findOne({where: {username: 'rentaladmin'}}, (err, users, next) => {
+		if (!users) {
+			Myuser.create([
+				{
+					username: 'rentaladmin', type: 'rentalServiceAdmin', email: 'zal@gmail.com',
+					password: 'password', emailVerified: true,
+				}	
+			], (err, users) => { 
+				if (err) next(err);
+				Role.findOne({where: {name: 'rentalServiceAdmin'}}, 
+					(err, role) => {
+						if (!role) {
+							Role.create({
+							  name: 'rentalServiceAdmin',
+							}, (err, role) => {
+							  if (err) next(err);
+							  role.principals.create({
+							   principalType: RoleMapping.USER,
+								principalId: users[0].id,
+							  }, (err, principal) => {
+								if (err) next(err);
+							  });
+							});
+					   } else {
+						   console.log("Kreiram svoju rollu");
+						   role.principals.create({
+							principalType: RoleMapping.USER,
+							principalId: users[0].id,
+						}, (err, principal) => {
+							if (err) next(err);
+						});
+				    }
+				});
+			});
+			
+		}
+	});
+}
+*/
