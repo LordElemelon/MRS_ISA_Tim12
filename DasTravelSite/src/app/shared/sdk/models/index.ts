@@ -15,5 +15,6 @@ export * from './CarPrice';
 export * from './Email';
 export * from './Myuser';
 export * from './UserInfo';
+export * from './Seat';
 export * from './BaseModels';
 export * from './FireLoopRef';

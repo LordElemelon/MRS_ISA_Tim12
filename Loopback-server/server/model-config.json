@@ -93,5 +93,9 @@
   "UserInfo": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "seat": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }

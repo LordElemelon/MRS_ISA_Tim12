@@ -64,6 +64,7 @@ import { CarPriceApi } from './services/custom/CarPrice';
 import { EmailApi } from './services/custom/Email';
 import { MyuserApi } from './services/custom/Myuser';
 import { UserInfoApi } from './services/custom/UserInfo';
+import { SeatApi } from './services/custom/Seat';
 /**
 * @module SDKBrowserModule
 * @description
@@ -110,6 +111,7 @@ export class SDKBrowserModule {
         EmailApi,
         MyuserApi,
         UserInfoApi,
+        SeatApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }
