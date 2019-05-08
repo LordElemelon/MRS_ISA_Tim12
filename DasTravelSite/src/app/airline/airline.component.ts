@@ -36,7 +36,7 @@ export class AirlineComponent implements OnInit {
   seatList: Seat[];
 
   displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
-  displayedColumnsSeat: string[] = ['row', 'column', 'classType'];
+  displayedColumnsSeats: string[] = ['row', 'column', 'classType'];
   classTypes = [
     {
       "value":"e",
@@ -57,6 +57,12 @@ export class AirlineComponent implements OnInit {
   
   modifyFlightForm: FormGroup;
   @ViewChild('fformModifyFlight') modifyFlightFormDirective;
+
+  addSeatForm: FormGroup;
+  @ViewChild('fformAddSeat') addSeatFormDirective;
+  
+  modifySeatForm: FormGroup;
+  @ViewChild('fformModifySeat') modifySeatFormDirective;
 
   @ViewChild('flightTable') flightTable: MatTable<any>;
   @ViewChild('seatTable') seatTable: MatTable<any>;
@@ -147,9 +153,28 @@ export class AirlineComponent implements OnInit {
     }
   };
 
+  modifySeatFormErrors = {
+    'row': '',
+    'column': '',
+    'classType': ''
+  };
+
+  modifySeatFormValidationMessages = {
+    'row': {
+      'required': 'Row of seat is required'
+    },
+    'column': {
+      'required': 'Column of seat is required'
+    },
+    'classType': {
+      'required': 'Class of seat is required'
+    }
+  };
+
   constructor(@Inject('baseURL') private baseURL,
     private airlineservice: AirlineApi,
     private flightservice: FlightApi,
+    private seatservice: SeatApi,
     private fb: FormBuilder,
     public snackBar: MatSnackBar
   ) {
@@ -158,6 +183,8 @@ export class AirlineComponent implements OnInit {
     this.createModifyAirlineForm();
     this.createAddFlightForm();
     this.createModifyFlightForm();
+    this.createAddSeatForm();
+    this.createModifySeatForm();
     this.setClickedRow = function(index){
       this.selectedFlight = index;
     }
@@ -182,9 +209,14 @@ export class AirlineComponent implements OnInit {
   refreshSeats() {
     this.flightservice.getSeats(this.selectedFlight.id)
     .subscribe((seats: Seat[]) => {
+      console.log("YA SEATS >" + JSON.stringify(seats));
       this.seatList = seats;
+      this.seatTable.dataSource = this.seatList;
+      this.seatTable.renderRows();
     });
   }
+
+  
 
   ngOnInit() {
 
@@ -349,7 +381,96 @@ export class AirlineComponent implements OnInit {
     })
   }
 
+  /****** SEAT FORMS ******/
 
+  onValueChangedAddSeat(data?: any) {
+    if (!this.addSeatForm) {return; }
+    const form = this.addSeatForm;
+    for (const field in this.addSeatFormErrors){
+      if (this.addSeatFormErrors.hasOwnProperty(field)){
+        this.addSeatFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.addSeatFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.addSeatFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createAddSeatForm() {
+    this.addSeatForm = this.fb.group({
+      'row': ['', Validators.required],
+      'column': ['', Validators.required],
+      'classType': ['', Validators.required]
+    });
+    this.addSeatForm.valueChanges
+    .subscribe(data => this.onValueChangedAddSeat(data));
+    this.onValueChangedAddSeat();
+  }
+
+  onAddSeatSubmit() {
+    this.newSeat = this.addSeatForm.value;
+    this.flightservice.createSeats(this.selectedFlight.id, this.newSeat)
+    .subscribe(result => {
+      this.refreshSeats();
+    });
+  }
+
+  onValueChangedModifySeat(data?: any) {
+    if (!this.modifySeatForm) {return; }
+    const form = this.modifySeatForm;
+    for (const field in this.modifySeatFormErrors){
+      if (this.modifySeatFormErrors.hasOwnProperty(field)){
+        this.modifySeatFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.modifySeatFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.modifySeatFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createModifySeatForm() {
+    this.modifySeatForm = this.fb.group({
+      'row': ['', Validators.required],
+      'column': ['', Validators.required],
+      'classType': ['', Validators.required]
+    });
+    this.modifySeatForm.valueChanges
+    .subscribe(data => this.onValueChangedModifySeat(data));
+    this.onValueChangedModifySeat();
+  }
+
+  setValueModifySeatForm() {
+    this.modifySeatForm.setValue({
+      'row': this.selectedSeat.row,
+      'column': this.selectedSeat.column,
+      'classType': this.selectedSeat.classType
+    });
+  }
+
+  onModifySeatSubmit() {
+    const toModify = this.modifySeatForm.value;
+    toModify.flightId = this.selectedFlight.id;
+    console.log(this.selectedSeat);
+    this.seatservice.updateAttributes(this.selectedSeat.id, toModify)
+    .subscribe(result => {
+      this.refreshSeats();
+      this.cancelModifySeatButton();
+    })
+  }
+
+  /****** BUTTON PRESSES ******/
 
   modifyButton(){
     this.modifyActive = true;
@@ -445,8 +566,51 @@ export class AirlineComponent implements OnInit {
 
       this.homeActive = false;
       
+      console.log("YO WTF U HERE M8? > " + this.selectedFlight);
       this.refreshSeats();
     }
+  }
+
+  modifySeatButton(){
+    if (this.selectedSeat != null) {
+      this.modifyActive = false;
+
+      this.flightsActive = false;
+      this.modifyFlightActive = false;
+    
+      this.seatsActive = false;
+      this.modifySeatActive = true;
+      
+      this.homeActive = false;
+
+      this.setValueModifySeatForm();
+    }
+  }
+
+  deleteSeatButton(){
+    if (this.selectedSeat != null) {
+      this.seatservice.deleteById(this.selectedSeat.id)
+      .subscribe(result => {
+        console.log(result);
+        this.selectedSeat = null;
+        this.refreshSeats();
+      });
+    }
+  }
+
+  cancelModifySeatButton(){
+    this.modifyActive = false;
+
+    this.flightsActive = false;
+    this.modifyFlightActive = false;
+    
+    this.seatsActive = true;
+    this.modifySeatActive = false;
+
+    this.homeActive = false;
+
+    this.selectedSeat = null;
+    this.seatTable.renderRows();
   }
 
 }

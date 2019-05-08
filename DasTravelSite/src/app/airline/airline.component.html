@@ -331,7 +331,7 @@
         </ng-container>
       
         <tr mat-header-row *matHeaderRowDef="displayedColumnsSeats"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsSeats;" (click)="setClickedSeat(row)" [class.active]="row == selectedSeat"></tr>
+        <tr mat-row *matRowDef="let seatRow; columns: displayedColumnsSeats;" (click)="setClickedSeat(seatRow)" [class.active]="seatRow == selectedSeat"></tr>
       </table>  
     </div>
 
@@ -341,4 +341,53 @@
     </div>
 
   </div>
+</div>
+
+<div *ngIf = "modifySeatActive"
+  class="container"
+  fxLayout="column"
+  fxLayoutGap="10px">
+
+  <div fxFlex>
+    <div>
+        <h3>Modify the seat</h3>
+        <hr>
+    </div>
+  </div>
+
+  <div fxFlex class="form-size">
+    <form novalidate [formGroup]="modifySeatForm" #fformModifySeat="ngForm" (ngSubmit)="onModifySeatSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="row" placeholder="Seat row" type="text">
+          <mat-error *ngIf="modifySeatFormErrors.row">
+            {{ modifySeatFormErrors.row }}
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="column" placeholder="Seat column" type="text">
+          <mat-error *ngIf="modifySeatFormErrors.column">
+            {{ modifySeatFormErrors.column }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <mat-label>Class</mat-label>
+          <mat-select formControlName="classType">
+            <mat-option *ngFor="let classType of classTypes" [value]="classType.value">
+              {{classType.viewValue}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="modifySeatFormErrors.classType">
+            {{ modifySeatFormErrors.classType }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+      [disabled]="modifySeatForm.invalid">Submit</button>
+      <button mat-button class="background-primary text-floral-white" (click) = "cancelModifySeatButton()">Cancel</button>
+    </form>
+  </div>
+
 </div>
