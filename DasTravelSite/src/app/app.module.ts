@@ -47,6 +47,7 @@ import { LoginComponent } from './login/login.component';
 import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
 import { ListallservicesComponent } from './listallservices/listallservices.component';
+import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import { ListallservicesComponent } from './listallservices/listallservices.comp
     RegisterComponent,
     LoginComponent,
     UserComponent,
-    ListallservicesComponent
+    ListallservicesComponent,
+    CarDiscountsComponent
   ],
   imports: [
     BrowserModule,

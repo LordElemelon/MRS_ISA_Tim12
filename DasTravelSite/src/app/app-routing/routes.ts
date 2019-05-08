@@ -11,6 +11,7 @@ import { RoomsListComponent } from '../rooms-list/rooms-list.component';
 import { RoomComponent } from '../room/room.component';
 import { CarpricesComponent } from  '../carprices/carprices.component';
 import { UserComponent } from  '../user/user.component';
+import { CarDiscountsComponent } from '../car-discounts/car-discounts.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -25,5 +26,6 @@ export const routes: Routes = [
     {path: 'rooms', component: RoomsListComponent},
     {path: 'room/:id', component: RoomComponent},
     {path: 'carPrices', component: CarpricesComponent},
-    {path: 'user', component: UserComponent}
+    {path: 'user', component: UserComponent},
+    {path: 'carDiscounts', component: CarDiscountsComponent}
 ];
