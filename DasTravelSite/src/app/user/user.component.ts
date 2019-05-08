@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoopBackConfig, UserInfo, UserInfoApi, Myuser, MyuserApi } from '../shared/sdk';
+import { LoopBackConfig, UserInfo, Myuser, MyuserApi } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { MatSelectModule} from '@angular/material/select';
 import { MatSnackBar } from '@angular/material';
+import { UserInfoApi } from '../shared/sdk';
 
 @Component({
   selector: 'app-user',

@@ -1,0 +1,31 @@
+<div>
+  <form novalidate [formGroup]="reserveForm" (ngSubmit)="onReserveRoomSubmit()">
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="startDate" readonly placeholder="Start date">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="endDate" readonly placeholder="End date">
+      </mat-form-field>
+      <mat-form-field class="half-width" style="height:50%">
+        <input matInput formControlName="hotel" readonly placeholder="Hotel" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="roomNumber" readonly placeholder="Room number" type="number">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="beds" readonly placeholder="Number of beds" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="description" readonly placeholder="Description" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="price" readonly placeholder="Price" type="number">
+      </mat-form-field>
+    <p>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+              [disabled]="userType!=='registeredUser'">Submit</button>
+    </p>
+    <hr>
+  </form>
+</div>

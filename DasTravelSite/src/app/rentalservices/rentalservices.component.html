@@ -3,6 +3,7 @@
   <a mat-button (click)="setToRemove()" *ngIf="userType==='admin'"> Remove </a>
   <a mat-button (click)="setToChange()" *ngIf="userType==='rentalServiceAdmin'"> Change </a>
   <a mat-button (click)="setToSearch()"> Search </a>
+  <a mat-button (click)="setToList()"> List all </a>
   <span class="flex-spacer"></span>
   <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -99,27 +100,51 @@
   <div fxFlex fxFlexOffset="20px" class="form-size" >
     <form novalidate [formGroup]="searchForm" #searchform="ngForm" (ngSubmit)="onSearchSubmit()">
       <p>
-        <mat-form-field class="form-size">
+          <mat-form-field class="half-width">
+            <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time">
+            <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+            <mat-error *ngIf="searchFormErrors.startDate">
+              {{ searchFormErrors.startDate }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" placeholder="End time">
+            <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker2></mat-datepicker>
+            <mat-error *ngIf="searchFormErrors.startDate">
+              {{ searchFormErrors.endDate }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+      <p>
+        <mat-form-field class="half-width">
           <input matInput formControlName="name" placeholder="Name" type="text">
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field class="form-size">
+        <mat-form-field class="half-width">
           <input matInput formControlName="address" placeholder="Address" type="text">
         </mat-form-field>
       </p>
-      <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()">
+      <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()" [disabled]="searchForm.invalid">
           Submit
       </button>
     </form>
   </div>
   <div fxFlex>
-      <mat-grid-list cols="3" rowHeight="200px">
-        <mat-grid-tile *ngFor="let service of foundServices">
-          <mat-card routerLink="" class="pointer">
-            {{service.name}} | {{service.address}} | {{service.description}}
-          </mat-card>
-        </mat-grid-tile>
-      </mat-grid-list>
-    </div>
+    <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let service of foundServices">
+        <mat-card routerLink="" class="pointer">
+          {{service.name}} | {{service.address}} | {{service.description}}
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
+
+<div *ngIf="islist">
+  <app-listallservices></app-listallservices>
 </div>

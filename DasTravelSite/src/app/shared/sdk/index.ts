@@ -63,6 +63,10 @@ import { DiscountOfferApi } from './services/custom/DiscountOffer';
 import { CarPriceApi } from './services/custom/CarPrice';
 import { EmailApi } from './services/custom/Email';
 import { MyuserApi } from './services/custom/Myuser';
+import { CarReservationApi } from './services/custom/CarReservation';
+import { CaridApi } from './services/custom/Carid';
+import { RoomidApi } from './services/custom/Roomid';
+import { RoomReservationApi } from './services/custom/RoomReservation';
 import { UserInfoApi } from './services/custom/UserInfo';
 import { SeatApi } from './services/custom/Seat';
 /**
@@ -110,6 +114,10 @@ export class SDKBrowserModule {
         CarPriceApi,
         EmailApi,
         MyuserApi,
+        CarReservationApi,
+        CaridApi,
+        RoomidApi,
+        RoomReservationApi,
         UserInfoApi,
         SeatApi,
         internalStorageProvider,

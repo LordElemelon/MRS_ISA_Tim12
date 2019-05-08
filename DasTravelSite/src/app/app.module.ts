@@ -44,8 +44,14 @@ import { RoomComponent } from './room/room.component';
 import { CarpricesComponent } from './carprices/carprices.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
-import { UserComponent } from './user/user.component';
+import { ReservecarComponent } from './reservecar/reservecar.component';
+import { ItemService } from './services/item.service';
+
 import { LoginServiceService } from './login-service.service';
+import { ListallservicesComponent } from './listallservices/listallservices.component';
+import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
+import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
+import { UserComponent } from './user/user.component';
 
 
 @NgModule({
@@ -65,6 +71,10 @@ import { LoginServiceService } from './login-service.service';
     CarpricesComponent,
     RegisterComponent,
     LoginComponent,
+    ListallservicesComponent,
+    CarDiscountsComponent,
+    ReservecarComponent,
+    ReserveRoomComponent,
     UserComponent
   ],
   imports: [
@@ -94,7 +104,7 @@ import { LoginServiceService } from './login-service.service';
     SDKBrowserModule.forRoot()
   ],
   providers: [
-    {provide: 'baseURL', useValue: baseURL},
+    {provide: 'baseURL', useValue: baseURL}, ItemService,
     LoginServiceService
   ],
   entryComponents: [

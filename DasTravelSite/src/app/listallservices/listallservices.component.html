@@ -1,0 +1,11 @@
+
+  <div fxFlex>
+    <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let service of foundServices">
+        <mat-card routerLink="" class="pointer">
+          {{service.name}} | {{service.address}} | {{service.description}}
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+

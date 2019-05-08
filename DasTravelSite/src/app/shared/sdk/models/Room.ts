@@ -2,7 +2,8 @@
 import {
   Hotel,
   RoomPrice,
-  HotelDiscount
+  HotelDiscount,
+  RoomReservation
 } from '../index';
 
 declare var Object: any;
@@ -16,6 +17,7 @@ export interface RoomInterface {
   hotel?: Hotel;
   roomPrices?: RoomPrice[];
   hotelDiscounts?: HotelDiscount[];
+  roomReservations?: RoomReservation[];
 }
 
 export class Room implements RoomInterface {
@@ -28,6 +30,7 @@ export class Room implements RoomInterface {
   hotel: Hotel;
   roomPrices: RoomPrice[];
   hotelDiscounts: HotelDiscount[];
+  roomReservations: RoomReservation[];
   constructor(data?: RoomInterface) {
     Object.assign(this, data);
   }
@@ -109,6 +112,14 @@ export class Room implements RoomInterface {
           name: 'hotelDiscounts',
           type: 'HotelDiscount[]',
           model: 'HotelDiscount',
+          relationType: 'hasMany',
+                  keyFrom: 'id',
+          keyTo: 'roomId'
+        },
+        roomReservations: {
+          name: 'roomReservations',
+          type: 'RoomReservation[]',
+          model: 'RoomReservation',
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'roomId'
