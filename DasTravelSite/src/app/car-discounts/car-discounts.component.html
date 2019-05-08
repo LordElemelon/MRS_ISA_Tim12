@@ -27,7 +27,22 @@
           </mat-error>
         </mat-form-field>
       </p>
-        
+      <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="registration" placeholder="Registration" type="text">
+        <mat-error *ngIf="addFormErrors.registration">
+          {{ addFormErrors.registration }}
+        </mat-error>
+      </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="price" placeholder="Discount price" pattern="[0-9]*" type="text">
+          <mat-error *ngIf="addFormErrors.price">
+            {{ addFormErrors.price }}
+          </mat-error>
+        </mat-form-field>
+      </p>
         <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="addForm.invalid">
             Submit
         </button>

@@ -66,10 +66,10 @@ export class CarDiscountsComponent implements OnInit {
 
   addFormValidationMessages = {
     'start': {
-      'required': 'Service name is required'
+      'required': 'Start time is required'
     },
     'end': {
-      'required': 'Registration is required'
+      'required': 'End time is required'
     },
     'registration': {
       'required': 'Registration is required'
@@ -109,6 +109,12 @@ export class CarDiscountsComponent implements OnInit {
       registration: ['', Validators.required],
       price: [0, [Validators.required, Validators.pattern]]
     })
+    this.addForm.valueChanges.subscribe(data => this.onAddValueChanged(data));
+    this.onAddValueChanged();
+  }
+
+  onAddSubmit() {
+    console.log("Submit pressed");
   }
 
 
