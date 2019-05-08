@@ -77,7 +77,8 @@ export class ReservecarComponent implements OnInit {
         var car_result = result as Car;
         var startDate = new Date(this.car.start).toJSON();
         var endDate = new Date(this.car.end).toJSON();
-        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, this.car.price)
+        console.log(this.car.price);
+        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, 2, car_result.rentalServiceId)
         .subscribe(
           (result) => {
             this.openSnackBar("Reservation successfuly made", "Dismiss");

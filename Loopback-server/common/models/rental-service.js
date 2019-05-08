@@ -2,6 +2,8 @@
 
 module.exports = function(Rentalservice) {
     Rentalservice.getAvailableServices = function (start,  end, name, address, cb) {
+        var start_string = new Date(start).toISOString().slice(0, 19).replace('T', ' ');
+        var end_string = new Date(end).toISOString().slice(0, 19).replace('T', ' ');
         var searchObject = {};
         if (name) {
             searchObject.name = name;
@@ -17,42 +19,28 @@ module.exports = function(Rentalservice) {
                     promises.push(
                         new Promise(function(resolve, reject) {
                             var myservice = service;
-                            app.models.Car.find({'where': {rentalServiceId: myservice.id}})
-                            .then((car_result) =>{
-                                var car_id_list = [];
-                                for (var car of car_result) {
-                                    car_id_list.push('\"' + car.id + '\"');
+                            const mongo = Rentalservice.app.dataSources.MongoDB;
+                            var carCollection = mongo.connector.collection(app.models.Car.modelName);
+                            carCollection.count({'rentalServiceId': myservice.id})
+                            .then((car_count) => {
+                                if (car_count == 0) {
+                                    resolve(null);
+                                } else {
+                                    var query_string = "SELECT COUNT (DISTINCT carsid) FROM carreservation WHERE startdate < DATE(\'"
+                                     + end_string + "\') and enddate > (\'"  + start_string + "\') and rentalserviceid = '\"" + myservice.id + "\"';";
+                                     const postgres = Rentalservice.app.dataSources.postgres;
+                                     postgres.connector.execute(query_string, null, (err, result) => {
+                                         if (result[0].count < car_count) {
+                                             resolve(myservice);
+                                         } else {
+                                             resolve(null);
+                                         }
+                                    });
                                 }
-                                app.models.carReservation.find({
-                                    'where': {
-                                        carsId: car_id_list,
-                                        startDate: {
-                                            lte: end
-                                        },
-                                        endDate: {
-                                            gte: start
-                                        }
-                                    },
-                                    'fields' : {
-                                        carsId: true
-                                    }
-                                })
-                                .then((reservation_result) => {
-                                    console.log("Pronadjenih kola" + reservation_result.length);
-                                    console.log("Ukupno kola" + car_id_list);
-                                    if (reservation_result.length < car_id_list.length) {
-                                        resolve(myservice);
-                                    } else {
-                                        resolve(null);
-                                    }
-                                })
-                                .catch((err) => {
-                                    reject();
-                                });
-                            },
-                            (err) => {
-                                reject();
                             })
+                            .catch((err) => {
+                                reject();
+                            });
                         })
                     );
                 }

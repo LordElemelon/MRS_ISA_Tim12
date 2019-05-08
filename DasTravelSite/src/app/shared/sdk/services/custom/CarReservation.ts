@@ -13,6 +13,7 @@ import { CarReservation } from '../../models/CarReservation';
 import { SocketConnection } from '../../sockets/socket.connections';
 import { Car } from '../../models/Car';
 import { Myuser } from '../../models/Myuser';
+import { RentalService } from '../../models/RentalService';
 
 
 /**
@@ -81,6 +82,36 @@ export class CarReservationApi extends BaseLoopBackApi {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/:id/myuser";
+    let _routeParams: any = {
+      id: id
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * Fetches belongsTo relation rentalService.
+   *
+   * @param {any} id carReservation id
+   *
+   * @param {boolean} refresh 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * <em>
+   * (The remote method definition does not provide any description.
+   * This usually means the response is a `CarReservation` object.)
+   * </em>
+   */
+  public getRentalService(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/:id/rentalService";
     let _routeParams: any = {
       id: id
     };
@@ -170,6 +201,8 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `price` – `{number}` - 
    *
+   *  - `rentalid` – `{string}` - 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -178,7 +211,7 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, customHeaders?: Function): Observable<any> {
+  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/makeReservation";
@@ -190,6 +223,7 @@ export class CarReservationApi extends BaseLoopBackApi {
     if (typeof carId !== 'undefined' && carId !== null) _urlParams.carId = carId;
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
+    if (typeof rentalid !== 'undefined' && rentalid !== null) _urlParams.rentalid = rentalid;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
