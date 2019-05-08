@@ -47,9 +47,9 @@ import { LoginComponent } from './login/login.component';
 import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
-import { UserComponent } from './user/user.component';
 import { LoginServiceService } from './login-service.service';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
+import { UserComponent } from './user/user.component';
 
 
 @NgModule({

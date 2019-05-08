@@ -28,7 +28,6 @@ export const routes: Routes = [
     {path: 'room/:id', component: RoomComponent},
     {path: 'carPrices', component: CarpricesComponent},
     {path: 'carreservation', component: ReservecarComponent},
-    {path: 'roomreservation', component: ReserveRoomComponent}
-];
+    {path: 'roomreservation', component: ReserveRoomComponent},
     {path: 'user', component: UserComponent}
 ];

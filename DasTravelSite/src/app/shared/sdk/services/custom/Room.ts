@@ -757,7 +757,7 @@ export class RoomApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {string} start 
+   * @param {date} start 
    *
    * @param {date} end 
    *
