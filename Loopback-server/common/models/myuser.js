@@ -119,4 +119,42 @@ module.exports = function (Myuser) {
     http: {path: '/registerAnAdmin', verb: 'post'},
     returns: {type: 'object', arg: 'retval'},
   });
+
+  Myuser.getRoomReservations = function(userId, cb) {
+    Myuser.getApp((err, app) => {
+      if (err) cb(err, null);
+      else {
+        app.models.RoomReservation.find(
+          {'where': {'userId': '"' + userId + '"'}})
+          .then(reservations => {
+            cb(null, reservations);
+          }, err => cb(err, null));
+      }
+    });
+  };
+
+  Myuser.remoteMethod('getRoomReservations', {
+    accepts: [{arg: 'userId', type: 'string', required: true}],
+    http: {path: '/getRoomReservations', verb: 'get'},
+    returns: {type: 'array', arg: 'retval'},
+  });
+
+  Myuser.getCarReservations = function(userId, cb) {
+    Myuser.getApp((err, app) => {
+      if (err) cb(err, null);
+      else {
+        app.models.CarReservation.find(
+          {'where': {'userId': '"' + userId + '"'}})
+          .then(reservations => {
+            cb(null, reservations);
+          }, err => cb(err, null));
+      }
+    });
+  };
+
+  Myuser.remoteMethod('getCarReservations', {
+    accepts: [{arg: 'userId', type: 'string', required: true}],
+    http: {path: '/getCarReservations', verb: 'get'},
+    returns: {type: 'array', arg: 'retval'},
+  });
 };

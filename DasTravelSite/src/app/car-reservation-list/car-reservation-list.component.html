@@ -1,0 +1,32 @@
+<table #tablereservations mat-table [dataSource]="reservationsInfo">
+  <ng-container matColumnDef="rentalService">
+    <th mat-header-cell *matHeaderCellDef>Rental service</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.rentalService.name}}</td>
+  </ng-container>
+  <ng-container matColumnDef="roomNumber">
+    <th mat-header-cell *matHeaderCellDef>Room Number</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
+  </ng-container>
+  <ng-container matColumnDef="beds">
+    <th mat-header-cell *matHeaderCellDef>Beds</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
+  </ng-container>
+  <ng-container matColumnDef="startDate">
+    <th mat-header-cell *matHeaderCellDef>Start Date</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.startDate | date:'dd/MM/yyyy'}}</td>
+  </ng-container>
+  <ng-container matColumnDef="endDate">
+    <th mat-header-cell *matHeaderCellDef>End Date</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.endDate | date:'dd/MM/yyyy'}}</td>
+  </ng-container>
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef>Price</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.price}}</td>
+  </ng-container>
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef>Action</th>
+    <td mat-cell *matCellDef="let reservationInfo">Delete</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
+  <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayReservations"></tr>
+</table>

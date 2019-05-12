@@ -50,6 +50,8 @@ import { ItemService } from './services/item.service';
 import { LoginServiceService } from './login-service.service';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
+import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
+import { CarReservationListComponent } from './car-reservation-list/car-reservation-list.component';
 
 
 @NgModule({
@@ -71,7 +73,9 @@ import { UserComponent } from './user/user.component';
     LoginComponent,
     ReservecarComponent,
     ReserveRoomComponent,
-    UserComponent
+    UserComponent,
+    RoomReservationListComponent,
+    CarReservationListComponent
   ],
   imports: [
     BrowserModule,
