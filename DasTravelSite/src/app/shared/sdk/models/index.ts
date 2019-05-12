@@ -19,5 +19,6 @@ export * from './Carid';
 export * from './Roomid';
 export * from './RoomReservation';
 export * from './UserInfo';
+export * from './Seat';
 export * from './BaseModels';
 export * from './FireLoopRef';

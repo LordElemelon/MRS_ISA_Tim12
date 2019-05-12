@@ -20,6 +20,7 @@ import { Carid } from '../../models/Carid';
 import { Roomid } from '../../models/Roomid';
 import { RoomReservation } from '../../models/RoomReservation';
 import { UserInfo } from '../../models/UserInfo';
+import { Seat } from '../../models/Seat';
 
 export interface Models { [name: string]: any }
 
@@ -47,6 +48,7 @@ export class SDKModels {
     Roomid: Roomid,
     RoomReservation: RoomReservation,
     UserInfo: UserInfo,
+    Seat: Seat,
     
   };
 
