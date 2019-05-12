@@ -48,6 +48,8 @@ import { ReservecarComponent } from './reservecar/reservecar.component';
 import { ItemService } from './services/item.service';
 
 import { LoginServiceService } from './login-service.service';
+import { ListallservicesComponent } from './listallservices/listallservices.component';
+import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
 import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
@@ -71,6 +73,8 @@ import { CarReservationListComponent } from './car-reservation-list/car-reservat
     CarpricesComponent,
     RegisterComponent,
     LoginComponent,
+    ListallservicesComponent,
+    CarDiscountsComponent,
     ReservecarComponent,
     ReserveRoomComponent,
     UserComponent,

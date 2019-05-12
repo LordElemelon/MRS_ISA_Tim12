@@ -1,0 +1,26 @@
+{
+  "name": "seat",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "row": {
+      "type": "number",
+      "required": true
+    },
+    "column": {
+      "type": "string",
+      "required": true
+    },
+    "classType": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

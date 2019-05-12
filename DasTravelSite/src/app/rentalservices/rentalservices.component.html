@@ -3,6 +3,7 @@
   <a mat-button (click)="setToRemove()" *ngIf="userType==='admin'"> Remove </a>
   <a mat-button (click)="setToChange()" *ngIf="userType==='rentalServiceAdmin'"> Change </a>
   <a mat-button (click)="setToSearch()"> Search </a>
+  <a mat-button (click)="setToList()"> List all </a>
   <span class="flex-spacer"></span>
   <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -134,12 +135,16 @@
     </form>
   </div>
   <div fxFlex>
-      <mat-grid-list cols="3" rowHeight="200px">
-        <mat-grid-tile *ngFor="let service of foundServices">
-          <mat-card routerLink="" class="pointer">
-            {{service.name}} | {{service.address}} | {{service.description}}
-          </mat-card>
-        </mat-grid-tile>
-      </mat-grid-list>
-    </div>
+    <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let service of foundServices">
+        <mat-card routerLink="" class="pointer">
+          {{service.name}} | {{service.address}} | {{service.description}}
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
+
+<div *ngIf="islist">
+  <app-listallservices></app-listallservices>
 </div>
