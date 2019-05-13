@@ -3,13 +3,13 @@
     <th mat-header-cell *matHeaderCellDef>Rental service</th>
     <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.rentalService.name}}</td>
   </ng-container>
-  <ng-container matColumnDef="roomNumber">
-    <th mat-header-cell *matHeaderCellDef>Room Number</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
+  <ng-container matColumnDef="make">
+    <th mat-header-cell *matHeaderCellDef>Car make</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.car.make}}</td>
   </ng-container>
-  <ng-container matColumnDef="beds">
-    <th mat-header-cell *matHeaderCellDef>Beds</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
+  <ng-container matColumnDef="registration">
+    <th mat-header-cell *matHeaderCellDef>Registration</th>
+    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.car.registration}}</td>
   </ng-container>
   <ng-container matColumnDef="startDate">
     <th mat-header-cell *matHeaderCellDef>Start Date</th>
@@ -30,3 +30,7 @@
   <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
   <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayReservations"></tr>
 </table>
+<div>
+  <a mat-button (click)="previousPage()" [disabled]="this.pageNum === 0">Previous page</a>
+  <a mat-button (click)="nextPage()" [disabled]="this.reservationsInfo.length !== this.pageSize">Next page</a>
+</div>

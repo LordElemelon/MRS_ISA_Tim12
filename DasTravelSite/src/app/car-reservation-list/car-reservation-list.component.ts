@@ -11,8 +11,10 @@ import {CarApi, MyuserApi, RentalServiceApi} from '../shared/sdk/services/custom
 export class CarReservationListComponent implements OnInit {
   carReservations: CarReservation[];
   reservationsInfo = [];
+  pageNum = 0;
+  pageSize = 8;
 
-  columnsToDisplayReservations = [];
+  columnsToDisplayReservations = ['rentalService', 'make', 'registration', 'startDate', 'endDate', 'price', 'action'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
 
@@ -24,19 +26,25 @@ export class CarReservationListComponent implements OnInit {
               ) { }
 
   ngOnInit() {
+    this.getReservations();
+  }
+
+  getReservations() {
     if (this.myuserservice.getCachedCurrent()) {
-      this.myuserservice.getRoomReservations(this.myuserservice.getCachedCurrent())
+      this.myuserservice.getCarReservations(this.myuserservice.getCachedCurrent().id,
+        this.pageSize, this.pageNum * this.pageSize)
         .subscribe(result => {
           this.carReservations = result.retval;
           const done = new Promise((resolve, reject) => {
             let index = 0;
+            this.reservationsInfo = [];
             for (const carReservation of this.carReservations) {
               const idLen = carReservation.carsId.length;
-              this.carservice.findById(carReservation.carsId.substring(1, idLen))
+              this.carservice.findById(carReservation.carsId.substring(1, idLen - 1))
                 .subscribe((car: Car) => {
                   this.rentalserviceservice.findById(car.rentalServiceId)
                     .subscribe((rentalService: RentalService) => {
-                      this.reservationsInfo.push({reservation: carReservation, rentalService: rentalService});
+                      this.reservationsInfo.push({reservation: carReservation, car: car, rentalService: rentalService});
                       index++;
                       if (index === this.carReservations.length) {
                         resolve();
@@ -47,7 +55,6 @@ export class CarReservationListComponent implements OnInit {
             }
           });
           done.then(() => {
-            console.log('done');
             this.tableReservations.renderRows();
           });
         }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
@@ -59,5 +66,19 @@ export class CarReservationListComponent implements OnInit {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  nextPage() {
+    if (this.reservationsInfo.length === this.pageSize) {
+      this.pageNum++;
+      this.getReservations();
+    }
+  }
+
+  previousPage() {
+    if (this.pageNum > 0) {
+      this.pageNum--;
+      this.getReservations();
+    }
   }
 }

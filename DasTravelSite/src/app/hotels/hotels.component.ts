@@ -263,7 +263,7 @@ export class HotelsComponent implements OnInit {
 
   onSearchRoomsSubmit() {
     const data = this.searchRoomsForm.value;
-    this.roomservice.findRooms(new Date(data.startDate).toISOString(), new Date(data.endDate).toISOString(),
+    this.roomservice.findAvailableRooms(new Date(data.startDate).toISOString(), new Date(data.endDate).toISOString(),
       data.address, data.price, data.beds)
       .subscribe(result => {
         this.foundRooms = result.retval;
@@ -275,7 +275,6 @@ export class HotelsComponent implements OnInit {
   }
 
   clickRoom(index: number) {
-    console.log(this.foundRooms[index]);
     this.itemservice.setReservableRoom({'room': this.foundRooms[index],
     'startDate': this.searchRoomsForm.value.startDate,
     'endDate': this.searchRoomsForm.value.endDate});

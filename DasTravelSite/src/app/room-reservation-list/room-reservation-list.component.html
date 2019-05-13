@@ -30,3 +30,7 @@
   <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
   <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayReservations"></tr>
 </table>
+<div>
+  <a mat-button (click)="previousPage()" [disabled]="this.pageNum === 0">Previous page</a>
+  <a mat-button (click)="nextPage()" [disabled]="this.reservationsInfo.length !== this.pageSize">Next page</a>
+</div>

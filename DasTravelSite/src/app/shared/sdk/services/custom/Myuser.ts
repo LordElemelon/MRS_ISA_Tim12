@@ -932,6 +932,10 @@ export class MyuserApi extends BaseLoopBackApi {
    *
    * @param {string} userId 
    *
+   * @param {number} size 
+   *
+   * @param {number} offset 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -940,7 +944,7 @@ export class MyuserApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{any}` - 
    */
-  public getRoomReservations(userId: any, customHeaders?: Function): Observable<any> {
+  public getRoomReservations(userId: any, size: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/myusers/getRoomReservations";
@@ -948,6 +952,8 @@ export class MyuserApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
+    if (typeof size !== 'undefined' && size !== null) _urlParams.size = size;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -959,6 +965,10 @@ export class MyuserApi extends BaseLoopBackApi {
    *
    * @param {string} userId 
    *
+   * @param {number} size 
+   *
+   * @param {number} offset 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -967,7 +977,7 @@ export class MyuserApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{any}` - 
    */
-  public getCarReservations(userId: any, customHeaders?: Function): Observable<any> {
+  public getCarReservations(userId: any, size: any, offset: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/myusers/getCarReservations";
@@ -975,6 +985,8 @@ export class MyuserApi extends BaseLoopBackApi {
     let _postBody: any = {};
     let _urlParams: any = {};
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
+    if (typeof size !== 'undefined' && size !== null) _urlParams.size = size;
+    if (typeof offset !== 'undefined' && offset !== null) _urlParams.offset = offset;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
