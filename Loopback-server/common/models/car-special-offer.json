@@ -1,0 +1,55 @@
+{
+  "name": "carSpecialOffer",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "startDate": {
+      "type": "date",
+      "required": true
+    },
+    "endDate": {
+      "type": "date",
+      "required": true
+    },
+    "basePrice": {
+      "type": "number",
+      "required": true
+    },
+    "discount": {
+      "type": "number",
+      "required": true
+    },
+    "registration": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cars": {
+      "type": "belongsTo",
+      "model": "car",
+      "foreignKey": ""
+    },
+    "myuser": {
+      "type": "belongsTo",
+      "model": "myuser",
+      "foreignKey": ""
+    },
+    "rentalService": {
+      "type": "belongsTo",
+      "model": "rentalService",
+      "foreignKey": ""
+    },
+    "carReservations": {
+      "type": "belongsTo",
+      "model": "carReservation",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

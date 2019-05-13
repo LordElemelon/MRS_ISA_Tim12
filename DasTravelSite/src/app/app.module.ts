@@ -52,6 +52,7 @@ import { ListallservicesComponent } from './listallservices/listallservices.comp
 import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
+import { ListCarDiscountsComponent } from './list-car-discounts/list-car-discounts.component';
 
 
 @NgModule({
@@ -75,7 +76,8 @@ import { UserComponent } from './user/user.component';
     CarDiscountsComponent,
     ReservecarComponent,
     ReserveRoomComponent,
-    UserComponent
+    UserComponent,
+    ListCarDiscountsComponent
   ],
   imports: [
     BrowserModule,

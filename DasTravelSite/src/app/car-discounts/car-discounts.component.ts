@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoginServiceService } from '../login-service.service';
 import { MatSnackBar } from '@angular/material';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import {CarApi} from '../shared/sdk';
+import {ItemService} from '../services/item.service';
+import { CarSpecialOfferApi } from '../shared/sdk/services'
 
 @Component({
   selector: 'app-car-discounts',
@@ -14,20 +17,28 @@ export class CarDiscountsComponent implements OnInit {
   addForm: FormGroup;
   @ViewChild('addform') addFormDirective;
 
+  deleteForm: FormGroup;
+  @ViewChild('deleteform') deleteFormDirective;
+
   constructor(private loginService: LoginServiceService,
     public snackBar: MatSnackBar,
-    private fb: FormBuilder) { 
+    private fb: FormBuilder,
+    private carService: CarApi,
+    private itemService: ItemService,
+    private specialOfferService: CarSpecialOfferApi) { 
     loginService.user.subscribe(data => {
       if (data) {
         this.userType = data.user.type;
       }
     });
     this.createAddForm();
+    this.createDeleteForm();
   }
 
   isAdd: boolean = null;
   isRemove: boolean = null;
   isChange: boolean = null;
+  isList : boolean = null;
   userType: any;
 
   openSnackBar(message: string, action: string) {
@@ -43,25 +54,35 @@ export class CarDiscountsComponent implements OnInit {
     this.isAdd = true;
     this.isRemove = null;
     this.isChange = null;
+    this.isList = null;
   }
 
   setToRemove() {
     this.isAdd = null;
     this.isRemove = true;
     this.isChange = null;
+    this.isList = null;
   }
 
   setToChange() {
     this.isAdd = null;
     this.isRemove = null;
     this.isChange = true;
+    this.isList = null;
+  }
+
+  setToList() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isList = true;
   }
 
   addFormErrors = {
     'start': '',
     'end': '',
     'registration': '',
-    'price': ''
+    'discount': ''
   };
 
   addFormValidationMessages = {
@@ -74,9 +95,9 @@ export class CarDiscountsComponent implements OnInit {
     'registration': {
       'required': 'Registration is required'
     },
-    'price': {
-      'required': 'Price is required',
-      'pattern': 'Price has to be a number'
+    'discount': {
+      'required': 'Discount is required',
+      'pattern': 'Discount has to be a number'
     }
   };
 
@@ -102,21 +123,117 @@ export class CarDiscountsComponent implements OnInit {
     }
   }
 
+  onDeleteValueChanged(data?: any) {
+    if (!this.deleteForm) {
+      return;
+    }
+    const form = this.deleteForm;
+    for (const field in this.deleteFormErrors) {
+      if (this.deleteFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.deleteFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.deleteFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.deleteFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  deleteFormErrors = {
+    'start': '',
+    'registration': ''
+  };
+
+  deleteFormValidationMessages = {
+    'start': {
+      'required': 'Start time is required'
+    },
+    'registration': {
+      'required': 'Registration is required'
+    }
+  };
+
   createAddForm() {
     this.addForm = this.fb.group({
       start: ['', Validators.required],
       end: ['', Validators.required],
       registration: ['', Validators.required],
-      price: [0, [Validators.required, Validators.pattern]]
-    })
+      discount: [0, [Validators.required, Validators.pattern]]
+    });
     this.addForm.valueChanges.subscribe(data => this.onAddValueChanged(data));
     this.onAddValueChanged();
   }
 
-  onAddSubmit() {
-    console.log("Submit pressed");
+  createDeleteForm() {
+    this.deleteForm = this.fb.group({
+      registration: ['', Validators.required],
+      start: ['', Validators.required]
+    });
+    this.deleteForm.valueChanges.subscribe(data => this.onDeleteValueChanged(data));
+    this.onDeleteValueChanged();
   }
 
+  matchCarAndPrice(car, prices, start) {
+    car.price = 0;
+      car.start = new Date(0);
+      car.category = "B"; //ovaj red treba izbaciti, tu je zarad testiranja
+      for (let price of prices) {
+        if (car.rentalServiceId == price.rentalServiceId) {
+          if (start > price.start && car.start < price.start) {
+            car.start = price.start;
+            car.price = price['cat' + car.category + 'Price'];
+          }
+        }
+      }
+  }
 
+  onAddSubmit() {
+    this.carService.findOne({'where': {'registration': this.addForm.value.registration}})
+    .subscribe(
+      (car) => {
+        var car_res = car as any;
+        this.itemService.getPrices().subscribe(
+          (prices) => {
+            this.matchCarAndPrice(car_res, prices, this.addForm.value.start)
+            var startDate = new Date(this.addForm.value.start).toJSON();
+            var endDate = new Date(this.addForm.value.end).toJSON();
+            this.specialOfferService.makeSpecialOffer(startDate, endDate, car_res.id,
+               car_res.price, car_res.rentalServiceId, this.addForm.value.discount, car_res.registration)
+            .subscribe((result) => {
+              this.openSnackBar("Successfully added special offer at this date", "Dismiss");
+            },
+            (err) => {
+              this.openSnackBar("Failed to make a special offer at this date", "Dismiss");
+            })
+          },
+          (err) => {
+            this.openSnackBar("Failed to retrieve prices", "Dismiss");
+          });
+      },
+      (err) => {
+        this.openSnackBar("No car with this registration exists", "Dismiss");
+      }
+    )
+  }
 
+  onDeleteSubmit() {
+    this.specialOfferService.removeOffer(new Date(this.deleteForm.value.start).toJSON(), this.deleteForm.value.registration)
+    .subscribe((result) => {
+      if (result.retval.count == 0) {
+        this.openSnackBar("No special offer like this exists", "Dismiss");
+      } else {
+        this.openSnackBar("Successfully removed special offer", "Dismiss");
+      }
+    },
+    (err) => {
+      this.openSnackBar("Could not delete this special offer, already reserved", "Dismiss");
+    })
+    
+  }
 }
