@@ -80,7 +80,40 @@
 </div>
 
 <div *ngIf="isChange&&userType==='rentalServiceAdmin'" >
-  change discount
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+        <input matInput formControlName="registration" placeholder="Registration" type="text">
+        <mat-error *ngIf="changeFormErrors.registration">
+          {{ changeFormErrors.registration }}
+        </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="start" [matDatepicker]="myDatepicker" placeholder="Start time">
+          <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+          <mat-error *ngIf="changeFormErrors.start">
+            {{ changeFormErrors.start }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="newDiscount" placeholder="New discount" type="text" pattern="[0-9]*">
+            <mat-error *ngIf="changeFormErrors.newDiscount">
+                {{ changeFormErrors.newDiscount }}
+            </mat-error>
+          </mat-form-field>
+
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changeForm.invalid">
+          Submit
+      </button>
+    </form>
+  </div>
 </div>
 
 <div *ngIf="isList&&userType==='rentalServiceAdmin'">

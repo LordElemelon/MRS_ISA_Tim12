@@ -293,6 +293,41 @@ export class CarSpecialOfferApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `startDate` – `{date}` - 
+   *
+   *  - `registration` – `{string}` - 
+   *
+   *  - `newDiscount` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public changeOffer(startDate: any, registration: any, newDiscount: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carSpecialOffers/changeSpecialOffer";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof registration !== 'undefined' && registration !== null) _urlParams.registration = registration;
+    if (typeof newDiscount !== 'undefined' && newDiscount !== null) _urlParams.newDiscount = newDiscount;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `CarSpecialOffer`.
    */

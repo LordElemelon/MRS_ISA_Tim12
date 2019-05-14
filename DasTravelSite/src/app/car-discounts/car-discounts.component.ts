@@ -20,6 +20,9 @@ export class CarDiscountsComponent implements OnInit {
   deleteForm: FormGroup;
   @ViewChild('deleteform') deleteFormDirective;
 
+  changeForm: FormGroup;
+  @ViewChild('changeform') changeFormDirective;
+
   constructor(private loginService: LoginServiceService,
     public snackBar: MatSnackBar,
     private fb: FormBuilder,
@@ -33,6 +36,7 @@ export class CarDiscountsComponent implements OnInit {
     });
     this.createAddForm();
     this.createDeleteForm();
+    this.createChangeForm();
   }
 
   isAdd: boolean = null;
@@ -145,6 +149,28 @@ export class CarDiscountsComponent implements OnInit {
     }
   }
 
+  onChangeValueChanged(data? : any) {
+    if (!this.changeForm) {
+      return;
+    }
+    const form = this.changeForm;
+    for (const field in this.changeFormErrors) {
+      if (this.changeFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.changeFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.changeFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.changeFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
   deleteFormErrors = {
     'start': '',
     'registration': ''
@@ -156,6 +182,25 @@ export class CarDiscountsComponent implements OnInit {
     },
     'registration': {
       'required': 'Registration is required'
+    }
+  };
+
+  changeFormErrors = {
+    'start': '',
+    'registration': '',
+    'newDiscount': ''
+  };
+
+  changeFormValidationMessages = {
+    'start': {
+      'required': 'Start time is required'
+    },
+    'registration': {
+      'required': 'Registration is required'
+    },
+    'newDiscount': {
+      'required': 'New discount value is required',
+      'pattern': 'Discount has to be a number'
     }
   };
 
@@ -177,6 +222,16 @@ export class CarDiscountsComponent implements OnInit {
     });
     this.deleteForm.valueChanges.subscribe(data => this.onDeleteValueChanged(data));
     this.onDeleteValueChanged();
+  }
+
+  createChangeForm() {
+    this.changeForm = this.fb.group({
+      registration: ['', Validators.required],
+      start: ['', Validators.required],
+      newDiscount: ['', [Validators.required, Validators.pattern]]
+    });
+    this.changeForm.valueChanges.subscribe(data => this.onChangeValueChanged(data));
+    this.onChangeValueChanged();
   }
 
   matchCarAndPrice(car, prices, start) {
@@ -234,6 +289,23 @@ export class CarDiscountsComponent implements OnInit {
     (err) => {
       this.openSnackBar("Could not delete this special offer, already reserved", "Dismiss");
     })
-    
+  }
+
+  onChangeSubmit() {
+    this.specialOfferService.changeOffer(new Date(this.changeForm.value.start).toJSON(), this.changeForm.value.registration,
+     this.changeForm.value.newDiscount)
+    .subscribe(
+      (result) => {
+        if (result.retval.count == 0) {
+          this.openSnackBar("No special offer like this exists", "Dismiss");
+        } else {
+          this.openSnackBar("Successfully changed special offer", "Dismiss");
+        }
+    },
+    (err) => {
+      this.openSnackBar("Could not change this special offer, already reserved", "Dismiss");
+    })
   }
 }
+
+

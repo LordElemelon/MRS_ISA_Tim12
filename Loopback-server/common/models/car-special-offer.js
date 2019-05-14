@@ -41,7 +41,7 @@ module.exports = function(Carspecialoffer) {
                     }
                     return Carspecialoffer.app.models.carReservation.create({
                         startDate: startDate, endDate: endDate, 
-                        price: price * (1 - discount), myuserId: null, carsId: carId, rentalServiceId: rentalid
+                        price: price * (1 - discount / 100), myuserId: null, carsId: carId, rentalServiceId: rentalid
                     }, {transaction: tx});
                 })
                 .then((result) => {
@@ -82,6 +82,7 @@ module.exports = function(Carspecialoffer) {
         var specialOfferId = -1;
         Carspecialoffer.app.models.car.findOne({where: {registration: registration}})
         .then((result) => {
+            if (result == null) throw new Error("No car found");
             Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
             .then((tx) => {
                 const postgres = Carspecialoffer.app.dataSources.postgres;
@@ -101,11 +102,11 @@ module.exports = function(Carspecialoffer) {
                         }
                     }})
                     .then((result) => {
-                        if (typeof result.myuserId !== 'undefined') {
+                        if (result[0].myuserId != null) {
                             throw new Error("This special offer is already reserved");
                         }
-                        specialOfferId = result.id;
-                        return Carspecialoffer.app.models.carReservation.destroyAll({id: result.carReservationsId}, {transaction: tx});
+                        specialOfferId = result[0].id;
+                        return Carspecialoffer.app.models.carReservation.destroyAll({id: result[0].carReservationsId}, {transaction: tx});
                     })
                     .then((result) => {
                         return Carspecialoffer.destroyAll({id: specialOfferId}, {transaction: tx});
@@ -119,8 +120,7 @@ module.exports = function(Carspecialoffer) {
                         cb(err, null);
                     })
                 });
-            }
-            )
+            })
             .catch((err) => {
                 cb(err, null);
             });
@@ -134,6 +134,67 @@ module.exports = function(Carspecialoffer) {
         accepts: [{arg: 'startDate', type: 'date', required: true},
                   {arg: 'registration', type: 'string', required: true}],
         http: {path: '/removeSpecialOffer', verb: 'delete'},
+        returns: {type: 'object', arg: 'retval'}
+    });
+
+    Carspecialoffer.changeOffer = function(startDate, registration, newDiscount, cb) {
+        var specialOfferId = -1;
+        Carspecialoffer.app.models.car.findOne({where: {registration: registration}})
+        .then((result) => {
+            if (result == null) throw new Error("No car found");
+            Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
+            .then((tx) => {
+                const postgres = Carspecialoffer.app.dataSources.postgres;
+                postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + result.carsId + "\"' FOR UPDATE;",
+                function(err, result) {
+                    //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
+                    if (err) {
+                        throw err;
+                    }
+                    Carspecialoffer.find({where: {
+                        registration: registration,
+                        startDate: {
+                            lte: startDate
+                        },
+                        endDate: {
+                            gte: startDate
+                        }
+                    }})
+                    .then((result) => {
+                        if (result[0].myuserId != null) {
+                            throw new Error("This special offer is already reserved");
+                        }
+                        var newPrice = result[0].basePrice * (1 - newDiscount / 100);
+                        specialOfferId = result[0].id;
+                        return Carspecialoffer.app.models.carReservation.updateAll({id: result.carReservationsId}, {price: newPrice},{transaction: tx});
+                    })
+                    .then((result) => {
+                        return Carspecialoffer.updateAll({id: specialOfferId}, {discount: newDiscount}, {transaction: tx});
+                    })
+                    .then((result) => {
+                        tx.commit();
+                        cb(null, result);
+                    })
+                    .catch((err) => {
+                        tx.rollback();
+                        cb(err, null);
+                    })
+                });
+            })
+            .catch((err) => {
+                cb(err, null);
+            });
+        })
+        .catch((err) => {
+            cb(err, null);
+        })
+    }
+
+    Carspecialoffer.remoteMethod('changeOffer', {
+        accepts: [{arg: 'startDate', type: 'date', required: true},
+                  {arg: 'registration', type: 'string', required: true},
+                  {arg: 'newDiscount', type: 'number', required: true}],
+        http: {path: '/changeSpecialOffer', verb: 'put'},
         returns: {type: 'object', arg: 'retval'}
     });
 
