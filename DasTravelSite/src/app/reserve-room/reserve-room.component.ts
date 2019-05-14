@@ -59,7 +59,6 @@ export class ReserveRoomComponent implements OnInit {
   }
 
   onReserveRoomSubmit() {
-    console.log("hej", this.room.room.room.id);
     this.roomreservationservice.makeReservation(this.room.startDate.toISOString(),
       this.room.endDate.toISOString(), this.room.room.room.id,
       this.myuserservice.getCachedCurrent().id, this.room.room.price)

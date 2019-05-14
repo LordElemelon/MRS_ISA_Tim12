@@ -36,7 +36,7 @@ module.exports = function(Room) {
     });
   });
 
-  Room.findRooms = function(start, end, location, price, beds, cb) {
+  Room.findAvailableRooms = function(start, end, location, price, beds, cb) {
     if (!location) location = '';
     if (!price) price = Infinity;
     Room.getApp((err, app) => {
@@ -82,7 +82,7 @@ module.exports = function(Room) {
                                       'room': {'number': room.number,
                                         'description': room.description,
                                         'beds': room.beds,
-										'id': room.id},
+                                        'id': room.id},
                                       'price': roomPrice.price});
                                   }
                                   indexRooms++;
@@ -120,7 +120,7 @@ module.exports = function(Room) {
     });
   };
 
-  Room.remoteMethod('findRooms', {
+  Room.remoteMethod('findAvailableRooms', {
     accepts: [
       {arg: 'start', type: 'date', required: true},
       {arg: 'end', type: 'date', required: true},
@@ -128,7 +128,7 @@ module.exports = function(Room) {
       {arg: 'price', type: 'number', required: false},
       {arg: 'beds', type: 'number', required: true},
     ],
-    http: {path: '/findRooms', verb: 'get'},
+    http: {path: '/findAvailableRooms', verb: 'get'},
     returns: {type: 'object', arg: 'retval'},
   });
 };
