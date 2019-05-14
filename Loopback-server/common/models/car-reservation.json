@@ -17,26 +17,21 @@
     "price": {
       "type": "number",
       "required": true
-    }
+    },
+	"carsId": {
+	  "type": "string",
+	  "required": true
+	},
+	"myuserId": {
+	  "type": "string"
+	},
+	"rentalServiceId": {
+	  "type": "string",
+	  "required": true
+	}
   },
   "validations": [],
-  "relations": {
-    "cars": {
-      "type": "belongsTo",
-      "model": "car",
-      "foreignKey": ""
-    },
-    "myuser": {
-      "type": "belongsTo",
-      "model": "myuser",
-      "foreignKey": ""
-    },
-    "rentalService": {
-      "type": "belongsTo",
-      "model": "rentalService",
-      "foreignKey": ""
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }
