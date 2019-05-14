@@ -113,5 +113,13 @@
   "seat": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "seatId": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "seat-reservation": {
+    "dataSource": "postgres",
+    "public": true
   }
 }
