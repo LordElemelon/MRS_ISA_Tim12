@@ -33,7 +33,6 @@ module.exports = function(Roomreservation) {
 										cb(err, null);
 									}
 									else {
-										console.log(res);
 										if (res.length > 0) {
 											tx.rollback();
 											cb(new Error('Can not reserve on this date'), null);

@@ -53,6 +53,8 @@ import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
 import { ListCarDiscountsComponent } from './list-car-discounts/list-car-discounts.component';
+import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
+import { CarReservationListComponent } from './car-reservation-list/car-reservation-list.component';
 
 
 @NgModule({
@@ -77,7 +79,9 @@ import { ListCarDiscountsComponent } from './list-car-discounts/list-car-discoun
     ReservecarComponent,
     ReserveRoomComponent,
     UserComponent,
-    ListCarDiscountsComponent
+    ListCarDiscountsComponent,
+    RoomReservationListComponent,
+    CarReservationListComponent
   ],
   imports: [
     BrowserModule,

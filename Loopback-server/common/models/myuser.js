@@ -52,7 +52,6 @@ module.exports = function (Myuser) {
   });
 
   Myuser.beforeRemote('create', function(ctx, userInstance, next) {
-    console.log('RADIM REMOTE EEEEj');
     if (ctx.args.data) {
       var s = ctx.args.data;
       if (!s) {
@@ -89,7 +88,6 @@ module.exports = function (Myuser) {
                       principalType: RoleMapping.USER,
                       principalId: result.id,
                     }, (err, principal) => {
-                      console.log(principal);
                       if (err) return cb(err, null);
                       else {
                         cb(null, result);
@@ -118,5 +116,49 @@ module.exports = function (Myuser) {
       {arg: 'emailVerified', type: 'boolean', required: true}],
     http: {path: '/registerAnAdmin', verb: 'post'},
     returns: {type: 'object', arg: 'retval'},
+  });
+
+  Myuser.getRoomReservations = function(userId, size, offset, cb) {
+    Myuser.getApp((err, app) => {
+      if (err) cb(err, null);
+      else {
+        app.models.RoomReservation.find(
+          {'where': {'userId': '"' + userId + '"'},
+            'limit': size, 'skip': offset})
+          .then(reservations => {
+            cb(null, reservations);
+          }, err => cb(err, null));
+      }
+    });
+  };
+
+  Myuser.remoteMethod('getRoomReservations', {
+    accepts: [{arg: 'userId', type: 'string', required: true},
+      {arg: 'size', type: 'number', required: true},
+      {arg: 'offset', type: 'number', required: true}],
+    http: {path: '/getRoomReservations', verb: 'get'},
+    returns: {type: 'array', arg: 'retval'},
+  });
+
+  Myuser.getCarReservations = function(userId, size, offset, cb) {
+    Myuser.getApp((err, app) => {
+      if (err) cb(err, null);
+      else {
+        app.models.CarReservation.find(
+          {'where': {'userId': '"' + userId + '"'},
+            'limit': size, 'skip': offset})
+          .then(reservations => {
+            cb(null, reservations);
+          }, err => cb(err, null));
+      }
+    });
+  };
+
+  Myuser.remoteMethod('getCarReservations', {
+    accepts: [{arg: 'userId', type: 'string', required: true},
+      {arg: 'size', type: 'number', required: true},
+      {arg: 'offset', type: 'number', required: true}],
+    http: {path: '/getCarReservations', verb: 'get'},
+    returns: {type: 'array', arg: 'retval'},
   });
 };

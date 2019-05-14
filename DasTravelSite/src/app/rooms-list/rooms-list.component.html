@@ -9,7 +9,9 @@
       <mat-grid-tile *ngFor="let room of rooms">
         <mat-card [routerLink]="['/room', room.id]" class="pointer">
           <mat-card-content>
-              {{room.number}} | {{room.beds}} | {{room.description}}
+            Room number: {{room.number}} <br>
+            Number of beds: {{room.beds}} <br>
+            Description: {{room.description}}
           </mat-card-content>
         </mat-card>
       </mat-grid-tile>

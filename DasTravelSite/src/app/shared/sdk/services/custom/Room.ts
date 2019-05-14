@@ -775,10 +775,10 @@ export class RoomApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public findRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<any> {
+  public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/rooms/findRooms";
+    "/rooms/findAvailableRooms";
     let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {};
