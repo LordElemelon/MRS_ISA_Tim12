@@ -87,6 +87,7 @@ export class RoomComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.minDate.setHours(0, 0, 0);
     const id = this.router.snapshot.params['id'];
     this.roomservice.findById(id, {include: ['roomPrices', 'hotelDiscounts']})
     .subscribe((result: Room) =>  {
@@ -122,9 +123,10 @@ export class RoomComponent implements OnInit {
         }
       }
     }
-    const startDate = form.get('startDate').value;
-    startDate.setHours(23, 59, 59);
-    if (startDate <= this.minDate) {
+    const startDate = new Date(form.get('startDate').value);
+    console.log(startDate.getMilliseconds(), this.minDate.getMilliseconds());
+    console.log(startDate.getMilliseconds() === this.minDate.getMilliseconds());
+    if (startDate < this.minDate) {
       this.addPriceFormErrors['startDate'] += this.addPriceFormValidationMessages['startDate']['min'] + ' ';
       this.addPriceForm.controls['startDate'].setErrors({'min' : true});
     }
@@ -143,7 +145,7 @@ export class RoomComponent implements OnInit {
   onAddPriceSubmit() {
     const price = this.addPriceForm.value;
     const d = new Date(price.startDate);
-    d.setHours(8);
+    console.log(d);
     this.roompriceservice.create({
       'price': price.price,
       'startDate': d,

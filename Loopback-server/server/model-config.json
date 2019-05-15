@@ -88,7 +88,10 @@
   },
   "myuser": {
     "dataSource": "MongoDB",
-    "public": true
+    "public": true,
+    "options": {
+      "emailVerificationRequired": true
+    }
   },
   "carReservation": {
     "dataSource": "postgres",

@@ -54,7 +54,7 @@ module.exports = function(Room) {
               }
               for (let hotel of hotels) {
                 hotel.rooms.find({where: {beds: beds},
-                  include: ['roomReservations', 'roomPrices']})
+                  include: ['roomPrices']})
                   .then(rooms => {
                     var doneRooms = new Promise((resolve1, reject1) => {
                       if (rooms.length === 0)  {
@@ -70,10 +70,11 @@ module.exports = function(Room) {
                             // check if the price exists and if it is lower than needed price
                             if (roomPrice && roomPrice.price < price) {
                               // check whether the room is already reserved
-                              room.roomReservations.find({
+                              app.models.RoomReservation.find({
                                 where: {
                                   startDate: {lte: end},
                                   endDate: {gte: start},
+                                  roomId: room.id,
                                 },
                               })
                                 .then((reservations) => {
