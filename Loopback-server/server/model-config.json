@@ -113,5 +113,9 @@
   "seat": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "carSpecialOffer": {
+    "dataSource": "postgres",
+    "public": true
   }
 }
