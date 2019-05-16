@@ -121,5 +121,9 @@
   "seatReservation": {
     "dataSource": "postgres",
     "public": true
+  },
+  "carSpecialOffer": {
+    "dataSource": "postgres",
+    "public": true
   }
 }

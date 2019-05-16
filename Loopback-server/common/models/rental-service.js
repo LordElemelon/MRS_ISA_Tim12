@@ -26,8 +26,8 @@ module.exports = function(Rentalservice) {
                                 if (car_count == 0) {
                                     resolve(null);
                                 } else {
-                                    var query_string = "SELECT COUNT (DISTINCT carsid) FROM carreservation WHERE startdate < DATE(\'"
-                                     + end_string + "\') and enddate > (\'"  + start_string + "\') and rentalserviceid = '\"" + myservice.id + "\"';";
+                                     var query_string = "SELECT COUNT (DISTINCT carsid) FROM carreservation WHERE startdate < DATE(\'" + end_string + "\') " +
+                                     " and enddate > (\'" + start_string +  "\') and rentalserviceid = '" + myservice.id + "';";
                                      const postgres = Rentalservice.app.dataSources.postgres;
                                      postgres.connector.execute(query_string, null, (err, result) => {
                                          if (result[0].count < car_count) {

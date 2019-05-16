@@ -55,7 +55,7 @@ module.exports = function(Car) {
 						var mycar = car;
 						Car.app.models.carReservation.find({
 							where: {
-								carsId: '\"' + mycar.id + '\"',
+								carsId:mycar.id,
 								startDate: {
 									lte: endDate
 								},

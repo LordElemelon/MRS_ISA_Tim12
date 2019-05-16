@@ -1,0 +1,13 @@
+<div fxFlex>
+    <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let discount of foundDiscounts">
+        <mat-card routerLink="" class="pointer">
+          Registration: {{discount.registration}} <br>
+          Start date: {{discount.startDate}} <br>
+          End date: {{discount.endDate}} <br>
+          Base Price: {{discount.basePrice}} <br>
+          Discount: {{discount.discount}}
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>

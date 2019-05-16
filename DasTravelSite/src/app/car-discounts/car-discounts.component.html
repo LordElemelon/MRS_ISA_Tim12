@@ -2,6 +2,7 @@
   <a mat-button (click)="setToAdd()" *ngIf="userType==='rentalServiceAdmin'"> Add</a>
   <a mat-button (click)="setToRemove()" *ngIf="userType==='rentalServiceAdmin'"> Remove </a>
   <a mat-button (click)="setToChange()" *ngIf="userType==='rentalServiceAdmin'"> Change </a>
+  <a mat-button (click)="setToList()" *ngIf="userType==='rentalServiceAdmin'">List </a>
 </mat-toolbar>
 
 <div *ngIf="isAdd&&userType==='rentalServiceAdmin'" >
@@ -37,9 +38,9 @@
       </p>
       <p>
         <mat-form-field class="half-width">
-          <input matInput formControlName="price" placeholder="Discount price" pattern="[0-9]*" type="text">
-          <mat-error *ngIf="addFormErrors.price">
-            {{ addFormErrors.price }}
+          <input matInput formControlName="discount" placeholder="Discount" pattern="[0-9]*" type="text">
+          <mat-error *ngIf="addFormErrors.discount">
+            {{ addFormErrors.discount }}
           </mat-error>
         </mat-form-field>
       </p>
@@ -51,9 +52,71 @@
 </div>
 
 <div *ngIf="isRemove&&userType==='rentalServiceAdmin'" >
-  remove discount
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="deleteForm" #deleteform="ngForm" (ngSubmit)="onDeleteSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+        <input matInput formControlName="registration" placeholder="Registration" type="text">
+        <mat-error *ngIf="deleteFormErrors.registration">
+          {{ deleteFormErrors.registration }}
+        </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="start" [matDatepicker]="myDatepicker" placeholder="Start time">
+          <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+          <mat-error *ngIf="deleteFormErrors.start">
+            {{ deleteFormErrors.start }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="deleteForm.invalid">
+          Submit
+      </button>
+    </form>
+  </div>
 </div>
 
 <div *ngIf="isChange&&userType==='rentalServiceAdmin'" >
-  change discount
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+        <input matInput formControlName="registration" placeholder="Registration" type="text">
+        <mat-error *ngIf="changeFormErrors.registration">
+          {{ changeFormErrors.registration }}
+        </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="start" [matDatepicker]="myDatepicker" placeholder="Start time">
+          <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker></mat-datepicker>
+          <mat-error *ngIf="changeFormErrors.start">
+            {{ changeFormErrors.start }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="newDiscount" placeholder="New discount" type="text" pattern="[0-9]*">
+            <mat-error *ngIf="changeFormErrors.newDiscount">
+                {{ changeFormErrors.newDiscount }}
+            </mat-error>
+          </mat-form-field>
+
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changeForm.invalid">
+          Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="isList&&userType==='rentalServiceAdmin'">
+  <app-list-car-discounts></app-list-car-discounts>
+  list all discounts from this rental service (for now all of them)
 </div>

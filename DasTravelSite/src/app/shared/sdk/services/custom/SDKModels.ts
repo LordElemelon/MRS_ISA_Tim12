@@ -23,6 +23,7 @@ import { UserInfo } from '../../models/UserInfo';
 import { Seat } from '../../models/Seat';
 import { SeatId } from '../../models/SeatId';
 import { SeatReservation } from '../../models/SeatReservation';
+import { CarSpecialOffer } from '../../models/CarSpecialOffer';
 
 export interface Models { [name: string]: any }
 
@@ -53,6 +54,7 @@ export class SDKModels {
     Seat: Seat,
     SeatId: SeatId,
     SeatReservation: SeatReservation,
+    CarSpecialOffer: CarSpecialOffer,
     
   };
 

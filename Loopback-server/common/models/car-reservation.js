@@ -4,13 +4,13 @@ module.exports = function(Carreservation) {
 	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
-			postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + carId + "\"' FOR UPDATE;", null, (err, result) => {
+			postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;", null, (err, result) => {
 				if (err) {
 					tx.rollback();
 					cb(err, null);
 				}
 				else{
-					Carreservation.app.models.Carid.find({where: {carId: '\"' + carId + '\"'}}, {transaction: tx}, (err, res) => {
+					Carreservation.app.models.Carid.find({where: {carId: carId}}, {transaction: tx}, (err, res) => {
 						if (err){
 							tx.rollback();
 							cb(err, null);
@@ -19,7 +19,7 @@ module.exports = function(Carreservation) {
 							//var car_promise = Carreservation.apnbvcnbcp.models.car.find({where: {id: '\"' + carId + '\"'}});
 							Carreservation.find({
 								where: {
-									carsId: '\"' + carId + '\"',
+									carsId: carId,
 									startDate: {
 										lte: endDate
 									},
