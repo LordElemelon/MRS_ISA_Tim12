@@ -13,12 +13,23 @@ module.exports = function(Flight) {
       if (validFlights.length != 0) {
 
         //for each flight check seats reservation and add to list, perhaps using promises again?
+        cb(null, validFlights);
 
       } else {
         cb(null, []);
       }
     });
   }
+  
+  Flight.remoteMethod('findAvailableFlights', {
+    accepts: [
+      {arg: 'origin', type: 'string', required: true},
+      {arg: 'destination', type: 'string', required: true},
+      {arg: 'takeoffDate', type: 'string', required: true},
+    ],
+    http: {path: '/findAvailableFlights', verb: 'get'},
+    returns: {type: 'object', arg: 'retval'},
+  });
 
   Flight.findAvailableSeats = function(flightId, cb) {
     Flight.app.models.Seat.find({'where': {'flightId': flightId}}, (err, res) => {
@@ -26,10 +37,10 @@ module.exports = function(Flight) {
 			for (var seat of res) {
 				promises.push(
 					new Promise(function(resolve, reject) {
-						var mySeat = seat;
+            var mySeat = seat;
 						Flight.app.models.seatReservation.find({
 							where: {
-								seatId: '\"' + mySeat.id + '\"'
+								seatId: mySeat.id 
 							}
 						})
 						.then(
@@ -61,16 +72,6 @@ module.exports = function(Flight) {
 			})
 		});
   }
-  
-  Flight.remoteMethod('findAvailableFlights', {
-    accepts: [
-      {arg: 'origin', type: 'string', required: true},
-      {arg: 'destination', type: 'string', required: true},
-      {arg: 'takeoffDate', type: 'string', required: true},
-    ],
-    http: {path: '/findAvailableFlights', verb: 'get'},
-    returns: {type: 'object', arg: 'retval'},
-  });
 
   Flight.remoteMethod('findAvailableSeats', {
     accepts: [

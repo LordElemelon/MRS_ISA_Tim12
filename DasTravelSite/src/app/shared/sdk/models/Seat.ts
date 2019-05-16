@@ -1,4 +1,7 @@
 /* tslint:disable */
+import {
+  Flight
+} from '../index';
 
 declare var Object: any;
 export interface SeatInterface {
@@ -7,6 +10,7 @@ export interface SeatInterface {
   "classType": string;
   "id"?: any;
   "flightId"?: any;
+  flight?: Flight;
 }
 
 export class Seat implements SeatInterface {
@@ -15,6 +19,7 @@ export class Seat implements SeatInterface {
   "classType": string;
   "id": any;
   "flightId": any;
+  flight: Flight;
   constructor(data?: SeatInterface) {
     Object.assign(this, data);
   }
@@ -70,6 +75,14 @@ export class Seat implements SeatInterface {
         },
       },
       relations: {
+        flight: {
+          name: 'flight',
+          type: 'Flight',
+          model: 'Flight',
+          relationType: 'belongsTo',
+                  keyFrom: 'flightId',
+          keyTo: 'id'
+        },
       }
     }
   }

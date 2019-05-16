@@ -1,5 +1,5 @@
 {
-  "name": "seat-reservation",
+  "name": "seatReservation",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -10,11 +10,11 @@
       "type": "number",
       "required": true
     },
-    "seatId": {
+    "myuserId": {
       "type": "string",
       "required": true
     },
-    "myuserId": {
+    "seatId": {
       "type": "string",
       "required": true
     }

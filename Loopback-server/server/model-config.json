@@ -118,7 +118,7 @@
     "dataSource": "postgres",
     "public": true
   },
-  "seat-reservation": {
+  "seatReservation": {
     "dataSource": "postgres",
     "public": true
   }

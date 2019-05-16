@@ -54,6 +54,7 @@ import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
 import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
 import { CarReservationListComponent } from './car-reservation-list/car-reservation-list.component';
+import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 
 
 @NgModule({
@@ -79,7 +80,8 @@ import { CarReservationListComponent } from './car-reservation-list/car-reservat
     ReserveRoomComponent,
     UserComponent,
     RoomReservationListComponent,
-    CarReservationListComponent
+    CarReservationListComponent,
+    ReserveSeatComponent
   ],
   imports: [
     BrowserModule,

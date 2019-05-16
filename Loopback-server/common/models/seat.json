@@ -20,7 +20,13 @@
     }
   },
   "validations": [],
-  "relations": {},
+  "relations": {
+    "flight": {
+      "type": "belongsTo",
+      "model": "flight",
+      "foreignKey": ""
+    }
+  },
   "acls": [],
   "methods": {}
 }

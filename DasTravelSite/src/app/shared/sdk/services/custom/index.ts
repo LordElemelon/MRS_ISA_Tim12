@@ -20,5 +20,7 @@ export * from './Roomid';
 export * from './RoomReservation';
 export * from './UserInfo';
 export * from './Seat';
+export * from './SeatId';
+export * from './SeatReservation';
 export * from './SDKModels';
 export * from './logger.service';
