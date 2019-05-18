@@ -9,15 +9,15 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { CarReservation } from '../../models/CarReservation';
+import { QuickFlightReservation } from '../../models/QuickFlightReservation';
 import { SocketConnection } from '../../sockets/socket.connections';
 
 
 /**
- * Api services for the `CarReservation` model.
+ * Api services for the `QuickFlightReservation` model.
  */
 @Injectable()
-export class CarReservationApi extends BaseLoopBackApi {
+export class QuickFlightReservationApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -42,13 +42,13 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `CarReservation` object.)
+   * This usually means the response is a `QuickFlightReservation` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/carReservations";
+    "/quickFlightReservations";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -61,7 +61,7 @@ export class CarReservationApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id carReservation id
+   * @param {any} id quickFlightReservation id
    *
    * @param {object} data Request data.
    *
@@ -73,13 +73,13 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `CarReservation` object.)
+   * This usually means the response is a `QuickFlightReservation` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/carReservations/:id";
+    "/quickFlightReservations/:id";
     let _routeParams: any = {
       id: id
     };
@@ -92,54 +92,10 @@ export class CarReservationApi extends BaseLoopBackApi {
   }
 
   /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {object} data Request data.
-   *
-   *  - `startDate` – `{date}` - 
-   *
-   *  - `endDate` – `{date}` - 
-   *
-   *  - `carId` – `{string}` - 
-   *
-   *  - `userId` – `{string}` - 
-   *
-   *  - `price` – `{number}` - 
-   *
-   *  - `rentalid` – `{string}` - 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `retval` – `{object}` - 
-   */
-  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/carReservations/makeReservation";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
-    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
-    if (typeof carId !== 'undefined' && carId !== null) _urlParams.carId = carId;
-    if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
-    if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
-    if (typeof rentalid !== 'undefined' && rentalid !== null) _urlParams.rentalid = rentalid;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
    * The name of the model represented by this $resource,
-   * i.e. `CarReservation`.
+   * i.e. `QuickFlightReservation`.
    */
   public getModelName() {
-    return "CarReservation";
+    return "QuickFlightReservation";
   }
 }

@@ -1,0 +1,22 @@
+{
+  "name": "quickFlightReservation",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "discount": {
+      "type": "number",
+      "required": true
+    },
+    "seatReservationId": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
