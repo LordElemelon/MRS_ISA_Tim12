@@ -22,6 +22,7 @@ export class FlightsComponent implements OnInit {
   displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
 
   isSearch: boolean;
+  isReserve: boolean;
   
   setClickedRow : Function;
   selectedFlight: Flight = null;
@@ -162,6 +163,14 @@ export class FlightsComponent implements OnInit {
 
   setToSearch() {
     this.isSearch = true;
+    this.isReserve = false;
   }
 
+  ReserveButton() {
+    if (this.selectedFlight != null) {
+      console.log(this.selectedFlight);
+      this.isSearch = false;
+      this.isReserve = true;
+    }
+  }
 }

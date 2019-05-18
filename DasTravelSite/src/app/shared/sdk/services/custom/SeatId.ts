@@ -9,16 +9,16 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Seat } from '../../models/Seat';
+import { SeatId } from '../../models/SeatId';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Flight } from '../../models/Flight';
+import { Seat } from '../../models/Seat';
 
 
 /**
- * Api services for the `Seat` model.
+ * Api services for the `SeatId` model.
  */
 @Injectable()
-export class SeatApi extends BaseLoopBackApi {
+export class SeatIdApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -31,9 +31,9 @@ export class SeatApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation flight.
+   * Fetches belongsTo relation seat.
    *
-   * @param {any} id seat id
+   * @param {any} id seatId id
    *
    * @param {boolean} refresh 
    *
@@ -43,13 +43,13 @@ export class SeatApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Seat` object.)
+   * This usually means the response is a `SeatId` object.)
    * </em>
    */
-  public getFlight(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+  public getSeat(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/seats/:id/flight";
+    "/seatIds/:id/seat";
     let _routeParams: any = {
       id: id
     };
@@ -73,13 +73,13 @@ export class SeatApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Seat` object.)
+   * This usually means the response is a `SeatId` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/seats";
+    "/seatIds";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -92,7 +92,7 @@ export class SeatApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id seat id
+   * @param {any} id seatId id
    *
    * @param {object} data Request data.
    *
@@ -104,13 +104,13 @@ export class SeatApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Seat` object.)
+   * This usually means the response is a `SeatId` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/seats/:id";
+    "/seatIds/:id";
     let _routeParams: any = {
       id: id
     };
@@ -124,9 +124,9 @@ export class SeatApi extends BaseLoopBackApi {
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Seat`.
+   * i.e. `SeatId`.
    */
   public getModelName() {
-    return "Seat";
+    return "SeatId";
   }
 }

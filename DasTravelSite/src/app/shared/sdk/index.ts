@@ -69,6 +69,8 @@ import { RoomidApi } from './services/custom/Roomid';
 import { RoomReservationApi } from './services/custom/RoomReservation';
 import { UserInfoApi } from './services/custom/UserInfo';
 import { SeatApi } from './services/custom/Seat';
+import { SeatIdApi } from './services/custom/SeatId';
+import { SeatReservationApi } from './services/custom/SeatReservation';
 import { CarSpecialOfferApi } from './services/custom/CarSpecialOffer';
 /**
 * @module SDKBrowserModule
@@ -121,6 +123,8 @@ export class SDKBrowserModule {
         RoomReservationApi,
         UserInfoApi,
         SeatApi,
+        SeatIdApi,
+        SeatReservationApi,
         CarSpecialOfferApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
