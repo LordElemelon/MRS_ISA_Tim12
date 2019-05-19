@@ -92,9 +92,9 @@ export class HotelsComponent implements OnInit {
     private loginService: LoginServiceService,
     public snackBar: MatSnackBar
     ) {
-
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
+      this.minDate.setHours(0, 0, 0, 0);
       this.createForm();
       this.createSearchHotelForm();
       this.createSearchRoomsForm();
@@ -239,8 +239,15 @@ export class HotelsComponent implements OnInit {
     }
     const startDate = form.get('startDate').value;
     const endDate = form.get('endDate').value;
-    endDate.setHours(23, 59, 59);
-    if (endDate < startDate)  {
+    if (startDate < this.minDate) {
+      this.searchRoomsFormErrors['startDate'] += this.searchRoomsFormValidationMessages['startDate']['min'] + ' ';
+      this.searchRoomsForm.controls['startDate'].setErrors({'min' : true});
+    }
+    if (endDate < this.minDate) {
+      this.searchRoomsFormErrors['endDate'] += this.searchRoomsFormValidationMessages['endDate']['min'] + ' ';
+      this.searchRoomsForm.controls['endDate'].setErrors({'min' : true});
+    }
+    if (endDate <= startDate)  {
       this.searchRoomsFormErrors['endDate'] += this.searchRoomsFormValidationMessages['endDate']['max'] + ' ';
       this.searchRoomsForm.controls['endDate'].setErrors({'max' : true});
     }
@@ -248,8 +255,8 @@ export class HotelsComponent implements OnInit {
 
   createSearchRoomsForm() {
     this.searchRoomsForm = this.fb.group({
-      startDate: [new Date(), [Validators.required]],
-      endDate: [new Date(), [Validators.required]],
+      startDate: [this.minDate, [Validators.required]],
+      endDate: [this.minDate, [Validators.required]],
       beds : [0, [Validators.required, Validators.min(1)]],
       price: [0, Validators.min(1)],
       address: '',

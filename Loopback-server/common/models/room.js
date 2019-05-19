@@ -63,12 +63,12 @@ module.exports = function(Room) {
                       let indexRooms = 0;
                       for (let room of rooms) {
                         room.roomPrices.findOne({
-                          where: {startDate: {lt: start}},
+                          where: {startDate: {lte: start}},
                           order: 'startDate DESC',
                         })
                           .then(roomPrice => {
                             // check if the price exists and if it is lower than needed price
-                            if (roomPrice && roomPrice.price < price) {
+                            if (roomPrice && roomPrice.price <= price) {
                               // check whether the room is already reserved
                               app.models.RoomReservation.find({
                                 where: {

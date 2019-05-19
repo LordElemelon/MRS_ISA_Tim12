@@ -63,7 +63,8 @@ export class HotelComponent implements OnInit {
 
   addRoomFormErrors = {
     'number': '',
-    'beds': ''
+    'beds': '',
+    'description': ''
   };
 
   addRoomFormValidationMessages = {
@@ -74,7 +75,11 @@ export class HotelComponent implements OnInit {
     'beds': {
       'required': 'Number of beds is required',
       'min': 'Number of beds must be higher than 0'
-    }
+    },
+    'description':
+      {
+        'required': 'Description is required'
+      }
   };
 
   removeRoomFormErrors = {
@@ -243,7 +248,7 @@ export class HotelComponent implements OnInit {
     this.addRoomForm = this.fb.group({
       'number': [0, [Validators.required, Validators.min(1)]],
       'beds': [0, [Validators.required, Validators.min(1)]],
-      'description': '',
+      'description': ['', [Validators.required]],
       'hotelId': ''
     });
     this.addRoomForm.valueChanges
