@@ -21,6 +21,8 @@ import { Roomid } from '../../models/Roomid';
 import { RoomReservation } from '../../models/RoomReservation';
 import { UserInfo } from '../../models/UserInfo';
 import { Seat } from '../../models/Seat';
+import { SeatId } from '../../models/SeatId';
+import { SeatReservation } from '../../models/SeatReservation';
 import { CarSpecialOffer } from '../../models/CarSpecialOffer';
 
 export interface Models { [name: string]: any }
@@ -50,6 +52,8 @@ export class SDKModels {
     RoomReservation: RoomReservation,
     UserInfo: UserInfo,
     Seat: Seat,
+    SeatId: SeatId,
+    SeatReservation: SeatReservation,
     CarSpecialOffer: CarSpecialOffer,
     
   };

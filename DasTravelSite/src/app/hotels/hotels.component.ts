@@ -266,7 +266,7 @@ export class HotelsComponent implements OnInit {
     this.roomservice.findAvailableRooms(new Date(data.startDate).toISOString(), new Date(data.endDate).toISOString(),
       data.address, data.price, data.beds)
       .subscribe(result => {
-        this.foundRooms = result.retval;
+        this.foundRooms = result;
         this.searchDone = true;
         this.searchRoomsActive = false;
       }, err => {

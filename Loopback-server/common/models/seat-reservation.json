@@ -1,32 +1,26 @@
 {
-  "name": "seat",
+  "name": "seatReservation",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
     "validateUpsert": true
   },
   "properties": {
-    "row": {
+    "price": {
       "type": "number",
       "required": true
     },
-    "column": {
+    "myuserId": {
       "type": "string",
       "required": true
     },
-    "classType": {
+    "seatId": {
       "type": "string",
       "required": true
     }
   },
   "validations": [],
-  "relations": {
-    "flight": {
-      "type": "belongsTo",
-      "model": "flight",
-      "foreignKey": ""
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }

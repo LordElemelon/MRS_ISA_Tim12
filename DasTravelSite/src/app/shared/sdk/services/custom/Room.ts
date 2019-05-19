@@ -775,7 +775,7 @@ export class RoomApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<any> {
+  public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<Room[]> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/rooms/findAvailableRooms";
@@ -788,7 +788,9 @@ export class RoomApi extends BaseLoopBackApi {
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
     if (typeof beds !== 'undefined' && beds !== null) _urlParams.beds = beds;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
+    return result.pipe(map((instances: Array<Room>) =>
+        instances.map((instance: Room) => new Room(instance))
+    ));
   }
 
   /**

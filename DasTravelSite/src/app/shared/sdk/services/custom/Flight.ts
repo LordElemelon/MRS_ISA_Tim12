@@ -333,6 +333,70 @@ export class FlightApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} origin 
+   *
+   * @param {string} destination 
+   *
+   * @param {string} takeoffDate 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public findAvailableFlights(origin: any, destination: any, takeoffDate: any, customHeaders?: Function): Observable<Flight[]> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/flights/findAvailableFlights";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof origin !== 'undefined' && origin !== null) _urlParams.origin = origin;
+    if (typeof destination !== 'undefined' && destination !== null) _urlParams.destination = destination;
+    if (typeof takeoffDate !== 'undefined' && takeoffDate !== null) _urlParams.takeoffDate = takeoffDate;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result.pipe(map((instances: Array<Flight>) =>
+        instances.map((instance: Flight) => new Flight(instance))
+    ));
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} flightId 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public findAvailableSeats(flightId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/flights/findAvailableSeats";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof flightId !== 'undefined' && flightId !== null) _urlParams.flightId = flightId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+        
+    
+  }
+
+  /**
    * Creates a new instance in seats of this model.
    *
    * @param {any} id flight id
