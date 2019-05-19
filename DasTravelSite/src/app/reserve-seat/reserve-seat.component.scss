@@ -1,0 +1,12 @@
+th {
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+}
+
+.seatTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}

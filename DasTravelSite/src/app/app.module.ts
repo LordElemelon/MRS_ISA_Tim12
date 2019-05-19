@@ -52,8 +52,10 @@ import { ListallservicesComponent } from './listallservices/listallservices.comp
 import { CarDiscountsComponent } from './car-discounts/car-discounts.component';
 import { ReserveRoomComponent } from './reserve-room/reserve-room.component';
 import { UserComponent } from './user/user.component';
+import { ListCarDiscountsComponent } from './list-car-discounts/list-car-discounts.component';
 import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
 import { CarReservationListComponent } from './car-reservation-list/car-reservation-list.component';
+import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 
 
 @NgModule({
@@ -78,8 +80,10 @@ import { CarReservationListComponent } from './car-reservation-list/car-reservat
     ReservecarComponent,
     ReserveRoomComponent,
     UserComponent,
+    ListCarDiscountsComponent,
     RoomReservationListComponent,
-    CarReservationListComponent
+    CarReservationListComponent,
+    ReserveSeatComponent
   ],
   imports: [
     BrowserModule,

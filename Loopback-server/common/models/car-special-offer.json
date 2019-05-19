@@ -1,5 +1,5 @@
 {
-  "name": "carReservation",
+  "name": "carSpecialOffer",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
@@ -14,8 +14,16 @@
       "type": "date",
       "required": true
     },
-    "price": {
+    "basePrice": {
       "type": "number",
+      "required": true
+    },
+    "discount": {
+      "type": "number",
+      "required": true
+    },
+    "registration": {
+      "type": "string",
       "required": true
     },
 	"carsId": {
@@ -26,6 +34,10 @@
 	  "type": "string"
 	},
 	"rentalServiceId": {
+	  "type": "string",
+	  "required": true
+	},
+	"carReservationsId": {
 	  "type": "string",
 	  "required": true
 	}

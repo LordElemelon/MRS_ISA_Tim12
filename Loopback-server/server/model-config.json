@@ -116,5 +116,17 @@
   "seat": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "seatId": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "seatReservation": {
+    "dataSource": "postgres",
+    "public": true
+  },
+  "carSpecialOffer": {
+    "dataSource": "postgres",
+    "public": true
   }
 }

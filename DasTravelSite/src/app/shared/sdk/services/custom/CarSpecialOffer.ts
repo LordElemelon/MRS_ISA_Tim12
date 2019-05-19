@@ -9,17 +9,19 @@ import { LoopBackFilter,  } from '../../models/BaseModels';
 import { ErrorHandler } from '../core/error.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Flight } from '../../models/Flight';
+import { CarSpecialOffer } from '../../models/CarSpecialOffer';
 import { SocketConnection } from '../../sockets/socket.connections';
-import { Airline } from '../../models/Airline';
-import { Seat } from '../../models/Seat';
+import { Car } from '../../models/Car';
+import { Myuser } from '../../models/Myuser';
+import { RentalService } from '../../models/RentalService';
+import { CarReservation } from '../../models/CarReservation';
 
 
 /**
- * Api services for the `Flight` model.
+ * Api services for the `CarSpecialOffer` model.
  */
 @Injectable()
-export class FlightApi extends BaseLoopBackApi {
+export class CarSpecialOfferApi extends BaseLoopBackApi {
 
   constructor(
     @Inject(HttpClient) protected http: HttpClient,
@@ -32,9 +34,9 @@ export class FlightApi extends BaseLoopBackApi {
   }
 
   /**
-   * Fetches belongsTo relation airline.
+   * Fetches belongsTo relation cars.
    *
-   * @param {any} id flight id
+   * @param {any} id carSpecialOffer id
    *
    * @param {boolean} refresh 
    *
@@ -44,13 +46,13 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
-  public getAirline(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
+  public getCars(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/airline";
+    "/carSpecialOffers/:id/cars";
     let _routeParams: any = {
       id: id
     };
@@ -62,11 +64,11 @@ export class FlightApi extends BaseLoopBackApi {
   }
 
   /**
-   * Find a related item by id for seats.
+   * Fetches belongsTo relation myuser.
    *
-   * @param {any} id flight id
+   * @param {any} id carSpecialOffer id
    *
-   * @param {any} fk Foreign key for seats
+   * @param {boolean} refresh 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -74,60 +76,29 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
-  public findByIdSeats(id: any, fk: any, customHeaders?: Function): Observable<any> {
+  public getMyuser(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats/:fk";
+    "/carSpecialOffers/:id/myuser";
     let _routeParams: any = {
-      id: id,
-      fk: fk
+      id: id
     };
     let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
-   * Delete a related item by id for seats.
+   * Fetches belongsTo relation rentalService.
    *
-   * @param {any} id flight id
+   * @param {any} id carSpecialOffer id
    *
-   * @param {any} fk Foreign key for seats
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public destroyByIdSeats(id: any, fk: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Update a related item by id for seats.
-   *
-   * @param {any} id flight id
-   *
-   * @param {any} fk Foreign key for seats
-   *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
+   * @param {boolean} refresh 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -135,63 +106,29 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
-  public updateByIdSeats(id: any, fk: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "PUT";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats/:fk";
-    let _routeParams: any = {
-      id: id,
-      fk: fk
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Queries seats of flight.
-   *
-   * @param {any} id flight id
-   *
-   * @param {object} filter 
-   *
-   * @returns {object[]} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
-   * </em>
-   */
-  public getSeats(id: any, filter: LoopBackFilter = {}, customHeaders?: Function): Observable<any> {
+  public getRentalService(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats";
+    "/carSpecialOffers/:id/rentalService";
     let _routeParams: any = {
       id: id
     };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof filter !== 'undefined' && filter !== null) _urlParams.filter = filter;
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
-   * Creates a new instance in seats of this model.
+   * Fetches belongsTo relation carReservations.
    *
-   * @param {any} id flight id
+   * @param {any} id carSpecialOffer id
    *
-   * @param {object} data Request data.
-   *
-   * This method expects a subset of model properties as request parameters.
+   * @param {boolean} refresh 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -199,73 +136,19 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
-  public createSeats(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Deletes all seats of this model.
-   *
-   * @param {any} id flight id
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * This method returns no data.
-   */
-  public deleteSeats(id: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "DELETE";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-  }
-
-  /**
-   * Counts seats of flight.
-   *
-   * @param {any} id flight id
-   *
-   * @param {object} where Criteria to match model instances
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `count` – `{number}` - 
-   */
-  public countSeats(id: any, where: any = {}, customHeaders?: Function): Observable<any> {
+  public getCarReservations(id: any, refresh: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats/count";
+    "/carSpecialOffers/:id/carReservations";
     let _routeParams: any = {
       id: id
     };
     let _postBody: any = {};
     let _urlParams: any = {};
-    if (typeof where !== 'undefined' && where !== null) _urlParams.where = where;
+    if (typeof refresh !== 'undefined' && refresh !== null) _urlParams.refresh = refresh;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -283,13 +166,13 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
   public patchOrCreate(data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights";
+    "/carSpecialOffers";
     let _routeParams: any = {};
     let _postBody: any = {
       data: data
@@ -302,7 +185,7 @@ export class FlightApi extends BaseLoopBackApi {
   /**
    * Patch attributes for a model instance and persist it into the data source.
    *
-   * @param {any} id flight id
+   * @param {any} id carSpecialOffer id
    *
    * @param {object} data Request data.
    *
@@ -314,13 +197,13 @@ export class FlightApi extends BaseLoopBackApi {
    *
    * <em>
    * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
+   * This usually means the response is a `CarSpecialOffer` object.)
    * </em>
    */
   public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id";
+    "/carSpecialOffers/:id";
     let _routeParams: any = {
       id: id
     };
@@ -336,104 +219,119 @@ export class FlightApi extends BaseLoopBackApi {
    * <em>
          * (The remote method definition does not provide any description.)
          * </em>
-   *
-   * @param {string} origin 
-   *
-   * @param {string} destination 
-   *
-   * @param {string} takeoffDate 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `retval` – `{object}` - 
-   */
-  public findAvailableFlights(origin: any, destination: any, takeoffDate: any, customHeaders?: Function): Observable<Flight[]> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/findAvailableFlights";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof origin !== 'undefined' && origin !== null) _urlParams.origin = origin;
-    if (typeof destination !== 'undefined' && destination !== null) _urlParams.destination = destination;
-    if (typeof takeoffDate !== 'undefined' && takeoffDate !== null) _urlParams.takeoffDate = takeoffDate;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<Flight>) =>
-        instances.map((instance: Flight) => new Flight(instance))
-    ));
-  }
-
-  /**
-   * <em>
-         * (The remote method definition does not provide any description.)
-         * </em>
-   *
-   * @param {string} flightId 
-   *
-   * @returns {object} An empty reference that will be
-   *   populated with the actual data once the response is returned
-   *   from the server.
-   *
-   * Data properties:
-   *
-   *  - `retval` – `{object}` - 
-   */
-  public findAvailableSeats(flightId: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "GET";
-    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/findAvailableSeats";
-    let _routeParams: any = {};
-    let _postBody: any = {};
-    let _urlParams: any = {};
-    if (typeof flightId !== 'undefined' && flightId !== null) _urlParams.flightId = flightId;
-    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-        
-    
-  }
-
-  /**
-   * Creates a new instance in seats of this model.
-   *
-   * @param {any} id flight id
    *
    * @param {object} data Request data.
    *
-   * This method expects a subset of model properties as request parameters.
+   *  - `startDate` – `{date}` - 
    *
-   * @returns {object[]} An empty reference that will be
+   *  - `endDate` – `{date}` - 
+   *
+   *  - `carId` – `{string}` - 
+   *
+   *  - `price` – `{number}` - 
+   *
+   *  - `rentalid` – `{string}` - 
+   *
+   *  - `discount` – `{number}` - 
+   *
+   *  - `registration` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
    *
-   * <em>
-   * (The remote method definition does not provide any description.
-   * This usually means the response is a `Flight` object.)
-   * </em>
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
    */
-  public createManySeats(id: any, data: any[] = [], customHeaders?: Function): Observable<any> {
+  public makeSpecialOffer(startDate: any, endDate: any, carId: any, price: any, rentalid: any, discount: any, registration: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
-    "/flights/:id/seats";
-    let _routeParams: any = {
-      id: id
-    };
-    let _postBody: any = {
-      data: data
-    };
+    "/carSpecialOffers/makeSpecialOffer";
+    let _routeParams: any = {};
+    let _postBody: any = {};
     let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof carId !== 'undefined' && carId !== null) _urlParams.carId = carId;
+    if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
+    if (typeof rentalid !== 'undefined' && rentalid !== null) _urlParams.rentalid = rentalid;
+    if (typeof discount !== 'undefined' && discount !== null) _urlParams.discount = discount;
+    if (typeof registration !== 'undefined' && registration !== null) _urlParams.registration = registration;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} startDate 
+   *
+   * @param {string} registration 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public removeOffer(startDate: any, registration: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "DELETE";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carSpecialOffers/removeSpecialOffer";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof registration !== 'undefined' && registration !== null) _urlParams.registration = registration;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `startDate` – `{date}` - 
+   *
+   *  - `registration` – `{string}` - 
+   *
+   *  - `newDiscount` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public changeOffer(startDate: any, registration: any, newDiscount: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carSpecialOffers/changeSpecialOffer";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof registration !== 'undefined' && registration !== null) _urlParams.registration = registration;
+    if (typeof newDiscount !== 'undefined' && newDiscount !== null) _urlParams.newDiscount = newDiscount;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
   /**
    * The name of the model represented by this $resource,
-   * i.e. `Flight`.
+   * i.e. `CarSpecialOffer`.
    */
   public getModelName() {
-    return "Flight";
+    return "CarSpecialOffer";
   }
 }
