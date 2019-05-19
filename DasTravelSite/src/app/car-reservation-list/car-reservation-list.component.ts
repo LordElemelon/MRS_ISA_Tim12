@@ -1,7 +1,7 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Car, CarReservation, RentalService, Room} from '../shared/sdk/models';
 import {MatSnackBar, MatTable} from '@angular/material';
-import {CarApi, MyuserApi, RentalServiceApi} from '../shared/sdk/services/custom';
+import {CarApi, MyuserApi, RentalServiceApi, CarReservationApi} from '../shared/sdk/services/custom';
 
 @Component({
   selector: 'app-car-reservation-list',
@@ -22,7 +22,8 @@ export class CarReservationListComponent implements OnInit {
               private myuserservice: MyuserApi,
               private carservice: CarApi,
               private rentalserviceservice: RentalServiceApi,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private reservationService: CarReservationApi
               ) { }
 
   ngOnInit() {
@@ -40,11 +41,12 @@ export class CarReservationListComponent implements OnInit {
             this.reservationsInfo = [];
             for (const carReservation of this.carReservations) {
               const idLen = carReservation.carsId.length;
-              this.carservice.findById(carReservation.carsId.substring(1, idLen - 1))
+              this.carservice.findById(carReservation.carsId)
                 .subscribe((car: Car) => {
                   this.rentalserviceservice.findById(car.rentalServiceId)
                     .subscribe((rentalService: RentalService) => {
-                      this.reservationsInfo.push({reservation: carReservation, car: car, rentalService: rentalService});
+                      this.reservationsInfo.push({reservation: carReservation, car: car, rentalService: rentalService,
+                      method: "mymethod()"});
                       index++;
                       if (index === this.carReservations.length) {
                         resolve();
@@ -80,5 +82,24 @@ export class CarReservationListComponent implements OnInit {
       this.pageNum--;
       this.getReservations();
     }
+  }
+
+  mymethod(event) {
+    var reservationid;
+    if (event.path[1].id == "") {
+      reservationid = event.path[0].id;
+    }
+    if (event.path[0].id == "") {
+      reservationid = event.path[1].id;
+    }
+    this.reservationService.cancel(reservationid)
+    .subscribe(
+      (result) => {
+        this.openSnackBar("Successfully cancelled reservation", "Dismiss");
+      },
+      (err) => {
+        this.openSnackBar("Failed to cancel reservation", "Dismiss");
+      }
+    )
   }
 }

@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function(Carreservation) {
+
 	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
@@ -69,5 +70,46 @@ module.exports = function(Carreservation) {
 				  {arg: 'rentalid', type: 'string', required: true}],
         http: {path: '/makeReservation', verb: 'post' },
         returns: {type: 'object', arg: 'retval'}
-    })
+	})
+	
+	Carreservation.cancel = function(id, options, cb) {
+		if (options.accessToken == null) {
+			cb(new Error("No user logged in"),null);
+			return;
+		}
+		console.log(id);
+		var requestid = options.accessToken.userId;
+		Carreservation.findById(id)
+		.then((result) => {
+			if (result == null) {
+				throw new Error("Reservation with this id does not exist");
+			}
+			if (requestid != result.myuserId) {
+				throw new Error("User is not owner of the reservation");
+			}
+			var hours = (result.startDate - new Date()) / 36e5;
+			if (hours < 72) {
+				throw new Error("Too late to cancel reservation");
+			}
+			return Carreservation.destroyById(id);
+		})
+		.then((result) => {
+			cb(null, true);
+		})
+		.catch((err) => {
+			cb(err, null);
+		})
+
+	}
+
+
+	Carreservation.remoteMethod('cancel', {
+		accepts: [
+			{arg: 'id', type: 'number', 'required': true},
+			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+		],
+		http: {path: '/cancel', verb: 'post' },
+        returns: {type: 'object', arg: 'retval'}
+	})
+	
 };

@@ -1,35 +1,24 @@
 /* tslint:disable */
-import {
-  Car,
-  Myuser,
-  RentalService
-} from '../index';
 
 declare var Object: any;
 export interface CarReservationInterface {
   "startDate": Date;
   "endDate": Date;
   "price": number;
+  "carsId": string;
+  "myuserId"?: string;
+  "rentalServiceId": string;
   "id"?: number;
-  "carsId"?: any;
-  "myuserId"?: any;
-  "rentalServiceId"?: any;
-  cars?: Car;
-  myuser?: Myuser;
-  rentalService?: RentalService;
 }
 
 export class CarReservation implements CarReservationInterface {
   "startDate": Date;
   "endDate": Date;
   "price": number;
+  "carsId": string;
+  "myuserId": string;
+  "rentalServiceId": string;
   "id": number;
-  "carsId": any;
-  "myuserId": any;
-  "rentalServiceId": any;
-  cars: Car;
-  myuser: Myuser;
-  rentalService: RentalService;
   constructor(data?: CarReservationInterface) {
     Object.assign(this, data);
   }
@@ -75,48 +64,24 @@ export class CarReservation implements CarReservationInterface {
           name: 'price',
           type: 'number'
         },
+        "carsId": {
+          name: 'carsId',
+          type: 'string'
+        },
+        "myuserId": {
+          name: 'myuserId',
+          type: 'string'
+        },
+        "rentalServiceId": {
+          name: 'rentalServiceId',
+          type: 'string'
+        },
         "id": {
           name: 'id',
           type: 'number'
         },
-        "carsId": {
-          name: 'carsId',
-          type: 'any'
-        },
-        "myuserId": {
-          name: 'myuserId',
-          type: 'any'
-        },
-        "rentalServiceId": {
-          name: 'rentalServiceId',
-          type: 'any'
-        },
       },
       relations: {
-        cars: {
-          name: 'cars',
-          type: 'Car',
-          model: 'Car',
-          relationType: 'belongsTo',
-                  keyFrom: 'carsId',
-          keyTo: 'id'
-        },
-        myuser: {
-          name: 'myuser',
-          type: 'Myuser',
-          model: 'Myuser',
-          relationType: 'belongsTo',
-                  keyFrom: 'myuserId',
-          keyTo: 'id'
-        },
-        rentalService: {
-          name: 'rentalService',
-          type: 'RentalService',
-          model: 'RentalService',
-          relationType: 'belongsTo',
-                  keyFrom: 'rentalServiceId',
-          keyTo: 'id'
-        },
       }
     }
   }
