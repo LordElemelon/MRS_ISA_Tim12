@@ -40,7 +40,7 @@ export class CarReservationListComponent implements OnInit {
             this.reservationsInfo = [];
             for (const carReservation of this.carReservations) {
               const idLen = carReservation.carsId.length;
-              this.carservice.findById(carReservation.carsId.substring(1, idLen - 1))
+              this.carservice.findById(carReservation.carsId)
                 .subscribe((car: Car) => {
                   this.rentalserviceservice.findById(car.rentalServiceId)
                     .subscribe((rentalService: RentalService) => {

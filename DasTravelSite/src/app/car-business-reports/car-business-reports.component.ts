@@ -118,23 +118,23 @@ export class CarBusinessReportsComponent implements OnInit {
   };
 
   onIncomeSubmit() {
-    console.log("Submit pressed");
     this.rentalServiceService.find({where: {name: this.incomeForm.value.rentalService}})
     .subscribe(
       (result) => {
         var my_result = result as RentalService[];
-        this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(), new Date(this.incomeForm.value.end).toJSON(),
-        my_result[0].id)
-        .subscribe(
+        var observable;
+        if (this.incomeForm.value.type === 'yearly') {
+          observable = this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(),
+           new Date(this.incomeForm.value.end).toJSON(), my_result[0].id)
+        } else {
+          observable = this.reservationService.getMonthlyReport(new Date(this.incomeForm.value.start).toJSON(),
+          new Date(this.incomeForm.value.end).toJSON(), my_result[0].id);
+        }
+        observable.subscribe(
           (result) => {
-            this.barChartLabels = []
-            for (let number of result.retval.years) {
-              this.barChartLabels.push(number.toString());
-            }
+            this.barChartLabels = result.retval.labels;
             this.barChartData = [{data: [], label: "Income"}];
-            for (let number of result.retval.sums) {
-              this.barChartData[0].data.push(number);
-            }
+            this.barChartData[0].data = result.retval.sums;
             this.setToIncomeChart();
           },
           (err) => {

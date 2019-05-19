@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function(Carreservation) {
+
 	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
@@ -72,13 +73,9 @@ module.exports = function(Carreservation) {
 	})
 	
 	Carreservation.getYearlyReport = function(startDate, endDate, rentalServiceId, cb) {
-		var years = [];
-		var startYear = startDate.getYear();
-		var endYear = endDate.getYear();
-		var i = startYear;
-		for (; i <= endYear; i++) {
-			years.push(i);
-		}
+		var years = Carreservation.generateYearsArray(startDate, endDate);
+		var baseNum = startDate.getYear();
+		var retval = {};
 		Carreservation.find({
 			where: {
 				startDate: {
@@ -91,31 +88,31 @@ module.exports = function(Carreservation) {
 			}
 		})
 		.then((result) => {
-			var retval = {};
-			retval.years = years;
+			retval.labels = years;
 			retval.sums = []
-			for (let year of retval.years) {
+			for (let year of retval.labels) {
 				retval.sums.push(0);
 			}
 			for (let reservation of result) {
 				var tempyear = reservation.startDate.getYear();
-				var i = 0;
-				for (; i < retval.years.length; i++) {
-					if (tempyear == retval.years[i]) {
-						retval.sums[i] += reservation.price;
-						break;
-					}
-				}
-			}
-			var i = 0;
-			for (; i < retval.years.length; i++) {
-				retval.years[i] += 1900;
+				retval.sums[tempyear - baseNum] += reservation.price;
 			}
 			cb(null, retval);
 		})
 		.catch((err) => {
 			cb(err, null);
 		})
+	}
+
+	Carreservation.generateYearsArray = function(startDate, endDate) {
+		var retVal = [];
+		var startYear = startDate.getYear();
+		var endYear = endDate.getYear();
+		var i = startYear;
+		for (; i <= endYear; i++) {
+			retVal.push((1900 + i).toString());
+		}
+		return retVal;
 	}
 
 	Carreservation.remoteMethod('getYearlyReport', {
@@ -125,4 +122,57 @@ module.exports = function(Carreservation) {
 		http: {path: '/getYearlyReport', verb: 'get'},
 		returns: {type: 'object', arg: 'retval'}
 	});
+
+	Carreservation.getMonthlyReport = function(startDate, endDate, rentalServiceId, cb) {
+		var monthArray = Carreservation.generateMonthArray(startDate, endDate);
+		var baseNum = startDate.getYear() * 12 + startDate.getMonth();
+		var retval = {};
+		Carreservation.find({
+			where: {
+				startDate: {
+					lte: endDate
+				},
+				endDate: {
+					gte: startDate
+				},
+				rentalServiceId: rentalServiceId
+			}
+		})
+		.then((result) => {
+			retval.labels = monthArray;
+			retval.sums = [];
+			for (let month of retval.labels) {
+				retval.sums.push(0);
+			}
+			for (let reservation of result) {
+				var tempNum = reservation.startDate.getYear() * 12 + reservation.startDate.getMonth();
+				retval.sums[tempNum - baseNum] += reservation.price;
+			}
+			cb(null, retval);
+		})
+		
+	}
+
+	Carreservation.generateMonthArray = function (startDate, endDate) {
+		var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		var start = startDate.getYear() * 12 + startDate.getMonth();
+		var end = endDate.getYear() * 12 + endDate.getMonth();
+		var retval = [];
+		var i = start;
+		for (; i <= end; i++) {
+			var tempYear = (Math.floor(i / 12) + 1900).toString();
+			var tempMonth = monthStrings[i % 12];
+			retval.push(tempYear + ' ' + tempMonth);
+		}
+		return retval;
+	}
+
+	Carreservation.remoteMethod('getMonthlyReport', {
+		accepts: [{arg: 'startDate', type: 'date', required: true},
+				  {arg: 'endDate', type: 'date', required: true},
+				  {arg: 'rentalServiceId', type: 'string', required: true}],
+		httP: {path: '/getMonthlyReport', verb: 'get'},
+		returns: {type: 'objects', arg: 'retval'}
+	});
+	
 };
