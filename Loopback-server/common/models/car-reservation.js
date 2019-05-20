@@ -37,7 +37,7 @@ module.exports = function(Carreservation) {
 											tx.rollback();
 											cb(new Error('Can not reserve on this date'), null);
 										}else{
-											console.log(rentalid);
+											//console.log(rentalid);
 											Carreservation.create({startDate: startDate, endDate: endDate,
 												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid}, {transaction: tx},
 											(err, res) => {
@@ -72,6 +72,45 @@ module.exports = function(Carreservation) {
         returns: {type: 'object', arg: 'retval'}
 	})
 	
+	
+	
+	Carreservation.cancel = function(id, options, cb) {
+		if (options.accessToken == null) {
+			cb(new Error("No user logged in"),null);
+			return;
+		}
+		var requestid = options.accessToken.userId;
+		Carreservation.findById(id)
+		.then((result) => {
+			if (result == null) {
+				throw new Error("Reservation with this id does not exist");
+			}
+			if (requestid != result.myuserId) {
+				throw new Error("User is not owner of the reservation");
+			}
+			var hours = (result.startDate - new Date()) / 36e5;
+			if (hours < 72) {
+				throw new Error("Too late to cancel reservation");
+			}
+			return Carreservation.destroyById(id);
+		})
+		.then((result) => {
+			cb(null, true);
+		})
+		.catch((err) => {
+			cb(err, null);
+		})
+	}
+
+	Carreservation.remoteMethod('cancel', {
+		accepts: [
+			{arg: 'id', type: 'number', 'required': true},
+			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+		],
+		http: {path: '/cancel', verb: 'post' },
+        returns: {type: 'object', arg: 'retval'}
+	})
+
 	Carreservation.getYearlyReport = function(startDate, endDate, rentalServiceId, cb) {
 		var years = Carreservation.generateYearsArray(startDate, endDate);
 		var baseNum = startDate.getYear();
@@ -99,10 +138,8 @@ module.exports = function(Carreservation) {
 			}
 			cb(null, retval);
 		})
-		.catch((err) => {
-			cb(err, null);
-		})
 	}
+	
 
 	Carreservation.generateYearsArray = function(startDate, endDate) {
 		var retVal = [];
@@ -174,5 +211,62 @@ module.exports = function(Carreservation) {
 		httP: {path: '/getMonthlyReport', verb: 'get'},
 		returns: {type: 'objects', arg: 'retval'}
 	});
-	
+
+	Carreservation.getWeeklyReport = function (startDate, endDate, rentalServiceId, cb) {
+		startDate.setDate(startDate.getDate() - startDate.getDay());
+		if (endDate.getDay() != 0) {
+			endDate.setDate(endDate.getDate() + 7 - endDate.getDay());
+		}
+		var weeks = Carreservation.generateWeekArray(startDate, endDate);
+		var retval = {};
+		Carreservation.find({
+			where: {
+				startDate: {
+					lte: endDate
+				},
+				endDate: {
+					gte: startDate
+				},
+				rentalServiceId: rentalServiceId
+			}
+		})
+		.then((result) => {
+			retval.labels = weeks
+			retval.sums = []
+			for (let week of retval.labels) {
+				retval.sums.push(0);
+			}
+			for (let reservation of result) {
+				
+				var tempNum = Math.floor((reservation.startDate - startDate)/(1000 * 60 * 60 * 24 * 7));
+				retval.sums[tempNum] += reservation.price;
+			}
+			cb(null, retval);
+		})
+	}
+
+	Carreservation.generateWeekArray = function (startDate, endDate) {
+		var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		var retVal = []
+		var weekCount = (endDate - startDate)/(1000 * 60 * 60 * 24 * 7)
+		var i = 0;
+		var currentDate = new Date(startDate.getTime());
+		for (; i < weekCount; i++) {
+			var label = monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate() + ' - '
+			currentDate.setDate(currentDate.getDate() + 7);
+			label += monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate()
+			retVal.push(label);
+		}
+		return retVal;
+	}
+
+	Carreservation.remoteMethod('getWeeklyReport', {
+		accepts: [{arg: 'startDate', type: 'date', required: true},
+				  {arg: 'endDate', type: 'date', required: true},
+				  {arg: 'rentalServiceId', type: 'string', required: true}],
+		httP: {path: '/getWeeklyReport', verb: 'get'},
+		returns: {type: 'objects', arg: 'retval'}
+	});
+
+
 };

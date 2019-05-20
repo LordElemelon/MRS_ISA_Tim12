@@ -126,9 +126,12 @@ export class CarBusinessReportsComponent implements OnInit {
         if (this.incomeForm.value.type === 'yearly') {
           observable = this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(),
            new Date(this.incomeForm.value.end).toJSON(), my_result[0].id)
-        } else {
+        } else if (this.incomeForm.value.type == 'monthly') {
           observable = this.reservationService.getMonthlyReport(new Date(this.incomeForm.value.start).toJSON(),
           new Date(this.incomeForm.value.end).toJSON(), my_result[0].id);
+        } else {
+          observable = this.reservationService.getWeeklyReport(new Date(this.incomeForm.value.start).toJSON(),
+          new Date(this.incomeForm.value.end).toJSON(), my_result[0].id)
         }
         observable.subscribe(
           (result) => {
