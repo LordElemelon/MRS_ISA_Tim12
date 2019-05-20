@@ -77,15 +77,15 @@ def main():
                 'toReplace': '  public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
-                'line': 579,
+                'line': 580,
                 'toReplace': '\treturn result;'
             },
             {
-                'line': 580,
+                'line': 581,
                 'toReplace': ''
             },
             {
-                'line': 581,
+                'line': 582,
                 'toReplace': '\n'
             }
         ]
