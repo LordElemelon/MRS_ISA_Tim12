@@ -6,13 +6,12 @@ module.exports = function(Roomreservation) {
 	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, cb) {
 		Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
 			const postgres = Roomreservation.app.dataSources.postgres;
-			postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '\"" + roomId + "\"' FOR UPDATE;", null, (err, result) => {
+			postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '" + roomId + "' FOR UPDATE;", null, (err, result) => {
 				if (err) {
 					tx.rollback();
 					cb(err, null);
-				}
-				else {
-					Roomreservation.app.models.Roomid.find({where: {roomId: '\"' + roomId + '\"'}}, {transaction: tx}, (err, res) => {
+				}	else {
+					Roomreservation.app.models.Roomid.find({where: {roomId: roomId}}, {transaction: tx}, (err, res) => {
 						if (err) {
 							tx.rollback();
 							cb(err, null);
@@ -20,13 +19,13 @@ module.exports = function(Roomreservation) {
 						else {
 							Roomreservation.find({
 								where: {
-									roomId: '\"' + roomId + '\"',
+									roomId: roomId,
 									startDate: {
-										lte: endDate
+										lte: endDate,
 									},
 									endDate: {
-										gte: startDate
-									}
+										gte: startDate,
+									},
 								}}, {transaction: tx}, (err, res) => {
 									if (err) {
 										tx.rollback();
@@ -58,8 +57,8 @@ module.exports = function(Roomreservation) {
 				}
 			});
 		});
-	}
-	
+	};
+
 	Roomreservation.remoteMethod('makeReservation', {
         accepts: [{arg: 'startDate', type: 'date', required: true},
 				  {arg: 'endDate', type: 'date', required: true},
