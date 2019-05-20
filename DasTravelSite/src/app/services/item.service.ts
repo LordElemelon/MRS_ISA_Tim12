@@ -31,6 +31,9 @@ export class ItemService {
         .subscribe(
           (result) => {
             this.carPrices = result as CarPrice[];
+            for (let price of this.carPrices) {
+              price.start = new Date(price.start);
+            }
             observer.next(this.carPrices);
           },
           (err) => {

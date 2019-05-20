@@ -79,7 +79,10 @@
         </p>
         <p>
           <mat-form-field class="full-width">
-            <textarea matInput formControlName="description" placeholder="Description" type="text" rows=3></textarea>
+            <textarea matInput formControlName="description" placeholder="Description" type="text" rows=3>
+            <mat-error *ngIf="addRoomFormErrors.description">
+              {{ modifyHotelFormErrors.address}}
+            </mat-error></textarea>
           </mat-form-field>
         </p>
         <input hidden formControlName="hotelId">

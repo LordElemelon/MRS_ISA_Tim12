@@ -136,6 +136,139 @@ export class CarReservationApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public cancel(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/cancel";
+    let _routeParams: any = {
+
+    };
+    let _postBody: any = {};
+	  let _urlParams: any = { id: id };
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} startDate 
+   *
+   * @param {date} endDate 
+   *
+   * @param {string} rentalServiceId 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public getYearlyReport(startDate: any, endDate: any, rentalServiceId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/getYearlyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof rentalServiceId !== 'undefined' && rentalServiceId !== null) _urlParams.rentalServiceId = rentalServiceId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `startDate` – `{date}` - 
+   *
+   *  - `endDate` – `{date}` - 
+   *
+   *  - `rentalServiceId` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{objects}` - 
+   */
+  public getMonthlyReport(startDate: any, endDate: any, rentalServiceId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/getMonthlyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof rentalServiceId !== 'undefined' && rentalServiceId !== null) _urlParams.rentalServiceId = rentalServiceId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `startDate` – `{date}` - 
+   *
+   *  - `endDate` – `{date}` - 
+   *
+   *  - `rentalServiceId` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{objects}` - 
+   */
+  public getWeeklyReport(startDate: any, endDate: any, rentalServiceId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/getWeeklyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof rentalServiceId !== 'undefined' && rentalServiceId !== null) _urlParams.rentalServiceId = rentalServiceId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * The name of the model represented by this $resource,
    * i.e. `CarReservation`.
    */

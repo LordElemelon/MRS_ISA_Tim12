@@ -38,8 +38,7 @@ export class RoomReservationListComponent implements OnInit {
           const done = new Promise((resolve, reject) => {
             let index = 0;
             for (const roomReservation of this.roomReservations) {
-              const idLen = roomReservation.roomId.length;
-              this.roomservice.findById(roomReservation.roomId.substring(1, idLen - 1))
+              this.roomservice.findById(roomReservation.roomId)
                 .subscribe((room: Room) => {
                   this.hotelservice.findById(room.hotelId)
                     .subscribe((hotel) => {

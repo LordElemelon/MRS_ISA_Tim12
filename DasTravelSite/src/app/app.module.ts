@@ -30,6 +30,8 @@ import { SDKBrowserModule } from './shared/sdk';
 import { baseURL } from './shared/baseUrl';
 import { MatSnackBarModule } from '@angular/material';
 
+import { ChartsModule } from 'ng2-charts';
+
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -55,6 +57,7 @@ import { UserComponent } from './user/user.component';
 import { ListCarDiscountsComponent } from './list-car-discounts/list-car-discounts.component';
 import { RoomReservationListComponent } from './room-reservation-list/room-reservation-list.component';
 import { CarReservationListComponent } from './car-reservation-list/car-reservation-list.component';
+import { CarBusinessReportsComponent } from './car-business-reports/car-business-reports.component';
 import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
 
@@ -85,7 +88,9 @@ import { AirlinesComponent } from './airlines/airlines.component';
     RoomReservationListComponent,
     CarReservationListComponent,
     ReserveSeatComponent,
-    AirlinesComponent
+    AirlinesComponent,
+    CarBusinessReportsComponent,
+    ReserveSeatComponent
   ],
   imports: [
     BrowserModule,
@@ -111,6 +116,7 @@ import { AirlinesComponent } from './airlines/airlines.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    ChartsModule,
     SDKBrowserModule.forRoot()
   ],
   providers: [

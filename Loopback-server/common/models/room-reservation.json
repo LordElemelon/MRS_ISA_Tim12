@@ -17,21 +17,18 @@
     "price": {
       "type": "number",
       "required": true
+    },
+    "roomId": {
+      "type": "string",
+      "required": true
+    },
+    "myuserId": {
+      "type": "string",
+      "required": true
     }
   },
   "validations": [],
-  "relations": {
-    "room": {
-      "type": "belongsTo",
-      "model": "room",
-      "foreignKey": ""
-    },
-    "myuser": {
-      "type": "belongsTo",
-      "model": "myuser",
-      "foreignKey": ""
-    }
-  },
+  "relations": {},
   "acls": [],
   "methods": {}
 }
