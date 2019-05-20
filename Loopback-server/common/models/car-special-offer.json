@@ -26,21 +26,21 @@
       "type": "string",
       "required": true
     },
-	"carsId": {
-	  "type": "string",
-	  "required": true
-	},
-	"myuserId": {
-	  "type": "string"
-	},
-	"rentalServiceId": {
-	  "type": "string",
-	  "required": true
-	},
-	"carReservationsId": {
-	  "type": "string",
-	  "required": true
-	}
+    "carsId": {
+      "type": "string",
+      "required": true
+    },
+    "myuserId": {
+      "type": "string"
+    },
+    "rentalServiceId": {
+      "type": "string",
+      "required": true
+    },
+    "carReservationsId": {
+      "type": "string",
+      "required": true
+    }
   },
   "validations": [],
   "relations": {},

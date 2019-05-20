@@ -1,0 +1,16 @@
+.airlineTable tr th,
+.airlineTable tr td,
+.discountTable tr th,
+.discountTable tr td {
+    padding: 15px;
+}
+
+.airlineTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}
+
+.discountTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}

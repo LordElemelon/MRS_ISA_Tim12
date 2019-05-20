@@ -1,1 +1,11 @@
-<h1>Home</h1>
+<mat-toolbar color="primary">
+  <!--<div *ngIf="userType==='registeredUser'">-->
+  <div>
+    <a mat-button (click) = "airlinesButton()"> Airlines </a>
+  </div>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf="airlinesActive">
+  <app-airlines></app-airlines>
+</div>
