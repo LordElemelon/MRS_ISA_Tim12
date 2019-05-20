@@ -82,6 +82,7 @@ export class RoomComponent implements OnInit {
     public snackBar: MatSnackBar,
     private fb: FormBuilder
   ) {
+    this.minDate.setHours(0, 0, 0, 0);
     this.createAddPriceForm();
     this.createAddDiscountForm();
    }
@@ -122,9 +123,9 @@ export class RoomComponent implements OnInit {
         }
       }
     }
-    const startDate = form.get('startDate').value;
-    startDate.setHours(23, 59, 59);
-    if (startDate <= this.minDate) {
+    const startDate = new Date(form.get('startDate').value);
+    console.log(startDate, this.minDate);
+    if (startDate < this.minDate) {
       this.addPriceFormErrors['startDate'] += this.addPriceFormValidationMessages['startDate']['min'] + ' ';
       this.addPriceForm.controls['startDate'].setErrors({'min' : true});
     }
@@ -133,7 +134,7 @@ export class RoomComponent implements OnInit {
   createAddPriceForm() {
     this.addPriceForm = this.fb.group({
       price : [0, [Validators.required, Validators.min(1)]],
-      startDate: [new Date, [Validators.required]]
+      startDate: [this.minDate, [Validators.required]]
     });
     this.addPriceForm.valueChanges
       .subscribe(data => this.onAddPriceFormValueChanged(data));
@@ -143,7 +144,6 @@ export class RoomComponent implements OnInit {
   onAddPriceSubmit() {
     const price = this.addPriceForm.value;
     const d = new Date(price.startDate);
-    d.setHours(8);
     this.roompriceservice.create({
       'price': price.price,
       'startDate': d,
@@ -176,14 +176,12 @@ export class RoomComponent implements OnInit {
       }
     }
     const startDate = form.get('startDate').value;
-    startDate.setHours(23, 59, 59);
-    if (startDate <= this.minDate) {
+    if (startDate < this.minDate) {
       this.addDiscountFormErrors['startDate'] += this.addDiscountFormValidationMessages['startDate']['min'] + ' ';
       this.addDiscountForm.controls['startDate'].setErrors({'min' : true});
     }
     const endDate = form.get('endDate').value;
-    endDate.setHours(23, 59, 59);
-    if (endDate <= this.minDate) {
+    if (endDate < this.minDate) {
       this.addDiscountFormErrors['endDate'] += this.addDiscountFormValidationMessages['endDate']['min'] + ' ';
       this.addDiscountForm.controls['endDate'].setErrors({'min' : true});
     }
@@ -196,8 +194,8 @@ export class RoomComponent implements OnInit {
   createAddDiscountForm() {
     this.addDiscountForm = this.fb.group({
       discount : [0, [Validators.required, Validators.min(1), Validators.max(100)]],
-      startDate: [new Date(), [Validators.required]],
-      endDate: [new Date(), [Validators.required]]
+      startDate: [this.minDate, [Validators.required]],
+      endDate: [this.minDate, [Validators.required]]
     });
     this.addDiscountForm.valueChanges
       .subscribe(data => this.onAddDiscountFormValueChanged(data));
