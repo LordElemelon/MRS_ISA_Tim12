@@ -1,0 +1,113 @@
+<div *ngIf="!discountsActive">
+  <div *ngIf="airlineList == null">
+    <h1>Loading airlines...</h1>
+  </div>
+
+  <div *ngIf="airlineList != null">
+    <div *ngIf="airlineList.length == 0">
+      <h1>No airlines in the system.</h1>
+    </div>
+
+    <div *ngIf="airlineList.length > 0"
+    fxLayout="column" fxFlexOffset="20px">
+      <div fxFlex>
+        <h1>Airlines</h1>
+      </div>
+      <div fxFlex fxFlexOffset="20px">
+        <table mat-table #airlineTableDir [dataSource]="airlineList"
+        class="airlineTable">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let airline"> {{airline.name}} </td>
+          </ng-container>
+        
+          <ng-container matColumnDef="address">
+            <th mat-header-cell *matHeaderCellDef> Address </th>
+            <td mat-cell *matCellDef="let airline"> {{airline.address}} </td>
+          </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="setClickedRow(row)" [class.active]="row == selectedAirline"></tr>
+        </table>
+      </div>
+
+      <div fxFlex fxFlexOffset="20px">
+        <button mat-button class="background-primary text-floral-white" (click) = "checkDiscountsButton()">Check Discounts</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="discountsActive">
+  <div *ngIf="discountList == null">
+    <h1>Loading discounts...</h1>
+  </div>
+  
+  <div *ngIf="discountList != null">
+    <div *ngIf="discountList.length == 0">
+      <h1>No discounts for this airline.</h1>
+      <button mat-button class="background-primary text-floral-white" (click) = "cancelReserveButton()">Back</button>
+    </div>
+    
+    <div *ngIf="discountList.length > 0"
+    fxLayout="column" fxFlexOffset="20px">
+      <div fxFlex>
+        <h1>Airline Discounts</h1>
+      </div>
+      <div fxFlex fxFlexOffset="20px">
+        <table mat-table #discountTableDir [dataSource]="discountList"
+        class="discountTable">
+    
+        <ng-container matColumnDef="origin">
+          <th mat-header-cell *matHeaderCellDef> Origin </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.origin}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="destination">
+          <th mat-header-cell *matHeaderCellDef> Destination </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.destination}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="takeoffDate">
+          <th mat-header-cell *matHeaderCellDef> Takeoff </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.takeoffDate | date:'dd/MM/yyyy HH:mm'}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="landingDate">
+          <th mat-header-cell *matHeaderCellDef> Landing </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.landingDate | date:'dd/MM/yyyy HH:mm'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="classType">
+          <th mat-header-cell *matHeaderCellDef> Class </th>
+          <td mat-cell *matCellDef="let discount"> {{classTypes[discount.classType]}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="seat">
+          <th mat-header-cell *matHeaderCellDef> Seat </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.seat}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef> Original Price </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.price}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="discount">
+          <th mat-header-cell *matHeaderCellDef> Discount </th>
+          <td mat-cell *matCellDef="let discount"> {{discount.discount}} </td>
+        </ng-container>
+        
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsD"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsD;" (click)="setClickedRowD(row)" [class.active]="row == selectedDiscount"></tr>
+        </table>
+      </div>
+    
+      <div fxFlex fxFlexOffset="20px">
+        <button mat-button class="background-primary text-floral-white" (click) = "reserveButton()">Reserve</button>
+        <button mat-button class="background-primary text-floral-white" (click) = "cancelReserveButton()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

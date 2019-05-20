@@ -569,6 +569,7 @@ export class AirlineComponent implements OnInit {
       let price = (this.selectedSeatD.classType == 'e') ? this.selectedFlight.price * 1.0 : 
       ((this.selectedSeatD.classType == 'f') ? this.selectedFlight.price * 1.5 : this.selectedFlight.price * 1.2);
       let totalPrice = (price * (100.0 - discount)) / 100.0;
+      totalPrice = Math.round(totalPrice);
       this.seatReservationService.makeReservation(this.selectedSeatD.id, this.userId, totalPrice)
         .subscribe(
           (result) => {
