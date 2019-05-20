@@ -788,7 +788,7 @@ export class RoomApi extends BaseLoopBackApi {
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
     if (typeof beds !== 'undefined' && beds !== null) _urlParams.beds = beds;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
+	return result;
   }
 
   /**

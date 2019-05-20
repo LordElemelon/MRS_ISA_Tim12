@@ -317,7 +317,7 @@ export class FlightApi extends BaseLoopBackApi {
    * This usually means the response is a `Flight` object.)
    * </em>
    */
-  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<Flight[]> {
+  public patchAttributes(id: any, data: any = {}, customHeaders?: Function): Observable<any> {
     let _method: string = "PATCH";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/flights/:id";
@@ -362,7 +362,7 @@ export class FlightApi extends BaseLoopBackApi {
     if (typeof destination !== 'undefined' && destination !== null) _urlParams.destination = destination;
     if (typeof takeoffDate !== 'undefined' && takeoffDate !== null) _urlParams.takeoffDate = takeoffDate;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
+	return result;
   }
 
   /**
@@ -389,7 +389,7 @@ export class FlightApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof flightId !== 'undefined' && flightId !== null) _urlParams.flightId = flightId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
+	return result;
   }
 
   /**

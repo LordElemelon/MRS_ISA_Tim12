@@ -157,10 +157,10 @@ export class CarReservationApi extends BaseLoopBackApi {
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/cancel";
     let _routeParams: any = {
-     
+
     };
     let _postBody: any = {};
-    let _urlParams: any = { id: id};
+	let _urlParams: any = { id: id };
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
