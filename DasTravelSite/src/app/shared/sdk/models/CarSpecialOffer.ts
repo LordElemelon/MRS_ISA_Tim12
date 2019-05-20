@@ -1,10 +1,4 @@
 /* tslint:disable */
-import {
-  Car,
-  Myuser,
-  RentalService,
-  CarReservation
-} from '../index';
 
 declare var Object: any;
 export interface CarSpecialOfferInterface {
@@ -13,15 +7,11 @@ export interface CarSpecialOfferInterface {
   "basePrice": number;
   "discount": number;
   "registration": string;
+  "carsId": string;
+  "myuserId"?: string;
+  "rentalServiceId": string;
+  "carReservationsId": string;
   "id"?: number;
-  "carsId"?: any;
-  "myuserId"?: any;
-  "rentalServiceId"?: any;
-  "carReservationsId"?: number;
-  cars?: Car;
-  myuser?: Myuser;
-  rentalService?: RentalService;
-  carReservations?: CarReservation;
 }
 
 export class CarSpecialOffer implements CarSpecialOfferInterface {
@@ -30,15 +20,11 @@ export class CarSpecialOffer implements CarSpecialOfferInterface {
   "basePrice": number;
   "discount": number;
   "registration": string;
+  "carsId": string;
+  "myuserId": string;
+  "rentalServiceId": string;
+  "carReservationsId": string;
   "id": number;
-  "carsId": any;
-  "myuserId": any;
-  "rentalServiceId": any;
-  "carReservationsId": number;
-  cars: Car;
-  myuser: Myuser;
-  rentalService: RentalService;
-  carReservations: CarReservation;
   constructor(data?: CarSpecialOfferInterface) {
     Object.assign(this, data);
   }
@@ -92,60 +78,28 @@ export class CarSpecialOffer implements CarSpecialOfferInterface {
           name: 'registration',
           type: 'string'
         },
+        "carsId": {
+          name: 'carsId',
+          type: 'string'
+        },
+        "myuserId": {
+          name: 'myuserId',
+          type: 'string'
+        },
+        "rentalServiceId": {
+          name: 'rentalServiceId',
+          type: 'string'
+        },
+        "carReservationsId": {
+          name: 'carReservationsId',
+          type: 'string'
+        },
         "id": {
           name: 'id',
           type: 'number'
         },
-        "carsId": {
-          name: 'carsId',
-          type: 'any'
-        },
-        "myuserId": {
-          name: 'myuserId',
-          type: 'any'
-        },
-        "rentalServiceId": {
-          name: 'rentalServiceId',
-          type: 'any'
-        },
-        "carReservationsId": {
-          name: 'carReservationsId',
-          type: 'number'
-        },
       },
       relations: {
-        cars: {
-          name: 'cars',
-          type: 'Car',
-          model: 'Car',
-          relationType: 'belongsTo',
-                  keyFrom: 'carsId',
-          keyTo: 'id'
-        },
-        myuser: {
-          name: 'myuser',
-          type: 'Myuser',
-          model: 'Myuser',
-          relationType: 'belongsTo',
-                  keyFrom: 'myuserId',
-          keyTo: 'id'
-        },
-        rentalService: {
-          name: 'rentalService',
-          type: 'RentalService',
-          model: 'RentalService',
-          relationType: 'belongsTo',
-                  keyFrom: 'rentalServiceId',
-          keyTo: 'id'
-        },
-        carReservations: {
-          name: 'carReservations',
-          type: 'CarReservation',
-          model: 'CarReservation',
-          relationType: 'belongsTo',
-                  keyFrom: 'carReservationsId',
-          keyTo: 'id'
-        },
       }
     }
   }

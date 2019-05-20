@@ -351,7 +351,7 @@ export class FlightApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public findAvailableFlights(origin: any, destination: any, takeoffDate: any, customHeaders?: Function): Observable<Flight[]> {
+  public findAvailableFlights(origin: any, destination: any, takeoffDate: any, customHeaders?: Function): Observable<any> {
     let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/flights/findAvailableFlights";
@@ -362,9 +362,7 @@ export class FlightApi extends BaseLoopBackApi {
     if (typeof destination !== 'undefined' && destination !== null) _urlParams.destination = destination;
     if (typeof takeoffDate !== 'undefined' && takeoffDate !== null) _urlParams.takeoffDate = takeoffDate;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result.pipe(map((instances: Array<Flight>) =>
-        instances.map((instance: Flight) => new Flight(instance))
-    ));
+	return result;
   }
 
   /**
@@ -391,9 +389,7 @@ export class FlightApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof flightId !== 'undefined' && flightId !== null) _urlParams.flightId = flightId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
-    return result;
-        
-    
+	return result;
   }
 
   /**
