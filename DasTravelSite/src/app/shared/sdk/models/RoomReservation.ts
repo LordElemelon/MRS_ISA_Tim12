@@ -1,30 +1,24 @@
 /* tslint:disable */
-import {
-  Room,
-  Myuser
-} from '../index';
 
 declare var Object: any;
 export interface RoomReservationInterface {
   "startDate": Date;
   "endDate": Date;
   "price": number;
+  "roomId": string;
+  "myuserId"?: string;
+  "hotelDiscountId"?: string;
   "id"?: number;
-  "roomId"?: any;
-  "myuserId"?: any;
-  room?: Room;
-  myuser?: Myuser;
 }
 
 export class RoomReservation implements RoomReservationInterface {
   "startDate": Date;
   "endDate": Date;
   "price": number;
+  "roomId": string;
+  "myuserId": string;
+  "hotelDiscountId": string;
   "id": number;
-  "roomId": any;
-  "myuserId": any;
-  room: Room;
-  myuser: Myuser;
   constructor(data?: RoomReservationInterface) {
     Object.assign(this, data);
   }
@@ -70,36 +64,24 @@ export class RoomReservation implements RoomReservationInterface {
           name: 'price',
           type: 'number'
         },
+        "roomId": {
+          name: 'roomId',
+          type: 'string'
+        },
+        "myuserId": {
+          name: 'myuserId',
+          type: 'string'
+        },
+        "hotelDiscountId": {
+          name: 'hotelDiscountId',
+          type: 'string'
+        },
         "id": {
           name: 'id',
           type: 'number'
         },
-        "roomId": {
-          name: 'roomId',
-          type: 'any'
-        },
-        "myuserId": {
-          name: 'myuserId',
-          type: 'any'
-        },
       },
       relations: {
-        room: {
-          name: 'room',
-          type: 'Room',
-          model: 'Room',
-          relationType: 'belongsTo',
-                  keyFrom: 'roomId',
-          keyTo: 'id'
-        },
-        myuser: {
-          name: 'myuser',
-          type: 'Myuser',
-          model: 'Myuser',
-          relationType: 'belongsTo',
-                  keyFrom: 'myuserId',
-          keyTo: 'id'
-        },
       }
     }
   }

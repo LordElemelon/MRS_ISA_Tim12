@@ -48,8 +48,8 @@ export class ReserveRoomComponent implements OnInit {
 
   updateReserveForm() {
     this.reserveForm.reset({
-      startDate: this.room.startDate,
-      endDate: this.room.endDate,
+      startDate: this.room.startDate.getDate() + '/' + (this.room.startDate.getMonth() + 1) + '/' + this.room.startDate.getFullYear(),
+      endDate: this.room.endDate.getDate() + '/' + (this.room.endDate.getMonth() + 1) + '/' + this.room.endDate.getFullYear(),
       hotel: this.room.room.hotel,
       roomNumber: this.room.room.room.number,
       beds: this.room.room.room.beds,
