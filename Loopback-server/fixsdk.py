@@ -67,25 +67,25 @@ def main():
         'filePath': os.path.join(relative_path, 'Room.ts'),
         'Conditions': [
             {
-                'line': 777,
+                'line': 567,
                 'toMatch': 'public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<room[]> {\n'
             }
         ],
         'Replaces': [
             {
-                'line': 777,
+                'line': 567,
                 'toReplace': '  public findAvailableRooms(start: any, end: any, location: any = {}, price: any = {}, beds: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
-                'line': 790,
+                'line': 580,
                 'toReplace': '\treturn result;'
             },
             {
-                'line': 791,
+                'line': 581,
                 'toReplace': ''
             },
             {
-                'line': 792,
+                'line': 582,
                 'toReplace': '\n'
             }
         ]

@@ -394,10 +394,11 @@ export class CarsComponent implements OnInit {
   }
 
   matchCarsAndPrices(cars, prices: CarPrice[], start) {
+    start = new Date(start);
+
     for (let car of cars) {
       car.price = 0;
       car.start = new Date(0);
-      car.category = "B"; //ovaj red treba izbaciti, tu je zarad testiranja
       for (let price of prices) {
         if (car.rentalServiceId == price.rentalServiceId) {
           if (start > price.start && car.start < price.start) {

@@ -16,6 +16,7 @@ import { UserComponent } from  '../user/user.component';
 import {RoomReservationListComponent} from '../room-reservation-list/room-reservation-list.component';
 import { CarDiscountsComponent } from '../car-discounts/car-discounts.component';
 import {CarReservationListComponent} from '../car-reservation-list/car-reservation-list.component';
+import { CarBusinessReportsComponent } from '../car-business-reports/car-business-reports.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -36,4 +37,5 @@ export const routes: Routes = [
     {path: 'user', component: UserComponent},
     {path: 'roomReservations', component: RoomReservationListComponent},
     {path: 'carReservations', component: CarReservationListComponent},
+    {path: 'carBusinessReports', component: CarBusinessReportsComponent}
 ];
