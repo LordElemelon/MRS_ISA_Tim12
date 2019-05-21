@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoopBackConfig, Flight, Airline, Seat } from '../shared/sdk';
+import { LoopBackConfig, Flight, Airline, Seat, QuickFlightReservation, SeatReservation } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
-import { AirlineApi, FlightApi, SeatApi } from '../shared/sdk/services';
+import { AirlineApi, FlightApi, SeatApi, QuickFlightReservationApi, SeatReservationApi } from '../shared/sdk/services';
 import { MatSnackBar, MatTable } from '@angular/material';
+import { LoginServiceService } from '../login-service.service';
 
 @Component({
   selector: 'app-airline',
@@ -11,6 +12,9 @@ import { MatSnackBar, MatTable } from '@angular/material';
   styleUrls: ['./airline.component.scss']
 })
 export class AirlineComponent implements OnInit {
+
+  userType: string;
+  userId: string;
 
   modifyActive = true;
 
@@ -20,10 +24,13 @@ export class AirlineComponent implements OnInit {
   seatsActive = false;
   modifySeatActive = false;
 
+  createDiscountActive = false;
+
   homeActive = false;
   
   setClickedRow : Function;
   setClickedSeat : Function;
+  setClickedSeatD : Function;
 
   selectedAirline: Airline;
 
@@ -34,9 +41,13 @@ export class AirlineComponent implements OnInit {
   selectedSeat: Seat = null;
   newSeat: Seat;
   seatList: Seat[];
+  
+  selectedSeatD: Seat = null;
+  seatListD: Seat[];
 
   displayedColumns: string[] = ['origin', 'destination', 'takeoffDate', 'landingDate', 'price'];
   displayedColumnsSeats: string[] = ['row', 'column', 'classType'];
+  displayedColumnsSeatsD: string[] = ['row', 'column', 'classType'];
   classTypes = [
     {
       "value":"e",
@@ -64,8 +75,12 @@ export class AirlineComponent implements OnInit {
   modifySeatForm: FormGroup;
   @ViewChild('fformModifySeat') modifySeatFormDirective;
 
+  createDiscountForm: FormGroup;
+  @ViewChild('fformCreateDiscount') createDiscountFormDirective;
+
   @ViewChild('flightTable') flightTable: MatTable<any>;
   @ViewChild('seatTable') seatTable: MatTable<any>;
+  @ViewChild('seatTableD') seatTableD: MatTable<any>;
 
   modifyAirlineFormErrors = {
     'name': ''
@@ -171,26 +186,58 @@ export class AirlineComponent implements OnInit {
     }
   };
 
+  /****** DISCOUNTS VALIDATION ******/
+
+  createDiscountFormErrors = {
+    'discount': ''
+  };
+
+  createDiscountFormValidationMessages = {
+    'discount': {
+      'required': 'Discount is required',
+      'min': 'Discount must be higher than 0',
+      'max': 'Discount must be lower than 100'
+    }
+  };
+
+  /****** BASIC FUNCTIONS ******/
+
   constructor(@Inject('baseURL') private baseURL,
-    private airlineservice: AirlineApi,
-    private flightservice: FlightApi,
-    private seatservice: SeatApi,
+    private airlineService: AirlineApi,
+    private flightService: FlightApi,
+    private seatService: SeatApi,
+    private seatReservationService: SeatReservationApi,
+    private quickFlightReservationService: QuickFlightReservationApi,
+    private loginService: LoginServiceService,
     private fb: FormBuilder,
     public snackBar: MatSnackBar
   ) {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
+
     this.createModifyAirlineForm();
     this.createAddFlightForm();
     this.createModifyFlightForm();
     this.createAddSeatForm();
     this.createModifySeatForm();
+    this.createCreateDiscountForm();
+
     this.setClickedRow = function(index){
       this.selectedFlight = index;
     }
     this.setClickedSeat = function(index){
       this.selectedSeat = index;
     }
+    this.setClickedSeatD = function(index){
+      this.selectedSeatD = index;
+    }
+
+    this.loginService.user.subscribe(data => {
+      if (data) {
+        this.userType = data.user.type;
+        this.userId = data.user.id;
+      }
+    });
   }
 
   openSnackBar(message: string, action: string) {
@@ -200,14 +247,14 @@ export class AirlineComponent implements OnInit {
   }
 
   refreshFlights() {
-    this.airlineservice.getFlights(this.selectedAirline.id)
+    this.airlineService.getFlights(this.selectedAirline.id)
     .subscribe((flights: Flight[]) => {
       this.flightList = flights;
     });
   }
 
   refreshSeats() {
-    this.flightservice.getSeats(this.selectedFlight.id)
+    this.flightService.getSeats(this.selectedFlight.id)
     .subscribe((seats: Seat[]) => {
       console.log("YA SEATS >" + JSON.stringify(seats));
       this.seatList = seats;
@@ -216,11 +263,19 @@ export class AirlineComponent implements OnInit {
     });
   }
 
-  
+  refreshSeatsD() {
+    this.flightService.findAvailableSeats(this.selectedFlight.id)
+    .subscribe(seats => {
+      this.seatListD = seats.retval;
+      this.seatTableD.dataSource = this.seatListD;
+      this.seatTableD.renderRows();
+      console.log(seats.retval);
+    });
+  }
 
   ngOnInit() {
 
-    this.airlineservice.findOne({'where': {'name' : 'airline1'}})
+    this.airlineService.findOne({'where': {'name' : 'airline1'}})
     .subscribe((airline: Airline) => {
       this.selectedAirline = airline;
       this.setValueModifyAirlineForm();
@@ -229,6 +284,8 @@ export class AirlineComponent implements OnInit {
     });
     
   }
+
+  /****** MODIFY AIRLINE ******/
 
   onValueChangedModifyAirline(data?: any) {
     if (!this.modifyAirlineForm) {return; }
@@ -273,11 +330,13 @@ export class AirlineComponent implements OnInit {
 
   onModifyAirlineSubmit() {
     this.selectedAirline = this.modifyAirlineForm.value;
-    this.airlineservice.updateAttributes(this.selectedAirline.id, this.selectedAirline)
+    this.airlineService.updateAttributes(this.selectedAirline.id, this.selectedAirline)
     .subscribe(result => {
       this.refreshFlights();
     });
   }
+
+  /****** ADD FLIGHT ******/
 
   onValueChangedAddFlight(data?: any) {
     if (!this.addFlightForm) {return; }
@@ -316,11 +375,13 @@ export class AirlineComponent implements OnInit {
 
   onAddFlightSubmit() {
     this.newFlight = this.addFlightForm.value;
-    this.airlineservice.createFlights(this.selectedAirline.id, this.newFlight)
+    this.airlineService.createFlights(this.selectedAirline.id, this.newFlight)
     .subscribe(result => {
       this.refreshFlights();
     });
   }
+
+  /****** MODIFY FLIGHT ******/
 
   onValueChangedModifyFlight(data?: any) {
     if (!this.modifyFlightForm) {return; }
@@ -374,14 +435,14 @@ export class AirlineComponent implements OnInit {
     const toModify = this.modifyFlightForm.value;
     toModify.airlineId = this.selectedAirline.id;
     console.log(this.selectedFlight);
-    this.flightservice.updateAttributes(this.selectedFlight.id, toModify)
+    this.flightService.updateAttributes(this.selectedFlight.id, toModify)
     .subscribe(result => {
       console.log(result);
       this.cancelModifyFlightButton();
     })
   }
 
-  /****** SEAT FORMS ******/
+  /****** ADD SEAT ******/
 
   onValueChangedAddSeat(data?: any) {
     if (!this.addSeatForm) {return; }
@@ -415,11 +476,13 @@ export class AirlineComponent implements OnInit {
 
   onAddSeatSubmit() {
     this.newSeat = this.addSeatForm.value;
-    this.flightservice.createSeats(this.selectedFlight.id, this.newSeat)
+    this.flightService.createSeats(this.selectedFlight.id, this.newSeat)
     .subscribe(result => {
       this.refreshSeats();
     });
   }
+
+  /****** MODIFY SEAT ******/
 
   onValueChangedModifySeat(data?: any) {
     if (!this.modifySeatForm) {return; }
@@ -463,11 +526,77 @@ export class AirlineComponent implements OnInit {
     const toModify = this.modifySeatForm.value;
     toModify.flightId = this.selectedFlight.id;
     console.log(this.selectedSeat);
-    this.seatservice.updateAttributes(this.selectedSeat.id, toModify)
+    this.seatService.updateAttributes(this.selectedSeat.id, toModify)
     .subscribe(result => {
       this.refreshSeats();
       this.cancelModifySeatButton();
     })
+  }
+
+  /****** CREATE DISCOUNT ******/
+
+  onValueChangedCreateDiscount(data?: any) {
+    if (!this.createDiscountForm) {return; }
+    const form = this.createDiscountForm;
+    for (const field in this.createDiscountFormErrors){
+      if (this.createDiscountFormErrors.hasOwnProperty(field)){
+        this.createDiscountFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.createDiscountFormValidationMessages[field];
+          for (const key in control.errors){
+            if (control.errors.hasOwnProperty(key)){
+              this.createDiscountFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  createCreateDiscountForm() {
+    this.createDiscountForm = this.fb.group({
+      'discount': [0, [Validators.required, Validators.min(1), Validators.max(99)]]
+    });
+    this.createDiscountForm.valueChanges
+    .subscribe(data => this.onValueChangedCreateDiscount(data));
+    this.onValueChangedCreateDiscount();
+  }
+
+  onCreateDiscountSubmit() {
+    if (this.selectedSeatD && this.userId) {
+      let discount = this.createDiscountForm.value.discount;
+      let price = (this.selectedSeatD.classType == 'e') ? this.selectedFlight.price * 1.0 : 
+      ((this.selectedSeatD.classType == 'f') ? this.selectedFlight.price * 1.5 : this.selectedFlight.price * 1.2);
+      let totalPrice = (price * (100.0 - discount)) / 100.0;
+      totalPrice = Math.round(totalPrice);
+      this.seatReservationService.makeReservation(this.selectedSeatD.id, this.userId, totalPrice)
+        .subscribe(
+          (result) => {
+            this.openSnackBar("Quick reservation successfuly made", "Dismiss");
+            let quickRes: QuickFlightReservation = result.retval;
+
+            this.quickFlightReservationService.create({discount: discount, seatReservationId: quickRes.id})
+            .subscribe(
+              (result) => {
+                console.log("All good and well." + result);
+              },
+              (err) => {
+                this.openSnackBar("Error in database connection", "Dismiss");
+                console.log(err);
+              }
+            );
+
+            this.refreshSeatsD();
+          },
+          (err) => {
+            this.openSnackBar("Failed to make reservation", "Dismiss");
+          }
+        );
+    }
+    else {
+      this.openSnackBar("You must choose the seat", "Dismiss");
+    }
   }
 
   /****** BUTTON PRESSES ******/
@@ -480,6 +609,8 @@ export class AirlineComponent implements OnInit {
     
     this.seatsActive = false;
     this.modifySeatActive = false;
+
+    this.createDiscountActive = false;
     
     this.homeActive = false;
   }
@@ -492,6 +623,8 @@ export class AirlineComponent implements OnInit {
     
     this.seatsActive = false;
     this.modifySeatActive = false;
+
+    this.createDiscountActive = false;
     
     this.homeActive = false;
 
@@ -507,6 +640,8 @@ export class AirlineComponent implements OnInit {
     
       this.seatsActive = false;
       this.modifySeatActive = false;
+
+      this.createDiscountActive = false;
       
       this.homeActive = false;
 
@@ -516,7 +651,7 @@ export class AirlineComponent implements OnInit {
 
   deleteFlightButton(){
     if (this.selectedFlight != null) {
-      this.flightservice.deleteById(this.selectedFlight.id)
+      this.flightService.deleteById(this.selectedFlight.id)
       .subscribe(result => {
         console.log(result);
         this.selectedFlight = null;
@@ -534,6 +669,8 @@ export class AirlineComponent implements OnInit {
     this.seatsActive = false;
     this.modifySeatActive = false;
 
+    this.createDiscountActive = false;
+
     this.homeActive = false;
 
     this.selectedFlight = null;
@@ -548,6 +685,8 @@ export class AirlineComponent implements OnInit {
     
     this.seatsActive = false;
     this.modifySeatActive = false;
+
+    this.createDiscountActive = false;
 
     this.homeActive = true;
 
@@ -564,9 +703,10 @@ export class AirlineComponent implements OnInit {
       this.seatsActive = true;
       this.modifySeatActive = false;
 
+      this.createDiscountActive = false;
+
       this.homeActive = false;
       
-      console.log("YO WTF U HERE M8? > " + this.selectedFlight);
       this.refreshSeats();
     }
   }
@@ -580,6 +720,8 @@ export class AirlineComponent implements OnInit {
     
       this.seatsActive = false;
       this.modifySeatActive = true;
+
+      this.createDiscountActive = false;
       
       this.homeActive = false;
 
@@ -589,7 +731,7 @@ export class AirlineComponent implements OnInit {
 
   deleteSeatButton(){
     if (this.selectedSeat != null) {
-      this.seatservice.deleteById(this.selectedSeat.id)
+      this.seatService.deleteById(this.selectedSeat.id)
       .subscribe(result => {
         console.log(result);
         this.selectedSeat = null;
@@ -607,10 +749,47 @@ export class AirlineComponent implements OnInit {
     this.seatsActive = true;
     this.modifySeatActive = false;
 
+    this.createDiscountActive = false;
+
     this.homeActive = false;
 
     this.selectedSeat = null;
     this.seatTable.renderRows();
+  }
+
+  createDiscountButton() {
+    if (this.selectedFlight != null) {
+      this.modifyActive = false;
+
+      this.flightsActive = false;
+      this.modifyFlightActive = false;
+      
+      this.seatsActive = false;
+      this.modifySeatActive = false;
+
+      this.createDiscountActive = true;
+
+      this.homeActive = false;
+      
+      this.refreshSeatsD();
+    }
+  }
+
+  cancelCreateDiscountButton() {
+    this.modifyActive = false;
+
+    this.flightsActive = true;
+    this.modifyFlightActive = false;
+    
+    this.seatsActive = false;
+    this.modifySeatActive = false;
+
+    this.createDiscountActive = false;
+
+    this.homeActive = false;
+
+    this.selectedSeatD = null;
+    this.flightTable.renderRows();
   }
 
 }

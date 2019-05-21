@@ -128,5 +128,9 @@
   "carSpecialOffer": {
     "dataSource": "postgres",
     "public": true
+  },
+  "quickFlightReservation": {
+    "dataSource": "postgres",
+    "public": true
   }
 }
