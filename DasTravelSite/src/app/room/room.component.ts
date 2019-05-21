@@ -124,7 +124,6 @@ export class RoomComponent implements OnInit {
       }
     }
     const startDate = new Date(form.get('startDate').value);
-    console.log(startDate, this.minDate);
     if (startDate < this.minDate) {
       this.addPriceFormErrors['startDate'] += this.addPriceFormValidationMessages['startDate']['min'] + ' ';
       this.addPriceForm.controls['startDate'].setErrors({'min' : true});
@@ -220,12 +219,11 @@ export class RoomComponent implements OnInit {
           'hotelDiscountId': result.id,
           'hotelSpecialOfferId': offerId
         }).subscribe(result1 =>  {
-          console.log(result1);
         });
       });
       this.openSnackBar('Added succesfully', 'Dismiss');
     }, err =>  {
-      this.openSnackBar('Can not add discount', 'Dismiss');
+      this.openSnackBar('Can not add discount. There may already exist a reservation for these dates', 'Dismiss');
     });
   }
 

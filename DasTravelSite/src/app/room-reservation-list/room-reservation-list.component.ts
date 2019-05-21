@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Room, RoomReservation} from '../shared/sdk/models';
-import {HotelApi, MyuserApi, RoomApi} from '../shared/sdk/services/custom';
+import {HotelApi, MyuserApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
 import {MatSnackBar, MatTable} from '@angular/material';
 
 @Component({
@@ -21,6 +21,7 @@ export class RoomReservationListComponent implements OnInit {
               private myuserservice: MyuserApi,
               private hotelservice: HotelApi,
               private roomservice: RoomApi,
+              private roomresesrvationservice: RoomReservationApi,
               private snackBar: MatSnackBar
               ) { }
 
@@ -78,4 +79,22 @@ export class RoomReservationListComponent implements OnInit {
     }
   }
 
+  deleteReservation(id: any) {
+    this.roomresesrvationservice.cancel(id)
+      .subscribe(
+        (result) => {
+          for (const resInfo of this.reservationsInfo) {
+            if (resInfo.reservation.id === id) {
+              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo));
+              break;
+            }
+          }
+          this.tableReservations.renderRows();
+          this.openSnackBar('Successfully cancelled reservation', 'Dismiss');
+        },
+        (err) => {
+          this.openSnackBar('Can not cancel this reservation, it is too late', 'Dismiss');
+        }
+      );
+  }
 }

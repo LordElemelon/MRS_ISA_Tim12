@@ -108,6 +108,8 @@ export class RoomReservationApi extends BaseLoopBackApi {
    *
    *  - `price` – `{number}` - 
    *
+   *  - `hotelDiscountId` – `{string}` - 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -116,7 +118,7 @@ export class RoomReservationApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public makeReservation(startDate: any, endDate: any, roomId: any, userId: any, price: any, customHeaders?: Function): Observable<any> {
+  public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = '', price: any, hotelDiscountId: any = '', customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/roomReservations/makeReservation";
@@ -128,6 +130,38 @@ export class RoomReservationApi extends BaseLoopBackApi {
     if (typeof roomId !== 'undefined' && roomId !== null) _urlParams.roomId = roomId;
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
+    if (typeof hotelDiscountId !== 'undefined' && hotelDiscountId !== null) _urlParams.hotelDiscountId = hotelDiscountId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public cancel(id: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/cancel";
+    let _routeParams: any = {
+    };
+    let _postBody: any = {};
+    let _urlParams: any = {
+      id: id
+    };
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

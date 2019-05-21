@@ -24,7 +24,11 @@
     },
     "myuserId": {
       "type": "string",
-      "required": true
+      "required": false
+    },
+    "hotelDiscountId": {
+      "type": "string",
+      "required": false
     }
   },
   "validations": [],

@@ -151,7 +151,7 @@
     <mat-grid-tile *ngFor="let room of foundRooms">
       <mat-card class="pointer" (click) ="clickRoom(foundRooms.indexOf(room))">
         <mat-card-content>
-          <h3>{{foundRooms.indexOf(room)}}</h3>
+          <h3>{{foundRooms.indexOf(room) + 1}}</h3>
           Hotel: {{room.hotel}} <br>
           Room number: {{room.room.number}} <br>
           Room description: {{room.room.description}} <br>
