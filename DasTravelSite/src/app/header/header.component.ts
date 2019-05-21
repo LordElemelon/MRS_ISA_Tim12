@@ -7,6 +7,7 @@ import { BehaviorSubject} from 'rxjs';
 import { Myuser } from '../shared/sdk/models';
 import {LoginServiceService} from '../login-service.service';
 import {Location} from '@angular/common';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -19,6 +20,7 @@ export class HeaderComponent implements OnInit {
     private myUserService: MyuserApi,
     private location: Location,
     private loginService: LoginServiceService,
+    private _router: Router,
     public snackBar: MatSnackBar) {
       loginService.user.subscribe(data => {
         if (data) {
@@ -50,8 +52,7 @@ export class HeaderComponent implements OnInit {
       (result) => {
         this.openSnackBar("Logged out successfuly ","Dismiss");
         this.userType = null;
-        this.location.replaceState('/home');
-        this.location.forward();
+        this._router.navigate(['/home']);
       },
       (err) => {
         this.openSnackBar("Logging out failed","Dismiss");
