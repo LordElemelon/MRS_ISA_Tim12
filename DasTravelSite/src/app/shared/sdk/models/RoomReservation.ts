@@ -6,7 +6,8 @@ export interface RoomReservationInterface {
   "endDate": Date;
   "price": number;
   "roomId": string;
-  "myuserId": string;
+  "myuserId"?: string;
+  "hotelDiscountId"?: string;
   "id"?: number;
 }
 
@@ -16,6 +17,7 @@ export class RoomReservation implements RoomReservationInterface {
   "price": number;
   "roomId": string;
   "myuserId": string;
+  "hotelDiscountId": string;
   "id": number;
   constructor(data?: RoomReservationInterface) {
     Object.assign(this, data);
@@ -68,6 +70,10 @@ export class RoomReservation implements RoomReservationInterface {
         },
         "myuserId": {
           name: 'myuserId',
+          type: 'string'
+        },
+        "hotelDiscountId": {
+          name: 'hotelDiscountId',
           type: 'string'
         },
         "id": {
