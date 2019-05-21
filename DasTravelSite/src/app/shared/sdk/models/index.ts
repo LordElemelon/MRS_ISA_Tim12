@@ -24,5 +24,6 @@ export * from './SeatId';
 export * from './SeatReservation';
 export * from './CarSpecialOffer';
 export * from './QuickFlightReservation';
+export * from './Friendship';
 export * from './BaseModels';
 export * from './FireLoopRef';

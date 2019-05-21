@@ -160,7 +160,7 @@ export class CarReservationApi extends BaseLoopBackApi {
 
     };
     let _postBody: any = {};
-	  let _urlParams: any = { id: id };
+	let _urlParams: any = { id: id };
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

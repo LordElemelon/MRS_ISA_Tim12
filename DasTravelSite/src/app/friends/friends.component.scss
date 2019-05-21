@@ -1,0 +1,16 @@
+.friendTable tr th,
+.friendTable tr td,
+.requestTable tr th,
+.requestTable tr td {
+    padding: 15px;
+}
+
+.friendTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}
+
+.requestTable tr.active td {
+    background-color:#123456 !important;
+    color: white;
+}

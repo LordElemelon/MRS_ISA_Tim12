@@ -132,5 +132,9 @@
   "quickFlightReservation": {
     "dataSource": "postgres",
     "public": true
+  },
+  "friendship": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
