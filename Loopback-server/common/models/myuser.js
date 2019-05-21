@@ -123,9 +123,10 @@ module.exports = function (Myuser) {
       if (err) cb(err, null);
       else {
         app.models.RoomReservation.find(
-          {'where': {'userId': userId},
+          {'where': {'myuserId': userId},
             'limit': size, 'skip': offset})
           .then(reservations => {
+            console.log(reservations);
             cb(null, reservations);
           }, err => cb(err, null));
       }

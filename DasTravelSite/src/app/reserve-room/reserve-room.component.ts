@@ -3,6 +3,7 @@ import {ItemService} from '../services/item.service';
 import {LoginServiceService} from '../login-service.service';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {MyuserApi, RoomReservationApi} from '../shared/sdk/services/custom';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-reserve-room',
@@ -20,7 +21,8 @@ export class ReserveRoomComponent implements OnInit {
               private loginService: LoginServiceService,
               private roomreservationservice: RoomReservationApi,
               private myuserservice: MyuserApi,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private snackBar: MatSnackBar) {
     loginService.user.subscribe(data => {
       if (data) {
         this.userType = data.user.type;
@@ -32,6 +34,12 @@ export class ReserveRoomComponent implements OnInit {
   ngOnInit() {
     this.room = this.itemservice.getReservableRoom();
     this.updateReserveForm();
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   createReserveForm() {
@@ -63,9 +71,9 @@ export class ReserveRoomComponent implements OnInit {
       this.room.endDate.toISOString(), this.room.room.room.id,
       this.myuserservice.getCachedCurrent().id, this.room.room.price)
       .subscribe(result => {
-        console.log(result);
+        this.openSnackBar('Reserved succesfully', 'Dismiss');
       }, err => {
-        console.log(err);
+        this.openSnackBar('Can not reserve on this date. Please search and try again.', 'Dismiss');
       });
   }
 

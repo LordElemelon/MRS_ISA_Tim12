@@ -1,2 +1,6 @@
 After building sdk, the method for cancelling car reservations for the carReservationApi class will not build correctly
 it will place the id param inside of _routeParams, instead it should go into _urlParams
+
+in services/custom/RoomReservation.ts line 121, 
+public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, customHeaders?: Function): Observable<any> {
+to public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = '', price: any, hotelDiscountId: any = '', customHeaders?: Function): Observable<any> {

@@ -83,10 +83,17 @@ export class RoomReservationListComponent implements OnInit {
     this.roomresesrvationservice.cancel(id)
       .subscribe(
         (result) => {
+          for (const resInfo of this.reservationsInfo) {
+            if (resInfo.reservation.id === id) {
+              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo));
+              break;
+            }
+          }
+          this.tableReservations.renderRows();
           this.openSnackBar('Successfully cancelled reservation', 'Dismiss');
         },
         (err) => {
-          this.openSnackBar('Failed to cancel reservation', 'Dismiss');
+          this.openSnackBar('Can not cancel this reservation, it is too late', 'Dismiss');
         }
       );
   }

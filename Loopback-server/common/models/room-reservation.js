@@ -74,13 +74,12 @@ module.exports = function(Roomreservation) {
       cb(new Error('No user logged in'), null);
       return;
     }
-    var requestid = options.accessToken.userId;
+    var requestid = options.accessToken.userId.toString();
     Roomreservation.findById(id)
       .then((reservation) => {
         if (reservation == null) {
           throw new Error('Reservation with this id does not exist');
         }
-        console.log(requestid, reservation.myuserId)
         if (requestid !== reservation.myuserId) {
           throw new Error('User is not owner of the reservation');
         }
@@ -88,9 +87,12 @@ module.exports = function(Roomreservation) {
         if (hours < 72) {
           throw new Error('Too late to cancel reservation');
         }
+        console.log(reservation.hotelDiscountId);
         if (reservation.hotelDiscountId) {
+          console.log('1');
           return reservation.updateAttribute('myuserId', '', null);
         } else {
+          console.log('2');
           return Roomreservation.destroyById(id);
         }
       })
