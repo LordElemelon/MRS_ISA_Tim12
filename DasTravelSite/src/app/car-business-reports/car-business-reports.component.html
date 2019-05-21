@@ -1,5 +1,6 @@
 <mat-toolbar color="primary">
     <a mat-button (click)="setToIncomeForm()" *ngIf="userType==='rentalServiceAdmin'"> Income reports </a>
+    <a mat-button (click)="setToOccupancyForm()" *ngIf="userType==='rentalServiceAdmin'"> Occupancy reports </a>
     <span class="flex-spacer"></span>
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -56,6 +57,44 @@
         <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="incomeForm.invalid">
             Submit
         </button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="isOccupancyForm&&userType==='rentalServiceAdmin'" >
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="occupancyForm" #occupancyform="ngForm" (ngSubmit)="onOccupancySubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="start" [matDatepicker]="myDatepicker3" placeholder="Start time">
+            <mat-datepicker-toggle [for]="myDatepicker3"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker3></mat-datepicker>
+            <mat-error *ngIf="occupancyFormErrors.start">
+                {{ occupancyFormErrors.start }}
+            </mat-error>
+          </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="end" [matDatepicker]="myDatepicker4" placeholder="Return time">
+              <mat-datepicker-toggle [for]="myDatepicker4"></mat-datepicker-toggle>
+              <mat-datepicker #myDatepicker4></mat-datepicker>
+              <mat-error *ngIf="occupancyFormErrors.end">
+                {{ occupancyFormErrors.end }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
+              <mat-error *ngIf="occupancyFormErrors.rentalService">
+                {{ occupancyFormErrors.rentalService }}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="occupancyForm.invalid">
+              Submit
+          </button>
     </form>
   </div>
 </div>
