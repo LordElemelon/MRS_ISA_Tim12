@@ -61,6 +61,7 @@ import { CarBusinessReportsComponent } from './car-business-reports/car-business
 import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
 import { RoomQuickReservationComponent } from './room-quick-reservation/room-quick-reservation.component';
+import { FriendsComponent } from './friends/friends.component';
 
 
 @NgModule({
@@ -92,7 +93,8 @@ import { RoomQuickReservationComponent } from './room-quick-reservation/room-qui
     AirlinesComponent,
     CarBusinessReportsComponent,
     ReserveSeatComponent,
-    RoomQuickReservationComponent
+    RoomQuickReservationComponent,
+    FriendsComponent
   ],
   imports: [
     BrowserModule,

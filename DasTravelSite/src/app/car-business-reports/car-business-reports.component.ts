@@ -15,9 +15,13 @@ export class CarBusinessReportsComponent implements OnInit {
 
   isIncomeForm = null;
   isIncomeChart = null;
+  isOccupancyForm = null;
 
   @ViewChild('incomeform') incomeFormDirective;
   incomeForm : FormGroup;
+
+  @ViewChild('occupancyform') occupancyFormDirective;
+  occupancyForm : FormGroup;
 
   public barChartOptions = {
     scaleShowVerticalLines: false,
@@ -27,11 +31,19 @@ export class CarBusinessReportsComponent implements OnInit {
   setToIncomeForm() {
     this.isIncomeForm = true;
     this.isIncomeChart = null;
+    this.isOccupancyForm = null;
   }
 
   setToIncomeChart() {
     this.isIncomeForm = null;
     this.isIncomeChart = true;
+    this.isOccupancyForm = null;
+  }
+
+  setToOccupancyForm() {
+    this.isIncomeForm = null;
+    this.isIncomeChart = null;
+    this.isOccupancyForm = true;
   }
 
 
@@ -56,6 +68,13 @@ export class CarBusinessReportsComponent implements OnInit {
       }
     });
     this.createIncomeForm();
+    this.createOccupancyForm();
+  }
+
+  openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 2000,
+    });
   }
 
   ngOnInit() {
@@ -73,6 +92,16 @@ export class CarBusinessReportsComponent implements OnInit {
     this.onIncomeValueChanged();
   }
 
+  createOccupancyForm() {
+    this.occupancyForm = this.fb.group({
+      start: ['', Validators.required],
+      end: ['', Validators.required],
+      rentalService: ['', Validators.required]
+    });
+    this.occupancyForm.valueChanges.subscribe(data => this.onOccupancyValueChanged(data));
+    this.onOccupancyValueChanged();
+  }
+
   onIncomeValueChanged(data?: any) {
     if (!this.incomeForm) {
       return;
@@ -88,6 +117,28 @@ export class CarBusinessReportsComponent implements OnInit {
           for (const key in control.errors) {
             if (control.errors.hasOwnProperty(key)) {
               this.incomeFormErrors[field] += messages[key] + ' ';
+            }
+          }
+        }
+      }
+    }
+  }
+
+  onOccupancyValueChanged(data?: any) {
+    if (!this.occupancyForm) {
+      return;
+    }
+    const form = this.occupancyForm;
+    for (const field in this.occupancyFormErrors) {
+      if (this.occupancyFormErrors.hasOwnProperty(field)) {
+        //clear previous error message
+        this.occupancyFormErrors[field] = '';
+        const control = form.get(field);
+        if (control && !control.valid) {
+          const messages = this.occupancyFormValidationMessages[field];
+          for (const key in control.errors) {
+            if (control.errors.hasOwnProperty(key)) {
+              this.occupancyFormErrors[field] += messages[key] + ' ';
             }
           }
         }
@@ -117,21 +168,39 @@ export class CarBusinessReportsComponent implements OnInit {
     }
   };
 
+  occupancyFormErrors = {
+    'start': '',
+    'end': '',
+    'rentalService': ''
+  };
+
+  occupancyFormValidationMessages = {
+    'start': {
+      'required': 'Start date is required'
+    },
+    'end': {
+      'required': 'End date is required'
+    },
+    'rentalService': {
+      'required': "Rental service is required"
+    }
+  };
+
   onIncomeSubmit() {
-    this.rentalServiceService.find({where: {name: this.incomeForm.value.rentalService}})
+    this.rentalServiceService.findOne({where: {name: this.incomeForm.value.rentalService}})
     .subscribe(
       (result) => {
-        var my_result = result as RentalService[];
+        var my_result = result as RentalService;
         var observable;
         if (this.incomeForm.value.type === 'yearly') {
           observable = this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(),
-           new Date(this.incomeForm.value.end).toJSON(), my_result[0].id)
+           new Date(this.incomeForm.value.end).toJSON(), my_result.id)
         } else if (this.incomeForm.value.type == 'monthly') {
           observable = this.reservationService.getMonthlyReport(new Date(this.incomeForm.value.start).toJSON(),
-          new Date(this.incomeForm.value.end).toJSON(), my_result[0].id);
+          new Date(this.incomeForm.value.end).toJSON(), my_result.id);
         } else {
           observable = this.reservationService.getWeeklyReport(new Date(this.incomeForm.value.start).toJSON(),
-          new Date(this.incomeForm.value.end).toJSON(), my_result[0].id)
+          new Date(this.incomeForm.value.end).toJSON(), my_result.id)
         }
         observable.subscribe(
           (result) => {
@@ -141,14 +210,43 @@ export class CarBusinessReportsComponent implements OnInit {
             this.setToIncomeChart();
           },
           (err) => {
-            console.log(err);
+            this.openSnackBar("Failed to retrieve business report", "Dismiss");
           }
         )
       },
       (err) => {
-        console.log(err);
+        this.openSnackBar("Failed to find this rental service", "Dismiss");
       }
     )
+  }
+
+  onOccupancySubmit() {
+    this.rentalServiceService.findOne({where: {name: this.occupancyForm.value.rentalService}})
+    .subscribe(
+      (result) => {
+        var my_result = result as RentalService;
+        this.reservationService.getOccupancyReport(new Date(this.occupancyForm.value.start).toJSON(),
+          new Date(this.occupancyForm.value.end).toJSON(), my_result.id)
+        .subscribe(
+          (result) => {
+            this.barChartLabels = result.retval.labels;
+            this.barChartData = [{data: [], label: "Reserved vehicles"}, {data: [], label: "Free vehicles"}];
+            this.barChartData[0].data = result.retval.sums;
+            console.log(result);
+            for (let count of this.barChartData[0].data) {
+              this.barChartData[1].data.push(result.retval.totalVehicles - count);
+            }
+            this.setToIncomeChart();
+          },
+          (err) => {
+            this.openSnackBar("Failed to retrieve business report", "Dismiss");
+          }
+        )
+      },
+      (err) => {
+        this.openSnackBar("Failed to find this rental service", "Dismiss");
+      }
+    );
   }
 
 }
