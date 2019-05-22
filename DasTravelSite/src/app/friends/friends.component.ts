@@ -80,13 +80,13 @@ export class FriendsComponent implements OnInit {
 
   refreshFriends() {
     this.friendList = [];
-    this.friendshipService.find({
-      where: { accepted: true }
-    }).subscribe(
+    this.friendshipService.find().subscribe(
       result => {
         let gottenFriends: Friendship[] = result as Friendship[];
+        console.log(gottenFriends);
         for (const friendship of gottenFriends) {
-          if (friendship.firstUserId == this.userId || friendship.secondUserId == this.userId) {
+          if (friendship.firstUserId == this.userId || friendship.secondUserId == this.userId && friendship.accepted) {
+            console.log(friendship);
             let friendId: string = (friendship.firstUserId == this.userId) ? friendship.secondUserId : friendship.firstUserId;
             let friend: any = {
               friendship: friendship
@@ -105,8 +105,7 @@ export class FriendsComponent implements OnInit {
                         let friendInfo: UserInfo = info as UserInfo;
                         friend['fullName'] = (friendInfo.firstName == "" && friendInfo.lastName == "") ?
                           "-" : friendInfo.firstName + " " + friendInfo.lastName;
-                        this.friendList.push(friend);
-                        this.friendTable.renderRows();
+                        
                       }
                     }
                   },
@@ -114,6 +113,8 @@ export class FriendsComponent implements OnInit {
                     console.log(err);
                   }
                 );
+                this.friendList.push(friend);
+                this.friendTable.renderRows();
               },
               err => {
                 console.log(err);
@@ -130,15 +131,12 @@ export class FriendsComponent implements OnInit {
 
   refreshRequests() {
     this.requestList = [];
-    console.log("WTF GOIN ON > " + this.userId);
-    this.friendshipService.find({
-      where: {accepted: false}
-    }).subscribe(
+    this.friendshipService.find().subscribe(
       result => {
         let gottenFriends: Friendship[] = result as Friendship[];
         console.log(gottenFriends);
         for (const friendship of gottenFriends) {
-          if (friendship.secondUserId == this.userId) {
+          if (friendship.secondUserId == this.userId && !friendship.accepted) {
             let friendId: string = friendship.firstUserId;
             let request: any = {
               friendship: friendship
