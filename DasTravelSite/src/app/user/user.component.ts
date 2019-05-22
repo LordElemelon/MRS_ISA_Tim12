@@ -16,6 +16,7 @@ export class UserComponent implements OnInit {
   modifyActive = true;
   homeActive = false;
   changePasswordActive = false;
+  friendsActive = false;
 
   loggedUser: Myuser;
   userInfo: UserInfo;
@@ -223,13 +224,21 @@ export class UserComponent implements OnInit {
     this.modifyActive = true;
     this.homeActive = false;
     this.changePasswordActive = false;
+    this.friendsActive = false;
   }
 
   changePasswordButton() {
     this.changePasswordActive = true;
     this.modifyActive = false;
     this.homeActive = false;
+    this.friendsActive = false;
+  }
 
+  friendsButton() {
+    this.changePasswordActive = false;
+    this.modifyActive = false;
+    this.homeActive = false;
+    this.friendsActive = true;
   }
 
 }

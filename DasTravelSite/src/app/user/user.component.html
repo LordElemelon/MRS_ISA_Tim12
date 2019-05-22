@@ -1,6 +1,7 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "modifyButton()"> Update </a>
   <a mat-button (click) = "changePasswordButton()"> Change password </a>
+  <a mat-button (click) = "friendsButton()"> Friends </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
@@ -94,4 +95,8 @@
         </form>
       </div>
   </div>
+</div>
+
+<div *ngIf="friendsActive">
+ <app-friends></app-friends>
 </div>
