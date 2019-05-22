@@ -142,6 +142,41 @@ export class RoomReservationApi extends BaseLoopBackApi {
    *
    * @param {object} data Request data.
    *
+   *  - `reservationId` – `{number}` - 
+   *
+   *  - `myuserId` – `{string}` - 
+   *
+   *  - `roomId` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public quickReservation(reservationId: any, myuserId: any, roomId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/quickReservation";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof reservationId !== 'undefined' && reservationId !== null) _urlParams.reservationId = reservationId;
+    if (typeof myuserId !== 'undefined' && myuserId !== null) _urlParams.myuserId = myuserId;
+    if (typeof roomId !== 'undefined' && roomId !== null) _urlParams.roomId = roomId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
    *  - `id` – `{number}` - 
    *
    * @returns {object} An empty reference that will be
@@ -156,8 +191,7 @@ export class RoomReservationApi extends BaseLoopBackApi {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/roomReservations/cancel";
-    let _routeParams: any = {
-    };
+    let _routeParams: any = {};
     let _postBody: any = {};
     let _urlParams: any = {
       id: id

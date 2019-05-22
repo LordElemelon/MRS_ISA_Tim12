@@ -59,7 +59,7 @@ module.exports = function(Hoteldiscount) {
             let newPrice = roomPrice.price;
             newPrice -= Math.ceil(newPrice * ctx.instance.discount / 100);
             return app.models.RoomReservation.makeReservation(ctx.instance.startDate, ctx.instance.endDate,
-              ctx.instance.roomId, '', newPrice, ctx.instance.id,
+              ctx.instance.roomId, null, newPrice, ctx.instance.id,
               (err, res) => {
                 if (err) {
                   Hoteldiscount.destroyById(ctx.instance.id);
