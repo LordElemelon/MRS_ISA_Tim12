@@ -1,16 +1,16 @@
 .friendTable tr th,
 .friendTable tr td,
-.seatTable tr th,
-.seatTable tr td {
+.requestTable tr th,
+.requestTable tr td {
     padding: 15px;
 }
 
-.seatTable tr.active td {
+.friendTable tr.active td {
     background-color:#123456 !important;
     color: white;
 }
 
-.friendTable tr.active td {
+.requestTable tr.active td {
     background-color:#123456 !important;
     color: white;
 }

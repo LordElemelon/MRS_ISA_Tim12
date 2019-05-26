@@ -1,6 +1,56 @@
 'use strict';
 
 module.exports = function(Seatreservation) {
+
+  Seatreservation.observe('after save',
+    function(ctx, next) {
+			if (ctx.instance) {
+				var data = ctx.instance.__data;
+				
+				var Flight = Seatreservation.app.models.Flight;
+				var Seat = Seatreservation.app.models.Seat;
+				var Myuser = Seatreservation.app.models.Myuser;
+				
+				console.log("are we here yet");
+				
+				Seat.findOne({where: {id: data.seatId}}).then(
+					seat => {
+						Flight.findOne({where: {id: seat.flightId}}).then(
+							flight => {
+								Myuser.findOne({where: {id: data.myuserId}}).then(
+									user => {
+										var flightString = flight.origin + "-" + flight.destination + " on " + 
+																	flight.takeoffDate.toLocaleDateString() + ", taking off at " + flight.takeoffDate.toLocaleTimeString();
+										var seatString = seat.row + '/' + seat.column;
+										Seatreservation.app.models.Email.send({
+											to: user.email,
+											from: 'DasTravelSite@gmail.com',
+											subject: 'Reservation',
+											text: 'Test',
+											html: '<h1>A ticket for flight '+ flightString + ', with seat number ' + seatString + ' has been reserved.</h1>'
+										},function(err,res){
+											console.log('email sent!');
+											next(err);
+										});
+									},
+									err => {
+										next(err);
+									}
+								); 
+							},
+							err => {
+								next(err);
+							}
+						);
+					},
+					err => {
+						next(err);
+					}
+				);
+			}
+	  
+    });
+  
   Seatreservation.makeReservation = function(seatId, userId, price, cb) {
 		Seatreservation.beginTransaction({isolationLevel: Seatreservation.Transaction.READ_COMMITED}, function(err, tx) {
 			const postgres = Seatreservation.app.dataSources.postgres;

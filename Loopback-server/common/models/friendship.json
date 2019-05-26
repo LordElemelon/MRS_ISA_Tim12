@@ -1,0 +1,27 @@
+{
+  "name": "friendship",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "firstUserId": {
+      "type": "string",
+      "required": true
+    },
+    "secondUserId": {
+      "type": "string",
+      "required": true
+    },
+    "accepted": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

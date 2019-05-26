@@ -284,7 +284,65 @@ module.exports = function(Carreservation) {
 		returns: {type: 'objects', arg: 'retval'}
 	});
 
-	
+	Carreservation.getOccupancyReport =  function (startDate, endDate, rentalServiceId, cb) {
+		var days = Carreservation.generateDayArray(startDate, endDate);
+		var retval = {};
+		Carreservation.find({
+			where: {
+				startDate: {
+					lte: endDate
+				},
+				endDate: {
+					gte: startDate
+				},
+				rentalServiceId: rentalServiceId
+			}
+		})
+		.then((result) => {
+			retval.labels = days;
+			retval.sums = [];
+			var baseDate = startDate;
+			for (let label of retval.labels) {
+				retval.sums.push(0);
+			}
+			var i;
+			for (let reservation of result) {
+				var startDiff = Math.floor((reservation.startDate - baseDate) / (1000 * 60 * 60 * 24));
+				var endDiff = Math.floor((reservation.endDate - baseDate) / (1000 * 60 * 60 * 24));
+				var endDiff = Math.min(endDiff, retval.labels.length - 1);
+				for (i = startDiff; i <= endDiff; i++) {
+					retval.sums[i] += 1;
+				}
+			}
+			Carreservation.app.models.car.count({rentalServiceId: rentalServiceId})
+			.then((result) => {
+				retval.totalVehicles = result;
+				cb(null, retval);
+			})
+			.catch((err) => {
+				cb(err, null);
+			})
+		})
+		
+	}
+
+	Carreservation.generateDayArray = function(startDate, endDate) {
+		var tempDate = new Date(startDate.getTime());
+		var retVal = [];
+		while (tempDate.getTime() <= endDate.getTime()) {
+			retVal.push(tempDate.toDateString());
+			tempDate.setDate(tempDate.getDate() + 1);
+		}
+		return retVal;
+	}
+
+	Carreservation.remoteMethod('getOccupancyReport', {
+		accepts: [{arg: 'startDate', type: 'date', required: true},
+				  {arg: 'endDate', type: 'date', required: true},
+				  {arg: 'rentalServiceId', type: 'string', required: true}],
+		httP: {path: '/getOccupancyReport', verb: 'get'},
+		returns: {type: 'objects', arg: 'retval'}
+	});
 
 
 };
