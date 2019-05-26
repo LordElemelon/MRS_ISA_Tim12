@@ -38,7 +38,7 @@ module.exports = function(Carreservation) {
 											cb(new Error('Can not reserve on this date'), null);
 										}else{
 											//console.log(rentalid);
-											Carreservation.create({startDate: startDate, endDate: endDate,
+											Carreservation.create({startDate: startDate, endDate: endDate, isSpecialOffer: false,
 												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid}, {transaction: tx},
 											(err, res) => {
 												if (err) {
@@ -72,8 +72,6 @@ module.exports = function(Carreservation) {
         returns: {type: 'object', arg: 'retval'}
 	})
 	
-	
-	
 	Carreservation.cancel = function(id, options, cb) {
 		if (options.accessToken == null) {
 			cb(new Error("No user logged in"),null);
@@ -92,10 +90,22 @@ module.exports = function(Carreservation) {
 			if (hours < 72) {
 				throw new Error("Too late to cancel reservation");
 			}
-			return Carreservation.destroyById(id);
-		})
-		.then((result) => {
-			cb(null, true);
+			if (!result.isSpecialOffer) {
+				Carreservation.destroyById(id)
+				.then((result) => {
+					cb(null, true);
+				})
+				.catch((err) => {
+					cb(err, null);
+				})
+			} else {
+				//code for cancelling special reservation
+				//code for cancelling special reservation
+				//code for cancelling special reservation
+				//code for cancelling special reservation
+				//code for cancelling special reservation
+				//code for cancelling special reservation
+			}
 		})
 		.catch((err) => {
 			cb(err, null);
@@ -267,6 +277,8 @@ module.exports = function(Carreservation) {
 		httP: {path: '/getWeeklyReport', verb: 'get'},
 		returns: {type: 'objects', arg: 'retval'}
 	});
+
+	
 
 
 };

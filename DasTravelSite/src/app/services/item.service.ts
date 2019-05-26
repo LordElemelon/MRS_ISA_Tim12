@@ -13,6 +13,7 @@ export class ItemService {
   toReserve;
   roomToReserve: any;
   carPrices: CarPrice[] = [];
+  carSpecialOffer;
 
   setReservableCar(car) {
     this.toReserve = car;
@@ -20,6 +21,14 @@ export class ItemService {
 
   getReservableCar() {
     return this.toReserve;
+  }
+
+  setCarSpecialOffer(specialOffer) {
+    this.carSpecialOffer = specialOffer;
+  }
+
+  getCarSpecialOffer() {
+    return this.carSpecialOffer;
   }
 
   getPrices() {

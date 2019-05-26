@@ -29,7 +29,7 @@ export class ReservecarComponent implements OnInit {
      private snackBar: MatSnackBar) {
     LoopBackConfig.setBaseURL(baseURL);
     LoopBackConfig.setApiVersion(API_VERSION);
-    this.car = this.itemService.getReservableCar();
+    //this.car = this.itemService.getReservableCar();
     var temp = this.itemService.getReservableCar();
     if (temp) {
       this.car = temp;
@@ -69,7 +69,6 @@ export class ReservecarComponent implements OnInit {
   }
 
   onSubmit() {
-    //this.carservice.findOne({where: {"registration": this.car.registration}});
     this.car.registration = this.car.registration.trim();
     this.carService.findOne({where: {"registration": this.car.registration}})
     .subscribe(
