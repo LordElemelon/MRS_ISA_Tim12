@@ -1,0 +1,12 @@
+<div fxFlex>
+  <mat-grid-list cols="3" rowHeight="200px">
+    <mat-grid-tile *ngFor="let car of foundCars">
+      <mat-card class="pointer">
+        Registration: {{car.registration}} <br>
+        Make:  {{car.make}} <br>
+        Seats:  {{car.seats}} <br>
+        Category:  {{car.category}}
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>

@@ -2,6 +2,7 @@
     <a mat-button (click)="setToAdd()"> Add</a>
     <a mat-button (click)="setToRemove()"> Remove </a>
     <a mat-button (click)="setToChange()"> Change </a>
+    <a mat-button (click)="setToList()"> List all </a>
     <span class="flex-spacer"></span>
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -9,14 +10,6 @@
 <div *ngIf="isAdd">
   <div fxFlex fxFlexOffset="20px" class="form-size">
     <form novalidate [formGroup]="addForm" #addform="ngForm" (ngSubmit)="onAddSubmit()">
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
-            <mat-error *ngIf="addFormErrors.serviceName">
-             {{ addFormErrors.serviceName }}
-            </mat-error>
-          </mat-form-field>
-          </p>
         <p>
         <mat-form-field class="form-size">
             <input matInput formControlName="name" placeholder="Name" type="text">
@@ -45,14 +38,6 @@
     <form novalidate [formGroup]="removeForm" #changeform="ngForm" (ngSubmit)="onRemoveSubmit()">
       <p>
         <mat-form-field class="form-size">
-          <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
-          <mat-error *ngIf="removeFormErrors.serviceName">
-            {{ removeFormErrors.serviceName }}
-          </mat-error>
-        </mat-form-field>
-      </p>
-      <p>
-        <mat-form-field class="form-size">
             <input matInput formControlName="name" placeholder="Name" type="text">
             <mat-error *ngIf="removeFormErrors.name">
               {{ removeFormErrors.name }}
@@ -69,14 +54,6 @@
 <div *ngIf="isChange">
   <div fxFlex fxFlexOffset="20px" class="form-size">
       <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="serviceName" placeholder="Servicename" type="text">
-            <mat-error *ngIf="changeFormErrors.serviceName">
-              {{ changeFormErrors.serviceName }}
-            </mat-error>
-          </mat-form-field>
-        </p>
         <p>
           <mat-form-field class="form-size">
               <input matInput formControlName="name" placeholder="Name" type="text">
@@ -99,4 +76,7 @@
           </button>
       </form>
   </div>
+</div>
+<div *ngIf="isList">
+  <app-list-branches></app-list-branches>
 </div>

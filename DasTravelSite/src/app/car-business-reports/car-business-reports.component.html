@@ -46,14 +46,6 @@
             </mat-error>
           </mat-form-field>
         </p>
-        <p>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
-            <mat-error *ngIf="incomeFormErrors.rentalService">
-              {{ incomeFormErrors.rentalService }}
-            </mat-error>
-          </mat-form-field>
-        </p>
         <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="incomeForm.invalid">
             Submit
         </button>
@@ -81,14 +73,6 @@
               <mat-datepicker #myDatepicker4></mat-datepicker>
               <mat-error *ngIf="occupancyFormErrors.end">
                 {{ occupancyFormErrors.end }}
-              </mat-error>
-            </mat-form-field>
-          </p>
-          <p>
-            <mat-form-field class="half-width">
-              <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
-              <mat-error *ngIf="occupancyFormErrors.rentalService">
-                {{ occupancyFormErrors.rentalService }}
               </mat-error>
             </mat-form-field>
           </p>

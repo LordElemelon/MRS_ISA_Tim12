@@ -1,18 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Car, CarPrice } from '../shared/sdk';
+import { Car, CarPrice, RentalService } from '../shared/sdk';
 import { CarPriceApi } from '../shared/sdk/services'
 import { Observable } from 'rxjs';
+import { RentalServiceApi } from '../shared/sdk/services'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ItemService {
 
-  constructor(private carPriceService : CarPriceApi) { }
+  constructor(private carPriceService : CarPriceApi,
+   private rentalServiceService: RentalServiceApi) { 
+  }
 
   toReserve;
   roomToReserve: any;
   carPrices: CarPrice[] = [];
+  serviceId;
 
   setReservableCar(car) {
     this.toReserve = car;
@@ -20,6 +24,14 @@ export class ItemService {
 
   getReservableCar() {
     return this.toReserve;
+  }
+
+  setServiceId(id) {
+   this.serviceId = id;
+  }
+
+  getServiceId() {
+    return this.serviceId;
   }
 
   getPrices() {
