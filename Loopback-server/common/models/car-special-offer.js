@@ -91,7 +91,7 @@ module.exports = function(Carspecialoffer) {
                     if (result == null) throw new Error('Could not find special offer with this id');
                     if (result.myuserId != null) throw new Error('This special offer is already reserved');
                     mySpecialOffer = result;
-                    return Carspecialoffer.app.models.carReservation.updateAll({id: mySpecialOffer.carReservationId}, {myuserId: userId}, {transaction: tx})
+                    return Carspecialoffer.app.models.carReservation.updateAll({id: mySpecialOffer.carReservationsId}, {myuserId: userId}, {transaction: tx})
                 })
                 .then((result) => {
                     if (result.count != 1) throw new Error("Transaction failed");

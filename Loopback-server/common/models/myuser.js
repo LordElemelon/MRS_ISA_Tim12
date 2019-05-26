@@ -146,7 +146,7 @@ module.exports = function (Myuser) {
       if (err) cb(err, null);
       else {
         app.models.CarReservation.find(
-          {'where': {'userId': '"' + userId + '"'},
+          {'where': {'myuserId': userId },
             'limit': size, 'skip': offset})
           .then(reservations => {
             cb(null, reservations);

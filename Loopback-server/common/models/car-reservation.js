@@ -99,12 +99,18 @@ module.exports = function(Carreservation) {
 					cb(err, null);
 				})
 			} else {
-				//code for cancelling special reservation
-				//code for cancelling special reservation
-				//code for cancelling special reservation
-				//code for cancelling special reservation
-				//code for cancelling special reservation
-				//code for cancelling special reservation
+				Carreservation.updateAll({id: result.id}, {myuserId: null})
+				.then((result) => {
+					if (result.count != 1) throw new Error("Cancellation failed, updated more than one");
+					return Carreservation.app.models.carSpecialOffer.updateAll({carReservationsId: id}, {myuserId: null})
+				})
+				.then((result) => {
+					if (result.count != 1) throw new Error("Cancellation failed, updated more than one");
+					cb(null, true);
+				})
+				.catch((err) => {
+					cb(err, null);
+				})
 			}
 		})
 		.catch((err) => {
