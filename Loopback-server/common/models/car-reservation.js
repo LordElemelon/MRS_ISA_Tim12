@@ -39,7 +39,7 @@ module.exports = function(Carreservation) {
 										}else{
 											//console.log(rentalid);
 											Carreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid}, {transaction: tx},
+												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid, rated: false}, {transaction: tx},
 											(err, res) => {
 												if (err) {
 													tx.rollback();
@@ -111,6 +111,81 @@ module.exports = function(Carreservation) {
         returns: {type: 'object', arg: 'retval'}
 	})
 
+
+		
+	Carreservation.rateServiceAndCar = function(id, carRate, rentalRate, options, cb) {
+		if (options.accessToken == null) {
+			cb(new Error("No user logged in"),null);
+			return;
+		}
+		var requestid = options.accessToken.userId;
+		var myReservation;
+		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED})
+		.then((tx) => {
+			Carreservation.findById(id)
+			.then((result) => {
+				if (result == null) {
+					throw new Error("Reservation with this id does not exist");
+				}
+				if (result.rated) {
+					throw new Error("User already rated this reservation");
+				}
+				if (requestid != result.myuserId) {
+					throw new Error("User is not owner of the reservation");
+				}
+				var hours = (result.endDate - new Date()) / 36e5;
+				if (result.endDate > new Date()) {
+					throw new Error("Cannot rate before reservation finishes");
+				}
+				myReservation = result;
+				return Carreservation.app.models.car.findById(myReservation.carsId);
+			})
+			.then((result) => {
+				var new_count = result.ratingCount + 1;
+				var new_rating = (result.rating * result.ratingCount + carRate) / new_count;
+				result.ratingCount = new_count;
+				result.rating = new_rating;
+				return Carreservation.app.models.car.replaceById(result.id, result, {transaction: tx});
+			})
+			.then((result) => {
+				return Carreservation.app.models.rentalService.findById(myReservation.rentalServiceId)
+			})
+			.then((result) => {
+				var new_count = result.ratingCount + 1;
+				var new_rating = (result.rating * result.ratingCount + rentalRate) / new_count;
+				result.ratingCount = new_count;
+				result.rating = new_rating;
+				return Carreservation.app.models.rentalService.replaceById(result.id, result, {transaction: tx});
+			})
+			.then((result) => {
+				myReservation.rated = true;
+				return Carreservation.replaceById(myReservation.id, myReservation, {transaction: tx});
+			})
+			.then((result) => {
+				tx.commit();
+				cb(null, result);
+			})
+			.catch((err) => {
+				tx.rollback();
+				cb(err, null);
+			})
+		})
+		.catch((err) => {
+			cb(err, null);
+		})
+	}
+
+	Carreservation.remoteMethod('rateServiceAndCar', {
+		accepts: [
+			{arg: 'id', type: 'number', required: true},
+			{arg: 'carRate', type: 'number', required: true},
+			{arg: 'rentalRate', type: 'number', required: true},
+			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+		],
+		http: {path: '/rateServiceAndCar', verb: 'post' },
+        returns: {type: 'object', arg: 'retval'}
+	})
+
 	Carreservation.getYearlyReport = function(startDate, endDate, rentalServiceId, cb) {
 		var years = Carreservation.generateYearsArray(startDate, endDate);
 		var baseNum = startDate.getYear();
@@ -139,7 +214,6 @@ module.exports = function(Carreservation) {
 			cb(null, retval);
 		})
 	}
-	
 
 	Carreservation.generateYearsArray = function(startDate, endDate) {
 		var retVal = [];
@@ -327,6 +401,7 @@ module.exports = function(Carreservation) {
 		httP: {path: '/getOccupancyReport', verb: 'get'},
 		returns: {type: 'objects', arg: 'retval'}
 	});
+
 
 
 };

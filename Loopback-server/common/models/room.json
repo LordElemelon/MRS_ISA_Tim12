@@ -34,6 +34,14 @@
       "type": "boolean",
       "required": true,
       "default": true
+    },
+    "ratingCount": {
+      "type": "number",
+      "default": 0
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
     }
   },
   "validations": [],

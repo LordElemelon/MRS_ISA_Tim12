@@ -19,6 +19,14 @@
     },
     "description": {
       "type": "string"
+    },
+    "ratingCount": {
+      "type": "number",
+      "default": 0
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
     }
   },
   "validations": [],

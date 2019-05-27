@@ -10,6 +10,8 @@ export interface RentalServiceInterface {
   "name": string;
   "address": string;
   "description": string;
+  "rating": number;
+  "ratingCount": number;
   "id"?: any;
   "myuserId"?: any;
   branches?: Branch[];
@@ -21,6 +23,8 @@ export class RentalService implements RentalServiceInterface {
   "name": string;
   "address": string;
   "description": string;
+  "rating": number;
+  "ratingCount": number;
   "id": any;
   "myuserId": any;
   branches: Branch[];
@@ -70,6 +74,14 @@ export class RentalService implements RentalServiceInterface {
         "description": {
           name: 'description',
           type: 'string'
+        },
+        "rating": {
+          name: 'rating',
+          type: 'number'
+        },
+        "ratingCount": {
+          name: 'ratingCount',
+          type: 'number'
         },
         "id": {
           name: 'id',
