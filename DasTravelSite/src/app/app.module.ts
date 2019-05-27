@@ -60,6 +60,7 @@ import { CarReservationListComponent } from './car-reservation-list/car-reservat
 import { CarBusinessReportsComponent } from './car-business-reports/car-business-reports.component';
 import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
+import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
 
 
@@ -92,6 +93,7 @@ import { FriendsComponent } from './friends/friends.component';
     AirlinesComponent,
     CarBusinessReportsComponent,
     ReserveSeatComponent,
+    ReserveCarSpecialComponent,
     FriendsComponent
   ],
   imports: [
