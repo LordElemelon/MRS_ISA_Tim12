@@ -25,6 +25,10 @@
     "myuserId": {
       "type": "string"
     },
+    "isSpecialOffer": {
+      "type": "boolean",
+      "required": true
+    },
     "rentalServiceId": {
       "type": "string",
       "required": true

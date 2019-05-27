@@ -5,7 +5,7 @@ module.exports = function(Carspecialoffer) {
         Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
         .then((tx) => {
             const postgres = Carspecialoffer.app.dataSources.postgres;
-            postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + carId + "\"' FOR UPDATE;",
+            postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;",
              null, (err, result) => {
                 //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                 if (err) {
@@ -40,8 +40,8 @@ module.exports = function(Carspecialoffer) {
                         throw new Error('Can not make a special offer on this date, conflicting special offer');
                     }
                     return Carspecialoffer.app.models.carReservation.create({
-                        startDate: startDate, endDate: endDate, 
-                        price: price * (1 - discount / 100), myuserId: null, carsId: carId, rentalServiceId: rentalid
+                        startDate: startDate, endDate: endDate, isSpecialOffer: true,
+                        price: price * (100 - discount / 100), myuserId: null, carsId: carId, rentalServiceId: rentalid
                     }, {transaction: tx});
                 })
                 .then((result) => {
@@ -77,6 +77,49 @@ module.exports = function(Carspecialoffer) {
         returns: {type: 'object', arg: 'retval'}
     });
 
+
+    Carspecialoffer.quicklyReserve = function(carId, specialOfferId, userId, cb) {
+        var mySpecialOffer;
+        Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
+        .then((tx) => {
+            const postgres = Carspecialoffer.app.dataSources.postgres;
+            postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;",
+            null, (err, result) => {
+                if (err) throw err;
+                Carspecialoffer.findById(specialOfferId)
+                .then((result) => {
+                    if (result == null) throw new Error('Could not find special offer with this id');
+                    if (result.myuserId != null) throw new Error('This special offer is already reserved');
+                    mySpecialOffer = result;
+                    return Carspecialoffer.app.models.carReservation.updateAll({id: mySpecialOffer.carReservationsId}, {myuserId: userId}, {transaction: tx})
+                })
+                .then((result) => {
+                    if (result.count != 1) throw new Error("Transaction failed");
+                    return Carspecialoffer.updateAll({id: mySpecialOffer.id}, {myuserId: userId}, {transaction: tx})
+                })
+                .then((result) => {
+                    if (result.count != 1) throw new Error("Transaction failed");
+                    tx.commit();
+                    cb(null, result);
+                })
+                .catch((err) => {
+                    tx.rollback();
+                    cb(err, null);
+                });
+            });
+        })
+        .catch((err) => {
+            cb(err, null);
+        })
+    }
+
+    Carspecialoffer.remoteMethod('quicklyReserve', {
+        accepts: [{arg: 'carId', type: 'string', required: true},
+                  {arg: 'specialOfferId', type: 'string', required: true},
+                  {arg: 'userId', type: 'string', required: true}],
+        http: {path: '/quicklyReserve', verb: 'post'},
+        returns: {type: 'object', arg: 'retval'}
+    });
 
     Carspecialoffer.removeOffer = function(startDate, registration, cb) {
         var specialOfferId = -1;
