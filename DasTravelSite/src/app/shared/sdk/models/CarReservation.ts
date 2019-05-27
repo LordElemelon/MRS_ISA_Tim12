@@ -9,7 +9,7 @@ export interface CarReservationInterface {
   "myuserId"?: string;
   "isSpecialOffer": boolean;
   "rentalServiceId": string;
-  "rated": boolean;
+  "rated"?: boolean;
   "id"?: number;
 }
 
@@ -86,7 +86,8 @@ export class CarReservation implements CarReservationInterface {
         },
         "rated": {
           name: 'rated',
-          type: 'boolean'
+          type: 'boolean',
+          default: false
         },
         "id": {
           name: 'id',

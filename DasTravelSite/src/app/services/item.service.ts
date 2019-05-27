@@ -15,6 +15,16 @@ export class ItemService {
   carPrices: CarPrice[] = [];
   carSpecialOffer;
 
+  carReservationIdForRate;
+
+  setCarReservationIdForRate(value) {
+    this.carReservationIdForRate = value;
+  }
+
+  getCarReservationIdForRate() {
+    return this.carReservationIdForRate;
+  }
+
   setReservableCar(car) {
     this.toReserve = car;
   }

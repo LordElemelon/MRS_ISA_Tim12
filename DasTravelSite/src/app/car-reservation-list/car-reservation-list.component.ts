@@ -1,7 +1,9 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Car, CarReservation, RentalService, Room} from '../shared/sdk/models';
-import {MatSnackBar, MatTable} from '@angular/material';
+import {MatSnackBar, MatTable, MatDialog} from '@angular/material';
 import {CarApi, MyuserApi, RentalServiceApi, CarReservationApi} from '../shared/sdk/services/custom';
+import { RateCarAndServiceComponent } from '../rate-car-and-service/rate-car-and-service.component';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-car-reservation-list',
@@ -14,7 +16,7 @@ export class CarReservationListComponent implements OnInit {
   pageNum = 0;
   pageSize = 8;
 
-  columnsToDisplayReservations = ['rentalService', 'make', 'registration', 'startDate', 'endDate', 'price', 'action'];
+  columnsToDisplayReservations = ['rentalService', 'make', 'registration', 'startDate', 'endDate', 'price', 'action', 'rate'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
 
@@ -23,7 +25,9 @@ export class CarReservationListComponent implements OnInit {
               private carservice: CarApi,
               private rentalserviceservice: RentalServiceApi,
               private snackBar: MatSnackBar,
-              private reservationService: CarReservationApi
+              private reservationService: CarReservationApi,
+              public dialog: MatDialog,
+              private itemService: ItemService
               ) { }
 
   ngOnInit() {
@@ -102,4 +106,21 @@ export class CarReservationListComponent implements OnInit {
       }
     )
   }
+
+  rateDialog(event) {
+    var reservationid;
+    if (event.path[1].id == "") {
+      reservationid = event.path[0].id;
+    }
+    if (event.path[0].id == "") {
+      reservationid = event.path[1].id;
+    }
+    this.itemService.setCarReservationIdForRate(reservationid);
+    this.dialog.open(RateCarAndServiceComponent, {width: '500px', height: '450 px'})
+
+  }
+
+
 }
+
+

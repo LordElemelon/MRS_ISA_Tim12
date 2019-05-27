@@ -11,6 +11,8 @@ export interface RoomInterface {
   "description": string;
   "beds": number;
   "active": boolean;
+  "ratingCount"?: number;
+  "rating"?: number;
   "id"?: any;
   "hotelId"?: any;
   hotel?: Hotel;
@@ -23,6 +25,8 @@ export class Room implements RoomInterface {
   "description": string;
   "beds": number;
   "active": boolean;
+  "ratingCount": number;
+  "rating": number;
   "id": any;
   "hotelId": any;
   hotel: Hotel;
@@ -78,6 +82,16 @@ export class Room implements RoomInterface {
           name: 'active',
           type: 'boolean',
           default: true
+        },
+        "ratingCount": {
+          name: 'ratingCount',
+          type: 'number',
+          default: 0
+        },
+        "rating": {
+          name: 'rating',
+          type: 'number',
+          default: 0
         },
         "id": {
           name: 'id',

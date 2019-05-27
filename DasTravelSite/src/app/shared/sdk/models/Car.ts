@@ -9,8 +9,8 @@ export interface CarInterface {
   "registration": string;
   "seats": number;
   "category": string;
-  "rating": number;
-  "ratingCount": number;
+  "rating"?: number;
+  "ratingCount"?: number;
   "id"?: any;
   "rentalServiceId"?: any;
   rentalService?: RentalService;
@@ -77,11 +77,13 @@ export class Car implements CarInterface {
         },
         "rating": {
           name: 'rating',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "ratingCount": {
           name: 'ratingCount',
-          type: 'number'
+          type: 'number',
+          default: 0
         },
         "id": {
           name: 'id',
