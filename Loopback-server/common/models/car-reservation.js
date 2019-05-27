@@ -72,8 +72,6 @@ module.exports = function(Carreservation) {
         returns: {type: 'object', arg: 'retval'}
 	})
 	
-	
-	
 	Carreservation.cancel = function(id, options, cb) {
 		if (options.accessToken == null) {
 			cb(new Error("No user logged in"),null);
@@ -92,10 +90,28 @@ module.exports = function(Carreservation) {
 			if (hours < 72) {
 				throw new Error("Too late to cancel reservation");
 			}
-			return Carreservation.destroyById(id);
-		})
-		.then((result) => {
-			cb(null, true);
+			if (!result.isSpecialOffer) {
+				Carreservation.destroyById(id)
+				.then((result) => {
+					cb(null, true);
+				})
+				.catch((err) => {
+					cb(err, null);
+				})
+			} else {
+				Carreservation.updateAll({id: result.id}, {myuserId: null})
+				.then((result) => {
+					if (result.count != 1) throw new Error("Cancellation failed, updated more than one");
+					return Carreservation.app.models.carSpecialOffer.updateAll({carReservationsId: id}, {myuserId: null})
+				})
+				.then((result) => {
+					if (result.count != 1) throw new Error("Cancellation failed, updated more than one");
+					cb(null, true);
+				})
+				.catch((err) => {
+					cb(err, null);
+				})
+			}
 		})
 		.catch((err) => {
 			cb(err, null);

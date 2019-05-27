@@ -143,6 +143,41 @@ export class CarSpecialOfferApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {object} data Request data.
+   *
+   *  - `carId` – `{string}` - 
+   *
+   *  - `specialOfferId` – `{string}` - 
+   *
+   *  - `userId` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public quicklyReserve(carId: any, specialOfferId: any, userId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carSpecialOffers/quicklyReserve";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof carId !== 'undefined' && carId !== null) _urlParams.carId = carId;
+    if (typeof specialOfferId !== 'undefined' && specialOfferId !== null) _urlParams.specialOfferId = specialOfferId;
+    if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
    * @param {date} startDate 
    *
    * @param {string} registration 
