@@ -27,13 +27,31 @@ module.exports = function(Room) {
           });
         }
       }
+    } else {
+      return next(new Error('No data sent'));
     }
   });
+
   Room.observe('after save', function saveInPostgre(ctx, next) {
     Room.app.models.Roomid.create({'roomId': ctx.instance.id}, (err, result) => {
       if (err) next(err);
       else next();
     });
+  });
+
+  Room.observe('before delete', function checkReservations(ctx, next) {
+    if (ctx.where.id) {
+      var minDate = new Date();
+      minDate.setHours(0, 0, 0, 0);
+      Room.app.models.RoomReservation.find({where: {'roomId': ctx.where.id, 'startDate': {gte: minDate}}},
+        (err, result) => {
+          if (result.length > 0) {
+            next(new Error('That room has reservations'));
+          } else {
+            next();
+          }
+        });
+    }
   });
 
   Room.findAvailableRooms = function(start, end, location, price, beds, cb) {

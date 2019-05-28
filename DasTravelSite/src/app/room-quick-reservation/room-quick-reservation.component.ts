@@ -158,9 +158,9 @@ export class RoomQuickReservationComponent implements OnInit {
     this.roomreservationservice.quickReservation(this.selectedReservationId,
       this.myuserservice.getCachedCurrent().id, '1')
       .subscribe(reservation => {
-        console.log(reservation);
+        this.openSnackBar('Reservation succesful', 'Dismiss');
       }, err => {
-        console.log(err);
+        this.openSnackBar('Reservation failed. Please search and try again', 'Dismiss');
       });
   }
 }
