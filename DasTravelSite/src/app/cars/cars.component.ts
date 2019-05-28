@@ -39,6 +39,8 @@ export class CarsComponent implements OnInit {
 
   isSearch: boolean;
 
+  isList: boolean;
+
   constructor(@Inject('baseURL') private baseURL,
               private carservice: CarApi,
               private fb: FormBuilder,
@@ -68,6 +70,7 @@ export class CarsComponent implements OnInit {
     this.isRemove = null;
     this.isChange = null;
     this.isSearch = null;
+    this.isList = null;
   }
 
   setToRemove() {
@@ -75,6 +78,7 @@ export class CarsComponent implements OnInit {
     this.isRemove = true;
     this.isChange = null;
     this.isSearch = null;
+    this.isList = null;
   }
 
   setToChange() {
@@ -82,6 +86,7 @@ export class CarsComponent implements OnInit {
     this.isRemove = null;
     this.isChange = true;
     this.isSearch = null;
+    this.isList = null;
   }
 
   setToSearch() {
@@ -89,6 +94,15 @@ export class CarsComponent implements OnInit {
     this.isRemove = null;
     this.isChange = null;
     this.isSearch = true;
+    this.isList = null;
+  }
+
+  setToList() {
+    this.isAdd = null;
+    this.isRemove = null;
+    this.isChange = null;
+    this.isSearch = null;
+    this.isList = true;
   }
 
   openSnackBar(message: string, action: string) {
@@ -98,18 +112,18 @@ export class CarsComponent implements OnInit {
   }
 
   addFormErrors = {
-    'serviceName': '',
     'registration': '',
+    'category': '',
     'make': '',
     'seats': ''
   };
 
   addFormValidationMessages = {
-    'serviceName': {
-      'required': 'Service name is required'
-    },
     'registration': {
       'required': 'Registration is required'
+    },
+    'category': {
+      'required': 'Category is required'
     },
     'make': {
       'required': 'Make is required'
@@ -144,8 +158,8 @@ export class CarsComponent implements OnInit {
 
   createAddForm() {
     this.addForm = this.fb.group({
-      serviceName: ['', Validators.required],
       registration: ['', Validators.required],
+      category: ['', Validators.required],
       make: ['', Validators.required],
       seats: [0, [Validators.required, Validators.pattern]]
     });
@@ -155,28 +169,22 @@ export class CarsComponent implements OnInit {
   }
 
   onAddSubmit() {
-    var o1 = this.rentalServiceService.findOne({'where': {'name': this.addForm.value.serviceName}});
+    var o1 = this.carservice.create({
+      'make': this.addForm.value.make,
+      'registration': this.addForm.value.registration,
+      'category': this.addForm.value.category,
+      'seats': this.addForm.value.seats,
+      'rentalServiceId': this.itemService.getServiceId()
+    });
     o1.subscribe(
       (result) => {
-        var myrentalservice = result as RentalService;
-        var o2 = this.carservice.create({
-          'make': this.addForm.value.make,
-          'registration': this.addForm.value.registration,
-          'seats': this.addForm.value.seats,
-          'rentalServiceId': myrentalservice.id
-        });
-        o2.subscribe(
-          (result) => {
-            this.openSnackBar('Car added successfully', 'Dismiss');
-          },
-          (err) => {
-            this.openSnackBar('Failed to add car', 'Dismiss');
-          });
+        this.openSnackBar('Car added successfully', 'Dismiss');
       },
       (err) => {
-        this.openSnackBar('Rental service does not exist', 'Dismiss');
-      }
-    );
+        console.log(err);
+        this.openSnackBar('Failed to add car', 'Dismiss');
+      });
+      
   }
 
   removeFormErrors = {
@@ -453,19 +461,15 @@ export class CarsComponent implements OnInit {
   }
 
   inspect(clicked_card: any) {
-    var to_parse = clicked_card.target.innerText;
-    var parts = to_parse.split('|');
-    var car = {
-      'make': parts[1].split(':')[1],
-      'registration': parts[0].split(':')[1],
-      'seats': parts[2].split(':')[1],
-      'price': parts[3].split(':')[1],
-      'category': parts[4].split(':')[1],
-      'start': this.searchForm.value.startDate,
-      'end': this.searchForm.value.endDate
-    };
-    this.itemService.setReservableCar(car);
-    this._router.navigate(['/carreservation']);
+    var car_id = clicked_card.path[0].id;
+    for (let car of this.foundCars) {
+      if (car.id == car_id) {
+        (car as any).start = this.searchForm.value.startDate;
+        (car as any).end = this.searchForm.value.endDate;
+        this.itemService.setReservableCar(car);
+        this._router.navigate(['/carreservation'])
+      }
+    }
   }
 
 }

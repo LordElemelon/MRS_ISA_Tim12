@@ -1,13 +1,14 @@
 <div fxFlex>
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let discount of foundDiscounts">
-        <mat-card (click)="inspect($event)" class="pointer">
-          Number: {{discount.nmbr}} <br>
+        <mat-card id={{discount.nmbr}} (click)="inspect($event)" class="pointer">
           Registration: {{discount.registration}} <br>
           Start date: {{discount.startDate}} <br>
           End date: {{discount.endDate}} <br>
-          Base Price: {{discount.basePrice}} <br>
-          Discount: {{discount.discount}}
+          Total days: {{discount.days}} <br>
+          Total price without discount: {{discount.total}} <br>
+          Discount: {{discount.discount}} <br>
+          Total price with discount: {{discount.totalDiscounted}} <br>
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>

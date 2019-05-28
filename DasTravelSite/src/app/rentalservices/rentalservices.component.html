@@ -62,38 +62,7 @@
 </div>
 
 <div *ngIf="isChange&&userType==='rentalServiceAdmin'">
-  <div fxFlex fxFlexOffset="20px" class="form-size">
-      <form novalidate [formGroup]="changeForm" #changeform="ngForm" (ngSubmit)="onChangeSubmit()">
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="name" placeholder="Name" type="text">
-            <mat-error *ngIf="changeFormErrors.name">
-              {{ changeFormErrors.name }}
-            </mat-error>
-          </mat-form-field>
-        </p>
-        <button type="button" mat-button class="background-primary text-floral-white" (click)="changeGrabRental()">Get</button>
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="address" placeholder="Address" type="text">
-            <mat-error *ngIf="changeFormErrors.address">
-              {{ changeFormErrors.address }}
-            </mat-error>
-          </mat-form-field>
-        </p>
-        <p>
-          <mat-form-field class="form-size">
-            <input matInput formControlName="description" placeholder="Description" type="text">
-            <mat-error *ngIf="changeFormErrors.description">
-              {{ changeFormErrors.description }}
-            </mat-error>
-          </mat-form-field>
-        </p>
-        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changeForm.invalid" (ngSubmit)="onChangeSubmit()">
-            Submit
-        </button>
-      </form>
-    </div>
+  <app-change-rental-service></app-change-rental-service>
 </div>
 
 <div *ngIf="isSearch">

@@ -39,12 +39,16 @@ module.exports = function(Carspecialoffer) {
                     if (result.length > 0) {
                         throw new Error('Can not make a special offer on this date, conflicting special offer');
                     }
+                    var oneDay = 24*60*60*1000;
+                    var days = Math.round(Math.abs(startDate.getTime() - endDate.getTime()) / oneDay) + 1;
+                    var total_price = Math.round(days * price * (100 - discount) / 100);
                     return Carspecialoffer.app.models.carReservation.create({
                         startDate: startDate, endDate: endDate, isSpecialOffer: true,
-                        price: price * (100 - discount / 100), myuserId: null, carsId: carId, rentalServiceId: rentalid
+                        price: total_price, myuserId: null, carsId: carId, rentalServiceId: rentalid
                     }, {transaction: tx});
                 })
                 .then((result) => {
+                    
                     return Carspecialoffer.create({startDate: startDate, endDate: endDate, carsId: carId, basePrice: price,
                          rentalServiceId: rentalid, carReservationsId: result.id,discount: discount, myuserId: null,
                          registration: registration}, {transaction: tx});

@@ -3,6 +3,7 @@ import { LoginServiceService } from '../login-service.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 import { RentalServiceApi, CarReservationApi, RentalService } from '../shared/sdk';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-car-business-reports',
@@ -61,7 +62,8 @@ export class CarBusinessReportsComponent implements OnInit {
     private fb: FormBuilder,
     public snackBar: MatSnackBar,
     private rentalServiceService: RentalServiceApi,
-    private reservationService: CarReservationApi) { 
+    private reservationService: CarReservationApi,
+    private itemService: ItemService) { 
     this.loginService.user.subscribe(data => {
       if (data) {
         this.userType = data.user.type;
@@ -85,8 +87,7 @@ export class CarBusinessReportsComponent implements OnInit {
     this.incomeForm = this.fb.group({
       type: ['', Validators.required],
       start: ['', Validators.required],
-      end: ['', Validators.required],
-      rentalService: ['', Validators.required]
+      end: ['', Validators.required]
     });
     this.incomeForm.valueChanges.subscribe(data => this.onIncomeValueChanged(data));
     this.onIncomeValueChanged();
@@ -95,8 +96,7 @@ export class CarBusinessReportsComponent implements OnInit {
   createOccupancyForm() {
     this.occupancyForm = this.fb.group({
       start: ['', Validators.required],
-      end: ['', Validators.required],
-      rentalService: ['', Validators.required]
+      end: ['', Validators.required]
     });
     this.occupancyForm.valueChanges.subscribe(data => this.onOccupancyValueChanged(data));
     this.onOccupancyValueChanged();
@@ -149,8 +149,7 @@ export class CarBusinessReportsComponent implements OnInit {
   incomeFormErrors = {
     'type': '',
     'start': '',
-    'end': '',
-    'rentalService': ''
+    'end': ''
   };
 
   incomeFormValidationMessages = {
@@ -162,16 +161,12 @@ export class CarBusinessReportsComponent implements OnInit {
     },
     'end': {
       'required': 'End date is required'
-    },
-    'rentalService': {
-      'required': "Rental service is required"
     }
   };
 
   occupancyFormErrors = {
     'start': '',
-    'end': '',
-    'rentalService': ''
+    'end': ''
   };
 
   occupancyFormValidationMessages = {
@@ -180,73 +175,57 @@ export class CarBusinessReportsComponent implements OnInit {
     },
     'end': {
       'required': 'End date is required'
-    },
-    'rentalService': {
-      'required': "Rental service is required"
     }
   };
 
   onIncomeSubmit() {
-    this.rentalServiceService.findOne({where: {name: this.incomeForm.value.rentalService}})
-    .subscribe(
+
+
+    var observable;
+    if (this.incomeForm.value.type === 'yearly') {
+      observable = this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(),
+        new Date(this.incomeForm.value.end).toJSON(), this.itemService.getServiceId())
+    } else if (this.incomeForm.value.type == 'monthly') {
+      observable = this.reservationService.getMonthlyReport(new Date(this.incomeForm.value.start).toJSON(),
+      new Date(this.incomeForm.value.end).toJSON(), this.itemService.getServiceId());
+    } else {
+      observable = this.reservationService.getWeeklyReport(new Date(this.incomeForm.value.start).toJSON(),
+      new Date(this.incomeForm.value.end).toJSON(), this.itemService.getServiceId())
+    }
+    observable.subscribe(
       (result) => {
-        var my_result = result as RentalService;
-        var observable;
-        if (this.incomeForm.value.type === 'yearly') {
-          observable = this.reservationService.getYearlyReport(new Date(this.incomeForm.value.start).toJSON(),
-           new Date(this.incomeForm.value.end).toJSON(), my_result.id)
-        } else if (this.incomeForm.value.type == 'monthly') {
-          observable = this.reservationService.getMonthlyReport(new Date(this.incomeForm.value.start).toJSON(),
-          new Date(this.incomeForm.value.end).toJSON(), my_result.id);
-        } else {
-          observable = this.reservationService.getWeeklyReport(new Date(this.incomeForm.value.start).toJSON(),
-          new Date(this.incomeForm.value.end).toJSON(), my_result.id)
-        }
-        observable.subscribe(
-          (result) => {
-            this.barChartLabels = result.retval.labels;
-            this.barChartData = [{data: [], label: "Income"}];
-            this.barChartData[0].data = result.retval.sums;
-            this.setToIncomeChart();
-          },
-          (err) => {
-            this.openSnackBar("Failed to retrieve business report", "Dismiss");
-          }
-        )
+        this.barChartLabels = result.retval.labels;
+        this.barChartData = [{data: [], label: "Income"}];
+        this.barChartData[0].data = result.retval.sums;
+        this.setToIncomeChart();
       },
       (err) => {
-        this.openSnackBar("Failed to find this rental service", "Dismiss");
+        this.openSnackBar("Failed to retrieve business report", "Dismiss");
       }
     )
+
   }
 
   onOccupancySubmit() {
-    this.rentalServiceService.findOne({where: {name: this.occupancyForm.value.rentalService}})
+
+    this.reservationService.getOccupancyReport(new Date(this.occupancyForm.value.start).toJSON(),
+      new Date(this.occupancyForm.value.end).toJSON(), this.itemService.getServiceId())
     .subscribe(
       (result) => {
-        var my_result = result as RentalService;
-        this.reservationService.getOccupancyReport(new Date(this.occupancyForm.value.start).toJSON(),
-          new Date(this.occupancyForm.value.end).toJSON(), my_result.id)
-        .subscribe(
-          (result) => {
-            this.barChartLabels = result.retval.labels;
-            this.barChartData = [{data: [], label: "Reserved vehicles"}, {data: [], label: "Free vehicles"}];
-            this.barChartData[0].data = result.retval.sums;
-            console.log(result);
-            for (let count of this.barChartData[0].data) {
-              this.barChartData[1].data.push(result.retval.totalVehicles - count);
-            }
-            this.setToIncomeChart();
-          },
-          (err) => {
-            this.openSnackBar("Failed to retrieve business report", "Dismiss");
-          }
-        )
+        this.barChartLabels = result.retval.labels;
+        this.barChartData = [{data: [], label: "Reserved vehicles"}, {data: [], label: "Free vehicles"}];
+        this.barChartData[0].data = result.retval.sums;
+        console.log(result);
+        for (let count of this.barChartData[0].data) {
+          this.barChartData[1].data.push(result.retval.totalVehicles - count);
+        }
+        this.setToIncomeChart();
       },
       (err) => {
-        this.openSnackBar("Failed to find this rental service", "Dismiss");
+        this.openSnackBar("Failed to retrieve business report", "Dismiss");
       }
-    );
+    )
+
   }
 
 }

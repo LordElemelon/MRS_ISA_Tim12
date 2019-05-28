@@ -64,6 +64,9 @@ import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-sp
 import { FriendsComponent } from './friends/friends.component';
 import { RateCarAndServiceComponent } from './rate-car-and-service/rate-car-and-service.component';
 import { RateRoomAndHotelComponent } from './rate-room-and-hotel/rate-room-and-hotel.component';
+import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
+import { ListBranchesComponent } from './list-branches/list-branches.component';
+import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
 
 
 @NgModule({
@@ -95,6 +98,10 @@ import { RateRoomAndHotelComponent } from './rate-room-and-hotel/rate-room-and-h
     AirlinesComponent,
     CarBusinessReportsComponent,
     ReserveSeatComponent,
+    FriendsComponent,
+    ChangeRentalServiceComponent,
+    ListBranchesComponent,
+    ListCarsAdminComponent,
     ReserveCarSpecialComponent,
     FriendsComponent,
     RateCarAndServiceComponent,

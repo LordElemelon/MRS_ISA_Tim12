@@ -218,14 +218,17 @@ module.exports = function(Carreservation) {
 			}
 		})
 		.then((result) => {
+			console.log(result);
 			retval.labels = years;
 			retval.sums = []
 			for (let year of retval.labels) {
 				retval.sums.push(0);
 			}
 			for (let reservation of result) {
-				var tempyear = reservation.startDate.getYear();
-				retval.sums[tempyear - baseNum] += reservation.price;
+				if (reservation.myuserId != null) {
+					var tempyear = reservation.startDate.getYear();
+					retval.sums[tempyear - baseNum] += reservation.price;
+				}
 			}
 			cb(null, retval);
 		})
@@ -272,8 +275,10 @@ module.exports = function(Carreservation) {
 				retval.sums.push(0);
 			}
 			for (let reservation of result) {
-				var tempNum = reservation.startDate.getYear() * 12 + reservation.startDate.getMonth();
-				retval.sums[tempNum - baseNum] += reservation.price;
+				if (reservation.myuserId != null) {
+					var tempNum = reservation.startDate.getYear() * 12 + reservation.startDate.getMonth();
+					retval.sums[tempNum - baseNum] += reservation.price;
+				}
 			}
 			cb(null, retval);
 		})
@@ -327,9 +332,10 @@ module.exports = function(Carreservation) {
 				retval.sums.push(0);
 			}
 			for (let reservation of result) {
-				
-				var tempNum = Math.floor((reservation.startDate - startDate)/(1000 * 60 * 60 * 24 * 7));
-				retval.sums[tempNum] += reservation.price;
+				if (reservation.myuserId != null) {
+					var tempNum = Math.floor((reservation.startDate - startDate)/(1000 * 60 * 60 * 24 * 7));
+					retval.sums[tempNum] += reservation.price;
+				}
 			}
 			cb(null, retval);
 		})
