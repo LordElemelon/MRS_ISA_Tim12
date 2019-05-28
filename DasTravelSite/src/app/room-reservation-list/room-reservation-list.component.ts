@@ -89,7 +89,7 @@ export class RoomReservationListComponent implements OnInit {
         (result) => {
           for (const resInfo of this.reservationsInfo) {
             if (resInfo.reservation.id === id) {
-              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo));
+              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo), 1);
               break;
             }
           }

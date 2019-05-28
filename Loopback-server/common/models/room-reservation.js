@@ -69,6 +69,37 @@ module.exports = function(Roomreservation) {
         returns: {type: 'object', arg: 'retval'},
     });
 
+	Roomreservation.quickReservation = function(reservationId, myuserId, roomId, cb) {
+	  Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx){
+      const postgres = Roomreservation.app.dataSources.postgres;
+      postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '\"" + roomId + "\"' FOR UPDATE;", null, (err, result) => {
+        if (err) {
+          tx.rollback();
+          cb(err, null);
+        } else {
+          Roomreservation.findOne({where: {id: reservationId}}, {transaction: tx}, (err, reservation) => {
+            if (err) {
+              tx.rollback();
+              cb(err, null);
+            } else {
+              reservation.updateAttribute('myuserId', myuserId);
+              tx.commit();
+              cb(null, reservation);
+            }
+          });
+        }
+      });
+    });
+  };
+
+	Roomreservation.remoteMethod('quickReservation', {
+	  accepts: [{arg: 'reservationId', type: 'number', required: true},
+      {arg: 'myuserId', type: 'string', required: true},
+      {arg: 'roomId', type: 'string', required: true}],
+    http: {path: '/quickReservation', verb: 'post'},
+    returns: {type: 'object', arg: 'retval'},
+  });
+
   Roomreservation.cancel = function(id, options, cb) {
     if (options.accessToken == null) {
       cb(new Error('No user logged in'), null);
@@ -87,12 +118,9 @@ module.exports = function(Roomreservation) {
         if (hours < 72) {
           throw new Error('Too late to cancel reservation');
         }
-        console.log(reservation.hotelDiscountId);
         if (reservation.hotelDiscountId) {
-          console.log('1');
-          return reservation.updateAttribute('myuserId', '', null);
+          return reservation.updateAttribute('myuserId', null, null);
         } else {
-          console.log('2');
           return Roomreservation.destroyById(id);
         }
       })

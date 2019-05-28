@@ -39,7 +39,6 @@ export class ListCarDiscountsComponent implements OnInit {
           temp.endDate = temp.endDate.toLocaleDateString("en-US");
           temp.total = temp.basePrice * temp.days;
           temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
-          console.log(temp);
         }
         this.foundDiscounts = result;
       },
