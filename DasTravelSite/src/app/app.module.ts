@@ -63,6 +63,7 @@ import { AirlinesComponent } from './airlines/airlines.component';
 import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
 import { RateCarAndServiceComponent } from './rate-car-and-service/rate-car-and-service.component';
+import { RateRoomAndHotelComponent } from './rate-room-and-hotel/rate-room-and-hotel.component';
 
 
 @NgModule({
@@ -96,7 +97,8 @@ import { RateCarAndServiceComponent } from './rate-car-and-service/rate-car-and-
     ReserveSeatComponent,
     ReserveCarSpecialComponent,
     FriendsComponent,
-    RateCarAndServiceComponent
+    RateCarAndServiceComponent,
+    RateRoomAndHotelComponent
   ],
   imports: [
     BrowserModule,
@@ -130,7 +132,7 @@ import { RateCarAndServiceComponent } from './rate-car-and-service/rate-car-and-
     LoginServiceService
   ],
   entryComponents: [
-    RegisterComponent, LoginComponent, RateCarAndServiceComponent
+    RegisterComponent, LoginComponent, RateCarAndServiceComponent, RateRoomAndHotelComponent
   ],
   bootstrap: [AppComponent]
 })

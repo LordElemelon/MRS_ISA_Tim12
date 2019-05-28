@@ -31,7 +31,7 @@
   <ng-container matColumnDef="rate">
       <th mat-header-cell *matHeaderCellDef>Rate</th>
       <td mat-cell *matCellDef="let reservationInfo"> <button *ngIf=!reservationInfo.reservation.rated id={{reservationInfo.reservation.id}} mat-button (click)='rateDialog($event)'> Rate </button> 
-        <div *ngIf=reservationInfo.reservation.rated> Rated </div> </td>
+        <div *ngIf=reservationInfo.reservation.rated style="color:green"> Rated </div> </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>

@@ -16,6 +16,7 @@ export class ItemService {
   carSpecialOffer;
 
   carReservationIdForRate;
+  roomReservationIdForRate;
 
   setCarReservationIdForRate(value) {
     this.carReservationIdForRate = value;
@@ -23,6 +24,14 @@ export class ItemService {
 
   getCarReservationIdForRate() {
     return this.carReservationIdForRate;
+  }
+  
+  setRoomReservationIdForRate(value) {
+    this.roomReservationIdForRate = value;
+  }
+
+  getRoomReservationIdForRate() {
+    return this.roomReservationIdForRate;
   }
 
   setReservableCar(car) {

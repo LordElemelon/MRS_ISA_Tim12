@@ -39,7 +39,7 @@ module.exports = function(Carreservation) {
 										}else{
 											//console.log(rentalid);
 											Carreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid, rated: false}, {transaction: tx},
+												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid, rated: false, isSpecialOffer: false}, {transaction: tx},
 											(err, res) => {
 												if (err) {
 													tx.rollback();

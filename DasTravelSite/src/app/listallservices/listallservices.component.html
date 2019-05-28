@@ -3,7 +3,10 @@
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let service of foundServices">
         <mat-card routerLink="" class="pointer">
-          {{service.name}} | {{service.address}} | {{service.description}}
+          {{service.name}} <br>
+          {{service.address}} <br>
+          {{service.description}} <br>
+          {{service.rating}}
         </mat-card>
       </mat-grid-tile>
     </mat-grid-list>
