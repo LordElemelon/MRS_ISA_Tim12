@@ -60,6 +60,7 @@ import { CarReservationListComponent } from './car-reservation-list/car-reservat
 import { CarBusinessReportsComponent } from './car-business-reports/car-business-reports.component';
 import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
+import { RoomQuickReservationComponent } from './room-quick-reservation/room-quick-reservation.component';
 import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
 import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
@@ -96,12 +97,12 @@ import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.compon
     AirlinesComponent,
     CarBusinessReportsComponent,
     ReserveSeatComponent,
+    RoomQuickReservationComponent,
     FriendsComponent,
     ChangeRentalServiceComponent,
     ListBranchesComponent,
     ListCarsAdminComponent,
-    ReserveCarSpecialComponent,
-    FriendsComponent
+    ReserveCarSpecialComponent
   ],
   imports: [
     BrowserModule,

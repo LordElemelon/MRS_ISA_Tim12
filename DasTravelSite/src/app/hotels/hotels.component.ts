@@ -22,6 +22,7 @@ export class HotelsComponent implements OnInit {
   removeActive = false;
   searchActive = false;
   searchRoomsActive = false;
+  quickReservationActive = false;
   added = false;
   searchDone = false;
   userType: string;
@@ -296,6 +297,7 @@ export class HotelsComponent implements OnInit {
     this.searchActive = false;
     this.searchRoomsActive = false;
     this.searchDone = false;
+    this.quickReservationActive = false;
   }
 
   removeButton()  {
@@ -304,6 +306,7 @@ export class HotelsComponent implements OnInit {
     this.searchActive = false;
     this.searchRoomsActive = false;
     this.searchDone = false;
+    this.quickReservationActive = false;
   }
 
   searchButton()  {
@@ -312,6 +315,7 @@ export class HotelsComponent implements OnInit {
     this.searchActive = true;
     this.searchRoomsActive = false;
     this.searchDone = false;
+    this.quickReservationActive = false;
   }
 
   searchRoomsButton()  {
@@ -320,6 +324,16 @@ export class HotelsComponent implements OnInit {
     this.searchActive = false;
     this.searchRoomsActive = true;
     this.searchDone = false;
+    this.quickReservationActive = false;
+  }
+
+  quickReservationButton() {
+    this.addActive = false;
+    this.removeActive = false;
+    this.searchActive = false;
+    this.searchRoomsActive = false;
+    this.searchDone = false;
+    this.quickReservationActive = true;
   }
 
 }

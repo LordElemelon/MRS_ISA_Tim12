@@ -304,13 +304,13 @@ export class HotelComponent implements OnInit {
           .subscribe(result1 => {
             this.openSnackBar('Removed succesfully', 'Dismiss');
           }, err => {
-            this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
+            this.openSnackBar('Can not remove the room. It either does not exist or has a reservation in the future', 'Dismiss');
           });
       } else  {
-        this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
+        this.openSnackBar('Can not remove the room. It either does not exist or has a reservation in the future', 'Dismiss');
       }
     }, err => {
-      this.openSnackBar('Can not remove the room. Does it surely exist?', 'Dismiss');
+      this.openSnackBar('Can not remove the room. It either does not exist or has a reservation in the future', 'Dismiss');
     });
   }
 

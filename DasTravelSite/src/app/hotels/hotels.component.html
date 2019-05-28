@@ -3,6 +3,7 @@
   <a mat-button (click) = "removeButton()" *ngIf="userType==='admin'"> Remove a hotel </a>
   <a mat-button (click) = "searchButton()"> Search </a>
   <a mat-button (click) = "searchRoomsButton()"> Rooms </a>
+  <a mat-button (click) = "quickReservationButton()"> Quick reservation </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 
@@ -160,4 +161,8 @@
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
+</div>
+
+<div *ngIf="quickReservationActive">
+  <app-room-quick-reservation></app-room-quick-reservation>
 </div>
