@@ -1,0 +1,58 @@
+<mat-toolbar color="primary">
+    Rate
+    <span class="flex-spacer"></span>
+    <button mat-button mat-dialog-close>&times;</button>
+</mat-toolbar>
+<form novalidate [formGroup]="rateForm" #registerform="ngForm" (ngSubmit)="onRateSubmit()">
+    <p>
+    <mat-form-field class="form-size">
+      <mat-select formControlName="carRate" placeholder="Car rating">
+        <mat-option value="1">
+          1
+        </mat-option>
+        <mat-option value="2">
+          2
+        </mat-option>
+        <mat-option value="3">
+          3
+        </mat-option>
+        <mat-option value="4">
+          4
+        </mat-option>
+        <mat-option value="5">
+          5
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="rateFormErrors.carRate">
+        {{ rateFormErrors.carRate }}
+      </mat-error>
+    </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field class="form-size">
+        <mat-select formControlName="rentalRate" placeholder="Rental service rating">
+          <mat-option value="1">
+            1
+          </mat-option>
+          <mat-option value="2">
+            2
+          </mat-option>
+          <mat-option value="3">
+            3
+          </mat-option>
+          <mat-option value="4">
+            4
+          </mat-option>
+          <mat-option value="5">
+            5
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="rateFormErrors.rentalRate">
+          {{ rateFormErrors.rentalRate }}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="rateForm.invalid">
+      Submit
+    </button>
+  </form>

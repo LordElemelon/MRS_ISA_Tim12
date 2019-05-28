@@ -2,8 +2,9 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {ItemService} from '../services/item.service';
 import {LoginServiceService} from '../login-service.service';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {MyuserApi, RoomReservationApi} from '../shared/sdk/services/custom';
+import {HotelSpecialOfferApi, MyuserApi, ReservationOfferApi, RoomReservationApi} from '../shared/sdk/services/custom';
 import {MatSnackBar} from '@angular/material';
+import {HotelSpecialOffer} from '../shared/sdk/models';
 
 @Component({
   selector: 'app-reserve-room',
@@ -15,12 +16,17 @@ export class ReserveRoomComponent implements OnInit {
   room: any;
   userType;
   reserveForm: FormGroup;
+  availableOffers: HotelSpecialOffer[];
+  selectedOffers = [];
+  columnsToDisplaySpecialOffer = ['name', 'price'];
 
   constructor(@Inject('baseURL') private baseURL,
               private itemservice: ItemService,
               private loginService: LoginServiceService,
               private roomreservationservice: RoomReservationApi,
               private myuserservice: MyuserApi,
+              private hotelspecialofferservice: HotelSpecialOfferApi,
+              private reservationofferservice: ReservationOfferApi,
               private fb: FormBuilder,
               private snackBar: MatSnackBar) {
     loginService.user.subscribe(data => {
@@ -34,6 +40,10 @@ export class ReserveRoomComponent implements OnInit {
   ngOnInit() {
     this.room = this.itemservice.getReservableRoom();
     this.updateReserveForm();
+    this.hotelspecialofferservice.find({where: {hotelId: this.room.room.hotelId}})
+      .subscribe((specialOffers: HotelSpecialOffer[]) => {
+        this.availableOffers = specialOffers;
+      }, err => this.openSnackBar('Can not find special offers for this hotel', 'Dismiss'));
   }
 
   openSnackBar(message: string, action: string) {
@@ -67,15 +77,27 @@ export class ReserveRoomComponent implements OnInit {
   }
 
   onReserveRoomSubmit() {
-    console.log(this.room.room.hotelId);
     this.roomreservationservice.makeReservation(this.room.startDate.toISOString(),
       this.room.endDate.toISOString(), this.room.room.room.id,
       this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId)
       .subscribe(result => {
         this.openSnackBar('Reserved succesfully', 'Dismiss');
+        for (const offerId of this.selectedOffers) {
+          this.reservationofferservice.create({'specialOfferId': offerId, 'roomReservationId': result.retval.id})
+            .subscribe(() => console.log());
+        }
       }, err => {
         this.openSnackBar('Can not reserve on this date. Please search and try again.', 'Dismiss');
       });
+  }
+
+  toggleRow(id: number) {
+    const index = this.selectedOffers.indexOf(id);
+    if (index >= 0)  {
+      this.selectedOffers.splice(index, 1);
+    } else  {
+      this.selectedOffers.push(id);
+    }
   }
 
 }

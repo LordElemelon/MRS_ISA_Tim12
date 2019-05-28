@@ -22,10 +22,32 @@
       <mat-form-field class="half-width">
         <input matInput formControlName="price" readonly placeholder="Price" type="number">
       </mat-form-field>
-    <p>
-      <button type="submit" mat-button class="background-primary text-floral-white"
-              [disabled]="userType!=='registeredUser'">Submit</button>
     </p>
+    <div fxLayout="row">
+      <div fxFlex>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+                [disabled]="userType!=='registeredUser'">Submit</button>
+      </div>
+      <div fxFlex>
+        <h3>
+          Select special offers
+        </h3>
+        <table mat-table [dataSource]="availableOffers">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.price}}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffer"></tr>
+          <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffer"
+              (click)="toggleRow(specialOffer.id)" class="pointer"
+              [ngClass]="{selectedRow: selectedOffers.indexOf(specialOffer.id)>=0}"></tr>
+        </table>
+      </div>
+    </div>
     <hr>
   </form>
 </div>

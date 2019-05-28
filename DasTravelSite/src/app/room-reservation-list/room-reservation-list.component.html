@@ -33,6 +33,14 @@
                                                              (click)="deleteReservation(reservationInfo.reservation.id)">
                                                               Delete</span></td>
       </ng-container>
+      <ng-container matColumnDef="rate">
+        <th mat-header-cell *matHeaderCellDef>Rate</th>
+        <td mat-cell *matCellDef="let reservationInfo"><span *ngIf=!reservationInfo.reservation.rated style="color:blue" class="pointer"
+                                                             (click)="rateReservation(reservationInfo.reservation.id)">
+                                                              Rate</span>
+                                                        <span *ngIf=reservationInfo.reservation.rated style="color:green" class="pointer">
+                                                              Rated </span></td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
       <tr mat-row *matRowDef="let reservationInfo; columns: columnsToDisplayReservations"
           (click)="selectReservation(reservationInfo.reservation.id)" class="pointer"
@@ -46,11 +54,10 @@
   <div fxFlex>
     <table #tablespecialoffers mat-table [dataSource]="specialOffers">
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Special offer</th>
+        <th mat-header-cell *matHeaderCellDef>Special offers</th>
         <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}} </td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers"></tr>
       <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffers"></tr>
     </table>
   </div>
-</div>

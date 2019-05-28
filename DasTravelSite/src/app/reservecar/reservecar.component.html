@@ -41,6 +41,18 @@
             <input matInput placeholder={{car.days}} type="text" [readonly]="true">
         </mat-form-field>
     </p>
+    <p>
+        Total price:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.price}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Total price:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{car.totalPrice}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
     <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
         Submit
     </button>

@@ -32,6 +32,10 @@
     "rentalServiceId": {
       "type": "string",
       "required": true
+    },
+    "rated": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

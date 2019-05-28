@@ -18,9 +18,15 @@
         </mat-form-field>
     </p>
     <p>
-      Base price:
+        Total days:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{specialOffer.days}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+      Total price without discount:
       <mat-form-field class="form-size">
-          <input matInput placeholder={{specialOffer.basePrice}} type="text" [readonly]="true">
+          <input matInput placeholder={{specialOffer.total}} type="text" [readonly]="true">
       </mat-form-field>
     </p>
     <p>
@@ -28,6 +34,12 @@
       <mat-form-field class="form-size">
           <input matInput placeholder={{specialOffer.discount}} type="text" [readonly]="true">
       </mat-form-field>
+    </p>
+    <p>
+        Total price with discount
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{specialOffer.totalDiscounted}} type="text" [readonly]="true">
+        </mat-form-field>
     </p>
     <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
         Submit

@@ -9,6 +9,7 @@ export interface CarReservationInterface {
   "myuserId"?: string;
   "isSpecialOffer": boolean;
   "rentalServiceId": string;
+  "rated"?: boolean;
   "id"?: number;
 }
 
@@ -20,6 +21,7 @@ export class CarReservation implements CarReservationInterface {
   "myuserId": string;
   "isSpecialOffer": boolean;
   "rentalServiceId": string;
+  "rated": boolean;
   "id": number;
   constructor(data?: CarReservationInterface) {
     Object.assign(this, data);
@@ -81,6 +83,11 @@ export class CarReservation implements CarReservationInterface {
         "rentalServiceId": {
           name: 'rentalServiceId',
           type: 'string'
+        },
+        "rated": {
+          name: 'rated',
+          type: 'boolean',
+          default: false
         },
         "id": {
           name: 'id',

@@ -9,6 +9,7 @@ export interface RoomReservationInterface {
   "hotelId": string;
   "myuserId"?: string;
   "hotelDiscountId"?: string;
+  "rated"?: boolean;
   "id"?: number;
 }
 
@@ -20,6 +21,7 @@ export class RoomReservation implements RoomReservationInterface {
   "hotelId": string;
   "myuserId": string;
   "hotelDiscountId": string;
+  "rated": boolean;
   "id": number;
   constructor(data?: RoomReservationInterface) {
     Object.assign(this, data);
@@ -81,6 +83,11 @@ export class RoomReservation implements RoomReservationInterface {
         "hotelDiscountId": {
           name: 'hotelDiscountId',
           type: 'string'
+        },
+        "rated": {
+          name: 'rated',
+          type: 'boolean',
+          default: false
         },
         "id": {
           name: 'id',

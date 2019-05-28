@@ -24,6 +24,14 @@
     "category": {
       "type": "string",
       "required": true
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
+    },
+    "ratingCount": {
+      "type": "number",
+      "default": 0
     }
   },
   "validations": [],

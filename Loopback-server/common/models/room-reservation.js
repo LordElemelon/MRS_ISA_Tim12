@@ -72,6 +72,37 @@ module.exports = function(Roomreservation) {
         returns: {type: 'object', arg: 'retval'},
     });
 
+	Roomreservation.quickReservation = function(reservationId, myuserId, roomId, cb) {
+	  Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx){
+      const postgres = Roomreservation.app.dataSources.postgres;
+      postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '\"" + roomId + "\"' FOR UPDATE;", null, (err, result) => {
+        if (err) {
+          tx.rollback();
+          cb(err, null);
+        } else {
+          Roomreservation.findOne({where: {id: reservationId}}, {transaction: tx}, (err, reservation) => {
+            if (err) {
+              tx.rollback();
+              cb(err, null);
+            } else {
+              reservation.updateAttribute('myuserId', myuserId);
+              tx.commit();
+              cb(null, reservation);
+            }
+          });
+        }
+      });
+    });
+  };
+
+	Roomreservation.remoteMethod('quickReservation', {
+	  accepts: [{arg: 'reservationId', type: 'number', required: true},
+      {arg: 'myuserId', type: 'string', required: true},
+      {arg: 'roomId', type: 'string', required: true}],
+    http: {path: '/quickReservation', verb: 'post'},
+    returns: {type: 'object', arg: 'retval'},
+  });
+
   Roomreservation.cancel = function(id, options, cb) {
     if (options.accessToken == null) {
       cb(new Error('No user logged in'), null);
@@ -90,12 +121,9 @@ module.exports = function(Roomreservation) {
         if (hours < 72) {
           throw new Error('Too late to cancel reservation');
         }
-        console.log(reservation.hotelDiscountId);
         if (reservation.hotelDiscountId) {
-          console.log('1');
-          return reservation.updateAttribute('myuserId', '', null);
+          return reservation.updateAttribute('myuserId', null, null);
         } else {
-          console.log('2');
           return Roomreservation.destroyById(id);
         }
       })
@@ -114,5 +142,79 @@ module.exports = function(Roomreservation) {
     ],
     http: {path: '/cancel', verb: 'post' },
     returns: {type: 'object', arg: 'retval'}
-  })
+	})
+	
+	Roomreservation.rateHotelAndRoom = function(id, roomRate, hotelRate, options, cb) {
+		if (options.accessToken == null) {
+			cb(new Error("No user logged in"),null);
+			return;
+		}
+		var requestid = options.accessToken.userId;
+		var myReservation;
+		Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED})
+		.then((tx) => {
+			Roomreservation.findById(id)
+			.then((result) => {
+				if (result == null) {
+					throw new Error("Reservation with this id does not exist");
+				}
+				if (result.rated) {
+					throw new Error("User already rated this reservation");
+				}
+				if (requestid != result.myuserId) {
+					throw new Error("User is not owner of the reservation");
+				}
+				var hours = (result.endDate - new Date()) / 36e5;
+				if (result.endDate > new Date()) {
+					throw new Error("Cannot rate before reservation finishes");
+				}
+				myReservation = result;
+				return Roomreservation.app.models.room.findById(myReservation.roomId);
+			})
+			.then((result) => {
+				var newCount = result.ratingCount + 1;
+				var newRating = (result.rating * result.ratingCount + roomRate) / newCount;
+				result.ratingCount = newCount;
+				result.rating = newRating;
+				return Roomreservation.app.models.room.replaceById(result.id, result, {transaction: tx});
+			})
+			.then((result) => {
+				return Roomreservation.app.models.hotel.findById(result.hotelId);
+			})
+			.then((result) => {
+				var newCount = result.ratingCount + 1;
+				var newRating = (result.rating * result.ratingCount + hotelRate) / newCount;
+				result.ratingCount = newCount;
+				result.rating = newRating;
+				return Roomreservation.app.models.hotel.replaceById(result.id, result, {transaction: tx});
+			})
+			.then((result) => {
+				myReservation.rated = true;
+				return Roomreservation.replaceById(myReservation.id, myReservation, {transaction: tx});
+			})
+			.then((result) => {
+				tx.commit();
+				cb(null, result);
+			})
+			.catch((err) => {
+				tx.rollback();
+				cb(err, null);
+			})
+		})
+		.catch((err) => {
+			cb(err, null);
+		});
+
+	}
+
+	Roomreservation.remoteMethod('rateHotelAndRoom', {
+		accepts: [
+			{arg: 'id', type: 'number', required: true},
+			{arg: 'roomRate', type: 'number', required: true},
+			{arg: 'hotelRate', type: 'number', required: true},
+			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+		],
+		http: {path: '/rateHotelAndRoom', verb: 'post' },
+        returns: {type: 'object', arg: 'retval'}
+	})
 };

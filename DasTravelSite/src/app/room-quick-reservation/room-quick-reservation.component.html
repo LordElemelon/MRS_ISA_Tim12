@@ -1,0 +1,76 @@
+<div *ngIf="searchActive">
+  <form novalidate [formGroup]="searchQRoomsForm" #fformSearchQRooms="ngForm" (ngSubmit)="onSearchQRoomsSubmit()">
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="startDate" [matDatepicker]="myDatepicker1" readonly placeholder="Start date">
+        <mat-datepicker-toggle [for]="myDatepicker1"></mat-datepicker-toggle>
+        <mat-datepicker #myDatepicker1></mat-datepicker>
+        <mat-error *ngIf="searchQRoomsFormErrors.startDate">
+          {{ searchQRoomsFormErrors.startDate}}
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" readonly placeholder="End date">
+        <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+        <mat-datepicker #myDatepicker2></mat-datepicker>
+        <mat-error *ngIf="searchQRoomsFormErrors.endDate">
+          {{ searchQRoomsFormErrors.endDate}}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <p>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+      [disabled]="searchQRoomsForm.invalid">Submit</button>
+    </p>
+    <hr>
+  </form>
+</div>
+<div *ngIf="searchDone">
+  <div fxLayout="flex">
+    <div fxFlex>
+      <table #tablereservations mat-table [dataSource]="reservationsInfo">
+        <ng-container matColumnDef="hotel">
+          <th mat-header-cell *matHeaderCellDef>Hotel</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.hotel.name}} </td>
+        </ng-container>
+        <ng-container matColumnDef="roomNumber">
+          <th mat-header-cell *matHeaderCellDef>Room Number</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
+        </ng-container>
+        <ng-container matColumnDef="beds">
+          <th mat-header-cell *matHeaderCellDef>Beds</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
+        </ng-container>
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef>Start Date</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.startDate | date:'dd/MM/yyyy'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef>End Date</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.endDate | date:'dd/MM/yyyy'}}</td>
+        </ng-container>
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef>Price</th>
+          <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.price}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
+        <tr mat-row *matRowDef="let reservationInfo; columns: columnsToDisplayReservations"
+        (click)="selectRow(reservationInfo.reservation.id)" class="pointer"
+        [ngClass]="{selectedRow: selectedReservationId === reservationInfo.reservation.id}"></tr>
+      </table>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+              (click)="reserve()" style="margin: 10px">Reserve</button>
+    </div>
+    <div fxFlex>
+      <table #tablespecialoffers mat-table [dataSource]="specialOffers">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Special offers</th>
+          <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers"></tr>
+        <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffers"></tr>
+      </table>
+    </div>
+  </div>
+</div>
+

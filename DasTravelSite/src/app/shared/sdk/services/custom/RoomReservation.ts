@@ -145,6 +145,41 @@ public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = 
    *
    * @param {object} data Request data.
    *
+   *  - `reservationId` – `{number}` - 
+   *
+   *  - `myuserId` – `{string}` - 
+   *
+   *  - `roomId` – `{string}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public quickReservation(reservationId: any, myuserId: any, roomId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/quickReservation";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof reservationId !== 'undefined' && reservationId !== null) _urlParams.reservationId = reservationId;
+    if (typeof myuserId !== 'undefined' && myuserId !== null) _urlParams.myuserId = myuserId;
+    if (typeof roomId !== 'undefined' && roomId !== null) _urlParams.roomId = roomId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
    *  - `id` – `{number}` - 
    *
    * @returns {object} An empty reference that will be
@@ -163,11 +198,46 @@ public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = 
 
     };
     let _postBody: any = {};
-		let _urlParams: any = { id: id};
+	let _urlParams: any = { id: id };
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
 
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{number}` - 
+   *
+   *  - `roomRate` – `{number}` - 
+   *
+   *  - `hotelRate` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public rateHotelAndRoom(id: any, roomRate: any, hotelRate: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/rateHotelAndRoom";
+    let _routeParams: any = {
+
+    };
+    let _postBody: any = {};
+	let _urlParams: any = { id: id };
+    if (typeof roomRate !== 'undefined' && roomRate !== null) _urlParams.roomRate = roomRate;
+    if (typeof hotelRate !== 'undefined' && hotelRate !== null) _urlParams.hotelRate = hotelRate;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
   /**
    * The name of the model represented by this $resource,
    * i.e. `RoomReservation`.

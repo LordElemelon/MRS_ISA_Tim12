@@ -11,6 +11,8 @@ export interface HotelInterface {
   "name": string;
   "address": string;
   "description"?: string;
+  "ratingCount"?: number;
+  "rating"?: number;
   "id"?: any;
   "myuserId"?: any;
   rooms?: Room[];
@@ -23,6 +25,8 @@ export class Hotel implements HotelInterface {
   "name": string;
   "address": string;
   "description": string;
+  "ratingCount": number;
+  "rating": number;
   "id": any;
   "myuserId": any;
   rooms: Room[];
@@ -73,6 +77,16 @@ export class Hotel implements HotelInterface {
         "description": {
           name: 'description',
           type: 'string'
+        },
+        "ratingCount": {
+          name: 'ratingCount',
+          type: 'number',
+          default: 0
+        },
+        "rating": {
+          name: 'rating',
+          type: 'number',
+          default: 0
         },
         "id": {
           name: 'id',

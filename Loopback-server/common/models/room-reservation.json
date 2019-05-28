@@ -34,6 +34,10 @@
     "hotelDiscountId": {
       "type": "string",
       "required": false
+    },
+    "rated": {
+      "type": "boolean",
+      "default": false
     }
   },
   "validations": [],

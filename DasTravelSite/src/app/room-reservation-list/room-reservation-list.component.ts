@@ -1,7 +1,9 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {HotelSpecialOffer, ReservationOffer, Room, RoomReservation} from '../shared/sdk/models';
 import {HotelApi, HotelSpecialOfferApi, MyuserApi, ReservationOfferApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
-import {MatSnackBar, MatTable} from '@angular/material';
+import {MatSnackBar, MatTable, MatDialog} from '@angular/material';
+import { ItemService } from '../services/item.service';
+import { RateRoomAndHotelComponent } from '../rate-room-and-hotel/rate-room-and-hotel.component';
 
 @Component({
   selector: 'app-room-reservation-list',
@@ -17,7 +19,7 @@ export class RoomReservationListComponent implements OnInit {
   selectedReservation = '';
   specialOffersDict = {};
 
-  columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action'];
+  columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action', 'rate'];
   columnsToDisplaySpecialOffers = ['name'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
@@ -30,7 +32,9 @@ export class RoomReservationListComponent implements OnInit {
               private roomresesrvationservice: RoomReservationApi,
               private reservationspecialofferservice: ReservationOfferApi,
               private specialofferservice: HotelSpecialOfferApi,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private itemService: ItemService,
+              public dialog: MatDialog
               ) { }
 
   ngOnInit() {
@@ -54,7 +58,6 @@ export class RoomReservationListComponent implements OnInit {
                       this.reservationsInfo.push({reservation: roomReservation, room: room, hotel: hotel});
                       this.reservationspecialofferservice.find({where: {'roomReservationId': roomReservation.id}})
                         .subscribe((reservationOfferIds: ReservationOffer[]) => {
-                          //OVDE DA POCNE DONE1
                           const done1 = new Promise((resolve1, reject1) => {
                             if (reservationOfferIds.length === 0) {
                               resolve1();
@@ -68,20 +71,15 @@ export class RoomReservationListComponent implements OnInit {
                                   indexOffers++;
                                   if (indexOffers === reservationOfferIds.length) {
                                     this.specialOffersDict[roomReservation.id] = offers;
-                                    console.log("resolve1");
                                     resolve1();
                                   }
                                 });
                             }
                           });
-                          //OVDE DA SE ZAVRSI
                           done1
                             .then(() => {
                               index++;
-                              console.log(index);
-                              console.log(this.roomReservations.length);
                               if (index === this.roomReservations.length) {
-                                console.log("resolvey");
                                 resolve();
                               }
                             });
@@ -91,7 +89,6 @@ export class RoomReservationListComponent implements OnInit {
             }
           });
           done.then(() => {
-            console.log(this.reservationsInfo);
             this.tableReservations.renderRows();
           })
             .catch(err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
@@ -125,7 +122,7 @@ export class RoomReservationListComponent implements OnInit {
         (result) => {
           for (const resInfo of this.reservationsInfo) {
             if (resInfo.reservation.id === id) {
-              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo));
+              this.reservationsInfo.splice(this.reservationsInfo.indexOf(resInfo), 1);
               break;
             }
           }
@@ -142,5 +139,10 @@ export class RoomReservationListComponent implements OnInit {
     this.selectedReservation = id;
     this.specialOffers = this.specialOffersDict[id];
     this.tableSpecialOffers.renderRows();
+
+  }
+  rateReservation(id: any) {
+    this.itemService.setRoomReservationIdForRate(id);
+    this.dialog.open(RateRoomAndHotelComponent, {width: '500px', height: '450 px'});
   }
 }
