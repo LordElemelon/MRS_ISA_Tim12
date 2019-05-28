@@ -31,8 +31,14 @@ export class ListCarDiscountsComponent implements OnInit {
           var temp = mini_result as any;
           temp.nmbr = i;
           i++;
-          temp.startDate = new Date(temp.startDate).toLocaleDateString("en-US");
-          temp.endDate = new Date(temp.endDate).toLocaleDateString("en-US");
+          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+          temp.startDate = new Date(temp.startDate);
+          temp.endDate = new Date(temp.endDate);
+          temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
+          temp.startDate = temp.startDate.toLocaleDateString("en-US");
+          temp.endDate = temp.endDate.toLocaleDateString("en-US");
+          temp.total = temp.basePrice * temp.days;
+          temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
         }
         this.foundDiscounts = result;
       },
@@ -53,10 +59,8 @@ export class ListCarDiscountsComponent implements OnInit {
   }
 
   inspect(clicked_card: any) {
-    var to_parse = clicked_card.target.innerText;
-    var parts = to_parse.split('\n');
-    var index = parseInt(parts[0].split(':')[1]);
-    this.itemService.setCarSpecialOffer(this.foundDiscounts[index]);
+    var discount_index = clicked_card.path[0].id;
+    this.itemService.setCarSpecialOffer(this.foundDiscounts[discount_index]);
     this._router.navigate(['/reserveCarSpecial']);
 
   }

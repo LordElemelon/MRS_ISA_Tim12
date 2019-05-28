@@ -46,7 +46,8 @@ export class ReservecarComponent implements OnInit {
     var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
     var firstDate = new Date(this.car.start);
     var secondDate = new Date(this.car.end);
-    this.car.days = Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+    this.car.days = 1 + Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+    this.car.totalPrice = this.car.days * this.car.price
     loginService.user
     .subscribe(data => {
       if (data) {
@@ -76,7 +77,7 @@ export class ReservecarComponent implements OnInit {
         var car_result = result as Car;
         var startDate = new Date(this.car.start).toJSON();
         var endDate = new Date(this.car.end).toJSON();
-        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, this.car.days * this.car.price, car_result.rentalServiceId)
+        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, this.car.totalPrice, car_result.rentalServiceId)
         .subscribe(
           (result) => {
             this.openSnackBar("Reservation successfuly made", "Dismiss");

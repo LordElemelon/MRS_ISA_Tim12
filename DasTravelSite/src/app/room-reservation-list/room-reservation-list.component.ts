@@ -1,7 +1,9 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {Room, RoomReservation} from '../shared/sdk/models';
 import {HotelApi, MyuserApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
-import {MatSnackBar, MatTable} from '@angular/material';
+import {MatSnackBar, MatTable, MatDialog} from '@angular/material';
+import { ItemService } from '../services/item.service';
+import { RateRoomAndHotelComponent } from '../rate-room-and-hotel/rate-room-and-hotel.component';
 
 @Component({
   selector: 'app-room-reservation-list',
@@ -14,7 +16,7 @@ export class RoomReservationListComponent implements OnInit {
   pageNum = 0;
   pageSize = 8;
 
-  columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action'];
+  columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action', 'rate'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
   constructor(@Inject('baseURL') private baseURL,
@@ -22,7 +24,9 @@ export class RoomReservationListComponent implements OnInit {
               private hotelservice: HotelApi,
               private roomservice: RoomApi,
               private roomresesrvationservice: RoomReservationApi,
-              private snackBar: MatSnackBar
+              private snackBar: MatSnackBar,
+              private itemService: ItemService,
+              public dialog: MatDialog
               ) { }
 
   ngOnInit() {
@@ -96,5 +100,10 @@ export class RoomReservationListComponent implements OnInit {
           this.openSnackBar('Can not cancel this reservation, it is too late', 'Dismiss');
         }
       );
+  }
+
+  rateReservation(id: any) {
+    this.itemService.setRoomReservationIdForRate(id);
+    this.dialog.open(RateRoomAndHotelComponent, {width: '500px', height: '450 px'});
   }
 }

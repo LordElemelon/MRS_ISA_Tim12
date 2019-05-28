@@ -170,6 +170,42 @@ export class CarReservationApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
+   * @param {object} data Request data.
+   *
+   *  - `id` – `{number}` - 
+   *
+   *  - `carRate` – `{number}` - 
+   *
+   *  - `rentalRate` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public rateServiceAndCar(id: any, carRate: any, rentalRate: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "POST";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/rateServiceAndCar";
+    let _routeParams: any = {
+
+    };
+    let _postBody: any = {};
+	let _urlParams: any = { id: id };
+    if (typeof carRate !== 'undefined' && carRate !== null) _urlParams.carRate = carRate;
+    if (typeof rentalRate !== 'undefined' && rentalRate !== null) _urlParams.rentalRate = rentalRate;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
    * @param {date} startDate 
    *
    * @param {date} endDate 

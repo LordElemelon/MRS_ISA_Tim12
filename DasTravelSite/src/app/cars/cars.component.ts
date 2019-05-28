@@ -461,19 +461,15 @@ export class CarsComponent implements OnInit {
   }
 
   inspect(clicked_card: any) {
-    var to_parse = clicked_card.target.innerText;
-    var parts = to_parse.split('|');
-    var car = {
-      'make': parts[1].split(':')[1],
-      'registration': parts[0].split(':')[1],
-      'seats': parts[2].split(':')[1],
-      'price': parts[3].split(':')[1],
-      'category': parts[4].split(':')[1],
-      'start': this.searchForm.value.startDate,
-      'end': this.searchForm.value.endDate
-    };
-    this.itemService.setReservableCar(car);
-    this._router.navigate(['/carreservation']);
+    var car_id = clicked_card.path[0].id;
+    for (let car of this.foundCars) {
+      if (car.id == car_id) {
+        (car as any).start = this.searchForm.value.startDate;
+        (car as any).end = this.searchForm.value.endDate;
+        this.itemService.setReservableCar(car);
+        this._router.navigate(['/carreservation'])
+      }
+    }
   }
 
 }

@@ -63,6 +63,8 @@ import { AirlinesComponent } from './airlines/airlines.component';
 import { RoomQuickReservationComponent } from './room-quick-reservation/room-quick-reservation.component';
 import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
+import { RateCarAndServiceComponent } from './rate-car-and-service/rate-car-and-service.component';
+import { RateRoomAndHotelComponent } from './rate-room-and-hotel/rate-room-and-hotel.component';
 import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
 import { ListBranchesComponent } from './list-branches/list-branches.component';
 import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
@@ -102,7 +104,10 @@ import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.compon
     ChangeRentalServiceComponent,
     ListBranchesComponent,
     ListCarsAdminComponent,
-    ReserveCarSpecialComponent
+    ReserveCarSpecialComponent,
+    FriendsComponent,
+    RateCarAndServiceComponent,
+    RateRoomAndHotelComponent
   ],
   imports: [
     BrowserModule,
@@ -136,7 +141,7 @@ import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.compon
     LoginServiceService
   ],
   entryComponents: [
-    RegisterComponent, LoginComponent
+    RegisterComponent, LoginComponent, RateCarAndServiceComponent, RateRoomAndHotelComponent
   ],
   bootstrap: [AppComponent]
 })
