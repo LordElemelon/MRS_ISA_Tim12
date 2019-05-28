@@ -75,6 +75,34 @@ def main():
         ]
     })
     fixes.append({
+        'fixName': 'RoomReservation cancellation id and empty params fix',
+        'filePath': os.path.join(relative_path, 'RoomReservation.ts'),
+        'Conditions': [
+            {
+                'line': 122,
+                'toMatch': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, hotelId: any, customHeaders?: Function): Observable<any> {\n'
+            },
+            {
+                'line': 157,
+                'toMatch': 'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
+            }
+        ],
+        'Replaces': [
+            {
+                'line': 122,
+                'toReplace': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = \'\', price: any, hotelDiscountId: any = \'\', hotelId: any, customHeaders?: Function): Observable<any> {\n'
+            },
+            {
+                'line': 162,
+                'toReplace': '\n'
+            },
+            {
+                'line': 165,
+                'toReplace': '\t\tlet _urlParams: any = { id: id};\n'
+            }
+        ]
+    })
+    fixes.append({
         'fixName': 'FindAvailableRooms fix',
         'filePath': os.path.join(relative_path, 'Room.ts'),
         'Conditions': [

@@ -3,7 +3,7 @@
 'use strict';
 
 module.exports = function(Roomreservation) {
-	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, hotelDiscountId, cb) {
+	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, hotelDiscountId, hotelId, cb) {
 		Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
 			const postgres = Roomreservation.app.dataSources.postgres;
 			postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '" + roomId + "' FOR UPDATE;", null, (err, result) => {
@@ -34,9 +34,11 @@ module.exports = function(Roomreservation) {
 											tx.rollback();
 											cb(new Error('Can not reserve on this date'), null);
 										} else {
+										  console.log(hotelId);
 										  // TODO find the price manually, add special offers price etc etc
 											Roomreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId}, {transaction: tx},
+												price: price, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
+                        hotelId: hotelId}, {transaction: tx},
 											(err, res) => {
 												if (err) {
 													tx.rollback();
@@ -64,7 +66,8 @@ module.exports = function(Roomreservation) {
 				  {arg: 'roomId', type: 'string', required: true},
 				  {arg: 'userId', type: 'string', required: false},
 				  {arg: 'price', type: 'number', required: true},
-          {arg: 'hotelDiscountId', type: 'string', required: false}],
+          {arg: 'hotelDiscountId', type: 'string', required: false},
+          {arg: 'hotelId', type: 'string', required: true}],
         http: {path: '/makeReservation', verb: 'post'},
         returns: {type: 'object', arg: 'retval'},
     });

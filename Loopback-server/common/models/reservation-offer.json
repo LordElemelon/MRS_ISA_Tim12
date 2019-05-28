@@ -1,0 +1,22 @@
+{
+  "name": "reservationOffer",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "roomReservationId": {
+      "type": "number",
+      "required": true
+    },
+    "specialOfferId": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

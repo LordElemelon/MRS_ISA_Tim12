@@ -1,8 +1,7 @@
 /* tslint:disable */
 import {
   Hotel,
-  Room,
-  DiscountOffer
+  Room
 } from '../index';
 
 declare var Object: any;
@@ -10,24 +9,24 @@ export interface HotelDiscountInterface {
   "discount": number;
   "startDate": Date;
   "endDate": Date;
+  "reservationId"?: number;
   "id"?: any;
   "hotelId"?: any;
   "roomId"?: any;
   hotel?: Hotel;
   room?: Room;
-  discountOffers?: DiscountOffer[];
 }
 
 export class HotelDiscount implements HotelDiscountInterface {
   "discount": number;
   "startDate": Date;
   "endDate": Date;
+  "reservationId": number;
   "id": any;
   "hotelId": any;
   "roomId": any;
   hotel: Hotel;
   room: Room;
-  discountOffers: DiscountOffer[];
   constructor(data?: HotelDiscountInterface) {
     Object.assign(this, data);
   }
@@ -73,6 +72,10 @@ export class HotelDiscount implements HotelDiscountInterface {
           name: 'endDate',
           type: 'Date'
         },
+        "reservationId": {
+          name: 'reservationId',
+          type: 'number'
+        },
         "id": {
           name: 'id',
           type: 'any'
@@ -102,14 +105,6 @@ export class HotelDiscount implements HotelDiscountInterface {
           relationType: 'belongsTo',
                   keyFrom: 'roomId',
           keyTo: 'id'
-        },
-        discountOffers: {
-          name: 'discountOffers',
-          type: 'DiscountOffer[]',
-          model: 'DiscountOffer',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'hotelDiscountId'
         },
       }
     }

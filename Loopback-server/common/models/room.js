@@ -98,6 +98,7 @@ module.exports = function(Room) {
                                 .then((reservations) => {
                                   if (reservations.length === 0) {
                                     retval.push({'hotel': hotel.name,
+                                      'hotelId': hotel.id,
                                       'room': {'number': room.number,
                                         'description': room.description,
                                         'beds': room.beds,

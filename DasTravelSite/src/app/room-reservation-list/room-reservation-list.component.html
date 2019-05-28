@@ -1,46 +1,63 @@
-<table #tablereservations mat-table [dataSource]="reservationsInfo">
-  <ng-container matColumnDef="hotel">
-    <th mat-header-cell *matHeaderCellDef>Hotel</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.hotel.name}} </td>
-  </ng-container>
-  <ng-container matColumnDef="roomNumber">
-    <th mat-header-cell *matHeaderCellDef>Room Number</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
-  </ng-container>
-  <ng-container matColumnDef="beds">
-    <th mat-header-cell *matHeaderCellDef>Beds</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
-  </ng-container>
-  <ng-container matColumnDef="startDate">
-    <th mat-header-cell *matHeaderCellDef>Start Date</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.startDate | date:'dd/MM/yyyy'}}</td>
-  </ng-container>
-  <ng-container matColumnDef="endDate">
-    <th mat-header-cell *matHeaderCellDef>End Date</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.endDate | date:'dd/MM/yyyy'}}</td>
-  </ng-container>
-  <ng-container matColumnDef="price">
-    <th mat-header-cell *matHeaderCellDef>Price</th>
-    <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.price}}</td>
-  </ng-container>
-  <ng-container matColumnDef="action">
-    <th mat-header-cell *matHeaderCellDef>Action</th>
-    <td mat-cell *matCellDef="let reservationInfo"><span style="color:blue" class="pointer"
-                                                         (click)="deleteReservation(reservationInfo.reservation.id)">
-                                                          Delete</span></td>
-  </ng-container>
-  <ng-container matColumnDef="rate">
-    <th mat-header-cell *matHeaderCellDef>Rate</th>
-    <td mat-cell *matCellDef="let reservationInfo"><span *ngIf=!reservationInfo.reservation.rated style="color:blue" class="pointer"
-                                                         (click)="rateReservation(reservationInfo.reservation.id)">
-                                                          Rate</span>
-                                                    <span *ngIf=reservationInfo.reservation.rated style="color:green" class="pointer">
-                                                          Rated </span></td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
-  <tr mat-row *matRowDef="let myRowData; columns: columnsToDisplayReservations"></tr>
-</table>
-<div>
-  <a mat-button (click)="previousPage()" [disabled]="this.pageNum === 0">Previous page</a>
-  <a mat-button (click)="nextPage()" [disabled]="this.reservationsInfo.length !== this.pageSize">Next page</a>
-</div>
+<div class="container"
+  fxLayout="row"
+  fxLayoutGap="20px">
+  <div fxFlex>
+    <table #tablereservations mat-table [dataSource]="reservationsInfo">
+      <ng-container matColumnDef="hotel">
+        <th mat-header-cell *matHeaderCellDef>Hotel</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.hotel.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Room Number</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
+      </ng-container>
+      <ng-container matColumnDef="beds">
+        <th mat-header-cell *matHeaderCellDef>Beds</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
+      </ng-container>
+      <ng-container matColumnDef="startDate">
+        <th mat-header-cell *matHeaderCellDef>Start Date</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.startDate | date:'dd/MM/yyyy'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="endDate">
+        <th mat-header-cell *matHeaderCellDef>End Date</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.endDate | date:'dd/MM/yyyy'}}</td>
+      </ng-container>
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef>Price</th>
+        <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.price}}</td>
+      </ng-container>
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef>Action</th>
+        <td mat-cell *matCellDef="let reservationInfo"><span style="color:blue" class="pointer"
+                                                             (click)="deleteReservation(reservationInfo.reservation.id)">
+                                                              Delete</span></td>
+      </ng-container>
+      <ng-container matColumnDef="rate">
+        <th mat-header-cell *matHeaderCellDef>Rate</th>
+        <td mat-cell *matCellDef="let reservationInfo"><span *ngIf=!reservationInfo.reservation.rated style="color:blue" class="pointer"
+                                                             (click)="rateReservation(reservationInfo.reservation.id)">
+                                                              Rate</span>
+                                                        <span *ngIf=reservationInfo.reservation.rated style="color:green" class="pointer">
+                                                              Rated </span></td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
+      <tr mat-row *matRowDef="let reservationInfo; columns: columnsToDisplayReservations"
+          (click)="selectReservation(reservationInfo.reservation.id)" class="pointer"
+          [ngClass]="{selectedRow: selectedReservation === reservationInfo.reservation.id}"></tr>
+    </table>
+    <div>
+      <a mat-button (click)="previousPage()" [disabled]="this.pageNum === 0">Previous page</a>
+      <a mat-button (click)="nextPage()" [disabled]="this.reservationsInfo.length !== this.pageSize">Next page</a>
+    </div>
+  </div>
+  <div fxFlex>
+    <table #tablespecialoffers mat-table [dataSource]="specialOffers">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Special offers</th>
+        <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers"></tr>
+      <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffers"></tr>
+    </table>
+  </div>

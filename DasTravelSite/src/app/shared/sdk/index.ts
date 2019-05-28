@@ -59,7 +59,6 @@ import { FlightApi } from './services/custom/Flight';
 import { RoomPriceApi } from './services/custom/RoomPrice';
 import { HotelSpecialOfferApi } from './services/custom/HotelSpecialOffer';
 import { HotelDiscountApi } from './services/custom/HotelDiscount';
-import { DiscountOfferApi } from './services/custom/DiscountOffer';
 import { CarPriceApi } from './services/custom/CarPrice';
 import { EmailApi } from './services/custom/Email';
 import { MyuserApi } from './services/custom/Myuser';
@@ -74,6 +73,7 @@ import { SeatReservationApi } from './services/custom/SeatReservation';
 import { CarSpecialOfferApi } from './services/custom/CarSpecialOffer';
 import { QuickFlightReservationApi } from './services/custom/QuickFlightReservation';
 import { FriendshipApi } from './services/custom/Friendship';
+import { ReservationOfferApi } from './services/custom/ReservationOffer';
 /**
 * @module SDKBrowserModule
 * @description
@@ -115,7 +115,6 @@ export class SDKBrowserModule {
         RoomPriceApi,
         HotelSpecialOfferApi,
         HotelDiscountApi,
-        DiscountOfferApi,
         CarPriceApi,
         EmailApi,
         MyuserApi,
@@ -130,6 +129,7 @@ export class SDKBrowserModule {
         CarSpecialOfferApi,
         QuickFlightReservationApi,
         FriendshipApi,
+        ReservationOfferApi,
         internalStorageProvider,
         { provide: SDKStorage, useClass: StorageBrowser },
         { provide: SocketDriver, useClass: SocketBrowser }

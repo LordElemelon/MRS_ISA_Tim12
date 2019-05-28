@@ -1,10 +1,10 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {HotelApi, MyuserApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
+import {HotelApi, HotelSpecialOfferApi, MyuserApi, ReservationOfferApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
 import {Router} from '@angular/router';
 import {MatSnackBar, MatTable} from '@angular/material';
 import {LoginServiceService} from '../login-service.service';
-import {LoopBackConfig, Room, RoomReservation} from '../shared/sdk';
+import {HotelSpecialOffer, LoopBackConfig, ReservationOffer, Room, RoomReservation} from '../shared/sdk';
 import {API_VERSION} from '../shared/baseUrl';
 
 @Component({
@@ -22,11 +22,15 @@ export class RoomQuickReservationComponent implements OnInit {
   searchDone = false;
   columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price'];
   selectedReservationId;
+  specialOffers = [];
+  specialOffersDict = {};
+  columnsToDisplaySpecialOffers = ['name'];
 
   searchQRoomsForm: FormGroup;
   @ViewChild('fformSearchQRooms') searchQRoomsFormDirective;
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
+  @ViewChild('tablespecialoffers') tableSpecialOffers: MatTable<any>;
 
   searchQRoomsFormErrors = {
     'startDate': '',
@@ -49,6 +53,8 @@ export class RoomQuickReservationComponent implements OnInit {
               private roomservice: RoomApi,
               private hotelservice: HotelApi,
               private myuserservice: MyuserApi,
+              private reservationspecialofferservice: ReservationOfferApi,
+              private specialofferservice: HotelSpecialOfferApi,
               private _router: Router,
               private fb: FormBuilder,
               private loginService: LoginServiceService,
@@ -133,13 +139,38 @@ export class RoomQuickReservationComponent implements OnInit {
         for (const roomReservation of this.foundReservations) {
           this.roomservice.findById(roomReservation.roomId)
             .subscribe((room: Room) => {
-              this.hotelservice.findById(room.hotelId)
+              this.hotelservice.findById(roomReservation.hotelId)
                 .subscribe((hotel) => {
                   this.reservationsInfo.push({reservation: roomReservation, room: room, hotel: hotel});
-                  index++;
-                  if (index === this.foundReservations.length) {
-                    resolve();
-                  }
+                  this.reservationspecialofferservice.find({where: {'roomReservationId': roomReservation.id}})
+                    .subscribe((reservationOfferIds: ReservationOffer[]) => {
+                      const done1 = new Promise((resolve1, reject1) => {
+                        if (reservationOfferIds.length === 0) {
+                          resolve1();
+                        }
+                        let indexOffers = 0;
+                        const offers = [];
+                        for (const reservationOfferId of reservationOfferIds) {
+                          this.specialofferservice.findById(reservationOfferId.specialOfferId)
+                            .subscribe((specialOffer: HotelSpecialOffer) => {
+                              offers.push(specialOffer);
+                              indexOffers++;
+                              if (indexOffers === reservationOfferIds.length) {
+                                this.specialOffersDict[roomReservation.id] = offers;
+                                resolve1();
+                              }
+                            });
+                        }
+                      });
+                      done1
+                        .then(() => {
+
+                          index++;
+                          if (index === this.foundReservations.length) {
+                            resolve();
+                          }
+                        });
+                    });
                 }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
             }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
         }
@@ -152,6 +183,7 @@ export class RoomQuickReservationComponent implements OnInit {
 
   selectRow(id) {
     this.selectedReservationId = id;
+    this.specialOffers = this.specialOffersDict[id];
   }
 
   reserve() {

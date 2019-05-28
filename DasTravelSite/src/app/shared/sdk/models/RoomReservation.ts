@@ -6,6 +6,7 @@ export interface RoomReservationInterface {
   "endDate": Date;
   "price": number;
   "roomId": string;
+  "hotelId": string;
   "myuserId"?: string;
   "hotelDiscountId"?: string;
   "rated"?: boolean;
@@ -17,6 +18,7 @@ export class RoomReservation implements RoomReservationInterface {
   "endDate": Date;
   "price": number;
   "roomId": string;
+  "hotelId": string;
   "myuserId": string;
   "hotelDiscountId": string;
   "rated": boolean;
@@ -68,6 +70,10 @@ export class RoomReservation implements RoomReservationInterface {
         },
         "roomId": {
           name: 'roomId',
+          type: 'string'
+        },
+        "hotelId": {
+          name: 'hotelId',
           type: 'string'
         },
         "myuserId": {

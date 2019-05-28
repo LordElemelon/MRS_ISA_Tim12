@@ -11,7 +11,6 @@ import { Flight } from '../../models/Flight';
 import { RoomPrice } from '../../models/RoomPrice';
 import { HotelSpecialOffer } from '../../models/HotelSpecialOffer';
 import { HotelDiscount } from '../../models/HotelDiscount';
-import { DiscountOffer } from '../../models/DiscountOffer';
 import { CarPrice } from '../../models/CarPrice';
 import { Email } from '../../models/Email';
 import { Myuser } from '../../models/Myuser';
@@ -26,6 +25,7 @@ import { SeatReservation } from '../../models/SeatReservation';
 import { CarSpecialOffer } from '../../models/CarSpecialOffer';
 import { QuickFlightReservation } from '../../models/QuickFlightReservation';
 import { Friendship } from '../../models/Friendship';
+import { ReservationOffer } from '../../models/ReservationOffer';
 
 export interface Models { [name: string]: any }
 
@@ -44,7 +44,6 @@ export class SDKModels {
     RoomPrice: RoomPrice,
     HotelSpecialOffer: HotelSpecialOffer,
     HotelDiscount: HotelDiscount,
-    DiscountOffer: DiscountOffer,
     CarPrice: CarPrice,
     Email: Email,
     Myuser: Myuser,
@@ -59,6 +58,7 @@ export class SDKModels {
     CarSpecialOffer: CarSpecialOffer,
     QuickFlightReservation: QuickFlightReservation,
     Friendship: Friendship,
+    ReservationOffer: ReservationOffer,
     
   };
 

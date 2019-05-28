@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {Room, RoomReservation} from '../shared/sdk/models';
-import {HotelApi, MyuserApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
+import {HotelSpecialOffer, ReservationOffer, Room, RoomReservation} from '../shared/sdk/models';
+import {HotelApi, HotelSpecialOfferApi, MyuserApi, ReservationOfferApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
 import {MatSnackBar, MatTable, MatDialog} from '@angular/material';
 import { ItemService } from '../services/item.service';
 import { RateRoomAndHotelComponent } from '../rate-room-and-hotel/rate-room-and-hotel.component';
@@ -13,17 +13,25 @@ import { RateRoomAndHotelComponent } from '../rate-room-and-hotel/rate-room-and-
 export class RoomReservationListComponent implements OnInit {
   roomReservations: RoomReservation[];
   reservationsInfo = [];
+  specialOffers = [];
   pageNum = 0;
   pageSize = 8;
+  selectedReservation = '';
+  specialOffersDict = {};
 
   columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action', 'rate'];
+  columnsToDisplaySpecialOffers = ['name'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
+  @ViewChild('tablespecialoffers') tableSpecialOffers: MatTable<any>;
+
   constructor(@Inject('baseURL') private baseURL,
               private myuserservice: MyuserApi,
               private hotelservice: HotelApi,
               private roomservice: RoomApi,
               private roomresesrvationservice: RoomReservationApi,
+              private reservationspecialofferservice: ReservationOfferApi,
+              private specialofferservice: HotelSpecialOfferApi,
               private snackBar: MatSnackBar,
               private itemService: ItemService,
               public dialog: MatDialog
@@ -45,20 +53,45 @@ export class RoomReservationListComponent implements OnInit {
             for (const roomReservation of this.roomReservations) {
               this.roomservice.findById(roomReservation.roomId)
                 .subscribe((room: Room) => {
-                  this.hotelservice.findById(room.hotelId)
+                  this.hotelservice.findById(roomReservation.hotelId)
                     .subscribe((hotel) => {
                       this.reservationsInfo.push({reservation: roomReservation, room: room, hotel: hotel});
-                      index++;
-                      if (index === this.roomReservations.length) {
-                        resolve();
-                      }
+                      this.reservationspecialofferservice.find({where: {'roomReservationId': roomReservation.id}})
+                        .subscribe((reservationOfferIds: ReservationOffer[]) => {
+                          const done1 = new Promise((resolve1, reject1) => {
+                            if (reservationOfferIds.length === 0) {
+                              resolve1();
+                            }
+                            let indexOffers = 0;
+                            const offers = [];
+                            for (const reservationOfferId of reservationOfferIds) {
+                              this.specialofferservice.findById(reservationOfferId.specialOfferId)
+                                .subscribe((specialOffer: HotelSpecialOffer) => {
+                                  offers.push(specialOffer);
+                                  indexOffers++;
+                                  if (indexOffers === reservationOfferIds.length) {
+                                    this.specialOffersDict[roomReservation.id] = offers;
+                                    resolve1();
+                                  }
+                                });
+                            }
+                          });
+                          done1
+                            .then(() => {
+                              index++;
+                              if (index === this.roomReservations.length) {
+                                resolve();
+                              }
+                            });
+                        });
                     }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
                 }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
             }
           });
           done.then(() => {
             this.tableReservations.renderRows();
-          });
+          })
+            .catch(err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
         }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
     }
   }
@@ -102,6 +135,12 @@ export class RoomReservationListComponent implements OnInit {
       );
   }
 
+  selectReservation(id: any) {
+    this.selectedReservation = id;
+    this.specialOffers = this.specialOffersDict[id];
+    this.tableSpecialOffers.renderRows();
+
+  }
   rateReservation(id: any) {
     this.itemService.setRoomReservationIdForRate(id);
     this.dialog.open(RateRoomAndHotelComponent, {width: '500px', height: '450 px'});
