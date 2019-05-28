@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Room, RoomApi, HotelApi, Hotel, RoomPrice, HotelDiscount } from '../shared/sdk';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { RoomPriceApi, HotelDiscountApi, DiscountOfferApi } from '../shared/sdk/services/custom';
+import { RoomPriceApi, HotelDiscountApi, ReservationOfferApi } from '../shared/sdk/services/custom';
 import {MatSnackBar, MatTable} from '@angular/material';
 
 @Component({
@@ -78,7 +78,7 @@ export class RoomComponent implements OnInit {
     private roompriceservice: RoomPriceApi,
     private roomdiscountservice: HotelDiscountApi,
     private hotelservice: HotelApi,
-    private discountofferservice: DiscountOfferApi,
+    private reservationofferservice: ReservationOfferApi,
     public snackBar: MatSnackBar,
     private fb: FormBuilder
   ) {
@@ -215,9 +215,9 @@ export class RoomComponent implements OnInit {
       this.room.hotelDiscounts.push(result);
       this.tableDiscounts.renderRows();
       this.selectedOffers.forEach(offerId => {
-        this.discountofferservice.create({
-          'hotelDiscountId': result.id,
-          'hotelSpecialOfferId': offerId
+        this.reservationofferservice.create({
+          'roomReservationId': result.reservationId,
+          'specialOfferId': offerId
         }).subscribe(result1 =>  {
         });
       });

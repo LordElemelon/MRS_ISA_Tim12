@@ -59,12 +59,14 @@ module.exports = function(Hoteldiscount) {
             let newPrice = roomPrice.price;
             newPrice -= Math.ceil(newPrice * ctx.instance.discount / 100);
             return app.models.RoomReservation.makeReservation(ctx.instance.startDate, ctx.instance.endDate,
-              ctx.instance.roomId, '', newPrice, ctx.instance.id,
+              ctx.instance.roomId, '', newPrice, ctx.instance.id, ctx.instance.hotelId,
               (err, res) => {
                 if (err) {
                   Hoteldiscount.destroyById(ctx.instance.id);
                   next(err);
                 } else {
+                  ctx.instance.reservationId = res.id;
+                  Hoteldiscount.updateAll({id: ctx.instance.id}, {reservationId: ctx.instance.id}, null);
                   next();
                 }
               });

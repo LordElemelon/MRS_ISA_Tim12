@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit, ViewChild} from '@angular/core';
-import {Room, RoomReservation} from '../shared/sdk/models';
-import {HotelApi, MyuserApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
+import {HotelSpecialOffer, ReservationOffer, Room, RoomReservation} from '../shared/sdk/models';
+import {HotelApi, HotelSpecialOfferApi, MyuserApi, ReservationOfferApi, RoomApi, RoomReservationApi} from '../shared/sdk/services/custom';
 import {MatSnackBar, MatTable} from '@angular/material';
 
 @Component({
@@ -11,17 +11,25 @@ import {MatSnackBar, MatTable} from '@angular/material';
 export class RoomReservationListComponent implements OnInit {
   roomReservations: RoomReservation[];
   reservationsInfo = [];
+  specialOffers = [];
   pageNum = 0;
   pageSize = 8;
+  selectedReservation = '';
+  specialOffersDict = {};
 
   columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price', 'action'];
+  columnsToDisplaySpecialOffers = ['name'];
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
+  @ViewChild('tablespecialoffers') tableSpecialOffers: MatTable<any>;
+
   constructor(@Inject('baseURL') private baseURL,
               private myuserservice: MyuserApi,
               private hotelservice: HotelApi,
               private roomservice: RoomApi,
               private roomresesrvationservice: RoomReservationApi,
+              private reservationspecialofferservice: ReservationOfferApi,
+              private specialofferservice: HotelSpecialOfferApi,
               private snackBar: MatSnackBar
               ) { }
 
@@ -41,20 +49,52 @@ export class RoomReservationListComponent implements OnInit {
             for (const roomReservation of this.roomReservations) {
               this.roomservice.findById(roomReservation.roomId)
                 .subscribe((room: Room) => {
-                  this.hotelservice.findById(room.hotelId)
+                  this.hotelservice.findById(roomReservation.hotelId)
                     .subscribe((hotel) => {
                       this.reservationsInfo.push({reservation: roomReservation, room: room, hotel: hotel});
-                      index++;
-                      if (index === this.roomReservations.length) {
-                        resolve();
-                      }
+                      this.reservationspecialofferservice.find({where: {'roomReservationId': roomReservation.id}})
+                        .subscribe((reservationOfferIds: ReservationOffer[]) => {
+                          //OVDE DA POCNE DONE1
+                          const done1 = new Promise((resolve1, reject1) => {
+                            if (reservationOfferIds.length === 0) {
+                              resolve1();
+                            }
+                            let indexOffers = 0;
+                            const offers = [];
+                            for (const reservationOfferId of reservationOfferIds) {
+                              this.specialofferservice.findById(reservationOfferId.specialOfferId)
+                                .subscribe((specialOffer: HotelSpecialOffer) => {
+                                  offers.push(specialOffer);
+                                  indexOffers++;
+                                  if (indexOffers === reservationOfferIds.length) {
+                                    this.specialOffersDict[roomReservation.id] = offers;
+                                    console.log("resolve1");
+                                    resolve1();
+                                  }
+                                });
+                            }
+                          });
+                          //OVDE DA SE ZAVRSI
+                          done1
+                            .then(() => {
+                              index++;
+                              console.log(index);
+                              console.log(this.roomReservations.length);
+                              if (index === this.roomReservations.length) {
+                                console.log("resolvey");
+                                resolve();
+                              }
+                            });
+                        });
                     }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
                 }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
             }
           });
           done.then(() => {
+            console.log(this.reservationsInfo);
             this.tableReservations.renderRows();
-          });
+          })
+            .catch(err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
         }, err => this.openSnackBar('Something went wrong. Please try again.', 'Dismiss'));
     }
   }
@@ -96,5 +136,11 @@ export class RoomReservationListComponent implements OnInit {
           this.openSnackBar('Can not cancel this reservation, it is too late', 'Dismiss');
         }
       );
+  }
+
+  selectReservation(id: any) {
+    this.selectedReservation = id;
+    this.specialOffers = this.specialOffersDict[id];
+    this.tableSpecialOffers.renderRows();
   }
 }

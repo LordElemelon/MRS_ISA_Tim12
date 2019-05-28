@@ -17,6 +17,10 @@
     "endDate": {
       "type": "date",
       "required": true
+    },
+    "reservationId": {
+      "type": "number",
+      "required": false
     }
   },
   "validations": [],

@@ -67,9 +67,10 @@ export class ReserveRoomComponent implements OnInit {
   }
 
   onReserveRoomSubmit() {
+    console.log(this.room.room.hotelId);
     this.roomreservationservice.makeReservation(this.room.startDate.toISOString(),
       this.room.endDate.toISOString(), this.room.room.room.id,
-      this.myuserservice.getCachedCurrent().id, this.room.room.price)
+      this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId)
       .subscribe(result => {
         this.openSnackBar('Reserved succesfully', 'Dismiss');
       }, err => {

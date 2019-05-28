@@ -110,6 +110,8 @@ export class RoomReservationApi extends BaseLoopBackApi {
    *
    *  - `hotelDiscountId` – `{string}` - 
    *
+   *  - `hotelId` – `{string}` - 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -118,7 +120,7 @@ export class RoomReservationApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, customHeaders?: Function): Observable<any> {
+public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = '', price: any, hotelDiscountId: any = '', hotelId: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/roomReservations/makeReservation";
@@ -131,6 +133,7 @@ export class RoomReservationApi extends BaseLoopBackApi {
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
     if (typeof hotelDiscountId !== 'undefined' && hotelDiscountId !== null) _urlParams.hotelDiscountId = hotelDiscountId;
+    if (typeof hotelId !== 'undefined' && hotelId !== null) _urlParams.hotelId = hotelId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -157,10 +160,10 @@ export class RoomReservationApi extends BaseLoopBackApi {
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/roomReservations/cancel";
     let _routeParams: any = {
-      id: id
+
     };
     let _postBody: any = {};
-    let _urlParams: any = {};
+		let _urlParams: any = { id: id};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

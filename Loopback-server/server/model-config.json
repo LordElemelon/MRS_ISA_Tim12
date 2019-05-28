@@ -75,10 +75,6 @@
     "dataSource": "MongoDB",
     "public": true
   },
-  "discountOffer": {
-    "dataSource": "MongoDB",
-    "public": true
-  },
   "CarPrice": {
     "dataSource": "MongoDB",
     "public": true
@@ -134,6 +130,10 @@
     "public": true
   },
   "friendship": {
+    "dataSource": "MongoDB",
+    "public": true
+  },
+  "reservationOffer": {
     "dataSource": "MongoDB",
     "public": true
   }

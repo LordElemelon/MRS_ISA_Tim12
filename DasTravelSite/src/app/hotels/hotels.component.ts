@@ -283,6 +283,7 @@ export class HotelsComponent implements OnInit {
   }
 
   clickRoom(index: number) {
+    console.log(this.foundRooms[index]);
     this.itemservice.setReservableRoom({'room': this.foundRooms[index],
     'startDate': this.searchRoomsForm.value.startDate,
     'endDate': this.searchRoomsForm.value.endDate});

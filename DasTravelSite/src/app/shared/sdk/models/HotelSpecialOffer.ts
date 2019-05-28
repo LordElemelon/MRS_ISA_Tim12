@@ -1,7 +1,6 @@
 /* tslint:disable */
 import {
-  Hotel,
-  DiscountOffer
+  Hotel
 } from '../index';
 
 declare var Object: any;
@@ -11,7 +10,6 @@ export interface HotelSpecialOfferInterface {
   "id"?: any;
   "hotelId"?: any;
   hotel?: Hotel;
-  discountOffers?: DiscountOffer[];
 }
 
 export class HotelSpecialOffer implements HotelSpecialOfferInterface {
@@ -20,7 +18,6 @@ export class HotelSpecialOffer implements HotelSpecialOfferInterface {
   "id": any;
   "hotelId": any;
   hotel: Hotel;
-  discountOffers: DiscountOffer[];
   constructor(data?: HotelSpecialOfferInterface) {
     Object.assign(this, data);
   }
@@ -80,14 +77,6 @@ export class HotelSpecialOffer implements HotelSpecialOfferInterface {
           relationType: 'belongsTo',
                   keyFrom: 'hotelId',
           keyTo: 'id'
-        },
-        discountOffers: {
-          name: 'discountOffers',
-          type: 'DiscountOffer[]',
-          model: 'DiscountOffer',
-          relationType: 'hasMany',
-                  keyFrom: 'id',
-          keyTo: 'hotelSpecialOfferId'
         },
       }
     }
