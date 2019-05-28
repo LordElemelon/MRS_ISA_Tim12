@@ -6,6 +6,7 @@ import { RentalServiceApi } from '../shared/sdk/services';
 import { RentalService } from '../shared/sdk/models/RentalService';
 import { MatSnackBar } from "@angular/material";
 import {LoginServiceService} from '../login-service.service';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-rentalservices',
@@ -43,16 +44,23 @@ export class RentalservicesComponent implements OnInit {
     private rentalServiceService: RentalServiceApi,
     private loginService: LoginServiceService,
     private fb: FormBuilder,
-    public snackBar: MatSnackBar) { 
+    public snackBar: MatSnackBar,
+    private itemService: ItemService) { 
+      /*
+        Force initialization
+      */
+      this.itemService.getServiceId();
+
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
       this.createRemoveForm();
-      this.createChangeForm();
       this.createSearchForm();
       this.loginService.user.subscribe(data => {
         if (data) {
           this.userType = data.user.type;
+          console.log("Usao ovde");
+          console.log(data);
         }
       });
   }
@@ -238,101 +246,6 @@ export class RentalservicesComponent implements OnInit {
     },
     (err) => {
       this.openSnackBar("Deletion failed", "Dismiss");
-    });
-  }
-
-  changeFormErrors = {
-    'name': '',
-    'address': '',
-    'description': ''
-  }
-
-  changeFormValidationMessages = {
-    'name': {
-      'required': 'Name is required in order to change a rental service',
-      'non-existent': 'Rental service with this name does not exist'
-    },
-    'address': {
-      'required': 'Address can\'t be empty'
-    },
-    'description': {
-      'required': 'Description can\'t be empty'
-    }
-  }
-
-  onChangeValueChanged(data?:any) {
-    if (!this.changeForm) { return; }
-    const form = this.changeForm;
-    for (const field in this.changeFormErrors) {
-      if (this.changeFormErrors.hasOwnProperty(field)) {
-        //clear previous error message
-        this.changeFormErrors[field] = '';
-        const control = form.get(field);
-        if (control && !control.valid) {
-          const messages = this.changeFormValidationMessages[field];
-          for (const key in control.errors) {
-            if (control.errors.hasOwnProperty(key)) {
-              this.changeFormErrors[field] += messages[key] + ' ';
-            }
-          }
-        }
-      }
-    }
-  }
-
-  createChangeForm() {
-    this.changeForm = this.fb.group({
-      name: ['', Validators.required],
-      address: ['', Validators.required],
-      description: ['', Validators.required]
-    });
-    this.changeForm.valueChanges
-    .subscribe((data) => {this.onChangeValueChanged(data)});
-    this.onChangeValueChanged();
-  }
-
-  changeGrabRental() {
-    this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.name}})
-    .subscribe(
-      (rentalservice) => {
-        if (rentalservice != null) {
-          var myRentalService = rentalservice as RentalService;
-          this.toChangeService = myRentalService;
-          this.changeForm.controls['address'].setValue(myRentalService.address);
-          this.changeForm.controls['description'].setValue(myRentalService.description);
-        }
-      },
-      (err) => {
-        this.openSnackBar("This service does not exist", "Dismiss");
-      });
-  }
-
-  onChangeSubmit() {
-    this.rentalServiceService.findOne({'where': {'name': this.changeForm.value.name}})
-    .subscribe(
-      (rentalservice) => {
-      if (rentalservice != null) {
-        var myRentalService = rentalservice as RentalService;
-        myRentalService.address = this.changeForm.value.address;
-        myRentalService.description = this.changeForm.value.description;
-        console.log(myRentalService);
-        this.rentalServiceService.updateAttributes(myRentalService.id, myRentalService)
-         .subscribe(
-          (result) => {
-            if (result != null) {
-              this.openSnackBar("Change successfull", "Dismiss");
-            }
-            else {
-              this.openSnackBar("Change failed", "Dismiss");
-            }
-          },
-          (err) => {
-            this.openSnackBar("Change failed", "Dismiss");
-          });
-      }
-    },
-    (err) => {
-      this.openSnackBar("This rental service does not exist", "Dismiss");
     });
   }
 

@@ -62,6 +62,9 @@ import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
 import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
+import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
+import { ListBranchesComponent } from './list-branches/list-branches.component';
+import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
 
 
 @NgModule({
@@ -93,6 +96,10 @@ import { FriendsComponent } from './friends/friends.component';
     AirlinesComponent,
     CarBusinessReportsComponent,
     ReserveSeatComponent,
+    FriendsComponent,
+    ChangeRentalServiceComponent,
+    ListBranchesComponent,
+    ListCarsAdminComponent,
     ReserveCarSpecialComponent,
     FriendsComponent
   ],

@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material';
 import { RentalServiceApi, LoopBackConfig, RentalService } from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { CarPriceApi } from '../shared/sdk';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-carprices',
@@ -26,7 +27,8 @@ export class CarpricesComponent implements OnInit {
     private fb: FormBuilder,
     private rentalServiceService: RentalServiceApi,
     private carPriceService: CarPriceApi,
-    public snackBar: MatSnackBar) {
+    public snackBar: MatSnackBar,
+    private itemService: ItemService) {
       LoopBackConfig.setBaseURL(baseURL);
       LoopBackConfig.setApiVersion(API_VERSION);
       this.createAddForm();
@@ -42,7 +44,6 @@ export class CarpricesComponent implements OnInit {
   }
 
   addFormErrors = {
-    'serviceName': '',
     'start': '',
     'priceA': '',
     'priceB': '',
@@ -50,9 +51,6 @@ export class CarpricesComponent implements OnInit {
   }
 
   addFormValidationMessages = {
-    'serviceName': {
-      'required': 'Service name is required'
-    },
     'start': {
       'required': 'Start date is required'
     },
@@ -92,7 +90,6 @@ export class CarpricesComponent implements OnInit {
 
   createAddForm() {
     this.addForm = this.fb.group({
-      serviceName: ['', Validators.required],
       start: ['', Validators.required],
       priceA: [0, [Validators.required, Validators.pattern]],
       priceB: [0, [Validators.required, Validators.pattern]],
@@ -105,35 +102,22 @@ export class CarpricesComponent implements OnInit {
   }
 
   onAddSubmit() {
-    this.rentalServiceService.findOne({
-      'where': {
-        name: this.addForm.value.serviceName
-      }
-    })
+    var searchObj = {
+      start: this.addForm.value.start,
+      rentalServiceId: this.itemService.getServiceId(),
+      catAPrice: Number(this.addForm.value.priceA),
+      catBPrice: Number(this.addForm.value.priceB),
+      catCPrice: Number(this.addForm.value.priceC)
+    }
+    this.carPriceService.create(searchObj)
     .subscribe(
       (result) => {
-        var myrentalservice = result as RentalService
-        var searchObj = {
-          start: this.addForm.value.start,
-          rentalServiceId: myrentalservice.id,
-          catAPrice: Number(this.addForm.value.priceA),
-          catBPrice: Number(this.addForm.value.priceB),
-          catCPrice: Number(this.addForm.value.priceC)
-        }
-        this.carPriceService.create(searchObj)
-        .subscribe(
-          (result) => {
-            this.openSnackBar("Successfully added price menu.", "Dismiss");
-          },
-          (err) => {
-            this.openSnackBar("Failed to add price menu.", "Dismiss");
-          }
-        ) 
+        this.openSnackBar("Successfully added price menu.", "Dismiss");
       },
       (err) => {
-        this.openSnackBar("Rental service does not exist.", "Dismiss");
+        this.openSnackBar("Failed to add price menu.", "Dismiss");
       }
-    )
+    )    
   }
 
 
