@@ -1,0 +1,35 @@
+<form (ngSubmit)="onSubmit()">
+    <p>
+        Registration: 
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{specialOffer.registration}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        Start date:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{specialOffer.startDate}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+        End date:
+        <mat-form-field class="form-size">
+            <input matInput placeholder={{specialOffer.endDate}} type="text" [readonly]="true">
+        </mat-form-field>
+    </p>
+    <p>
+      Base price:
+      <mat-form-field class="form-size">
+          <input matInput placeholder={{specialOffer.basePrice}} type="text" [readonly]="true">
+      </mat-form-field>
+    </p>
+    <p>
+      Discount:
+      <mat-form-field class="form-size">
+          <input matInput placeholder={{specialOffer.discount}} type="text" [readonly]="true">
+      </mat-form-field>
+    </p>
+    <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
+        Submit
+    </button>
+</form>

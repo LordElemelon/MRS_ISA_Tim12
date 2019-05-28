@@ -61,7 +61,11 @@ import { CarBusinessReportsComponent } from './car-business-reports/car-business
 import { ReserveSeatComponent } from './reserve-seat/reserve-seat.component';
 import { AirlinesComponent } from './airlines/airlines.component';
 import { RoomQuickReservationComponent } from './room-quick-reservation/room-quick-reservation.component';
+import { ReserveCarSpecialComponent } from './reserve-car-special/reserve-car-special.component';
 import { FriendsComponent } from './friends/friends.component';
+import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
+import { ListBranchesComponent } from './list-branches/list-branches.component';
+import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
 
 
 @NgModule({
@@ -94,7 +98,11 @@ import { FriendsComponent } from './friends/friends.component';
     CarBusinessReportsComponent,
     ReserveSeatComponent,
     RoomQuickReservationComponent,
-    FriendsComponent
+    FriendsComponent,
+    ChangeRentalServiceComponent,
+    ListBranchesComponent,
+    ListCarsAdminComponent,
+    ReserveCarSpecialComponent
   ],
   imports: [
     BrowserModule,

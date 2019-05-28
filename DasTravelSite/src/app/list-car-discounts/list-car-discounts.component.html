@@ -1,7 +1,8 @@
 <div fxFlex>
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let discount of foundDiscounts">
-        <mat-card routerLink="" class="pointer">
+        <mat-card (click)="inspect($event)" class="pointer">
+          Number: {{discount.nmbr}} <br>
           Registration: {{discount.registration}} <br>
           Start date: {{discount.startDate}} <br>
           End date: {{discount.endDate}} <br>

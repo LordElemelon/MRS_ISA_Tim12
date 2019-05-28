@@ -1,0 +1,10 @@
+<div fxFlex>
+  <mat-grid-list cols="3" rowHeight="200px">
+    <mat-grid-tile *ngFor="let branch of foundBranches">
+      <mat-card class="pointer">
+        Name: {{branch.name}} <br>
+        Address: {{branch.address}} <br>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
