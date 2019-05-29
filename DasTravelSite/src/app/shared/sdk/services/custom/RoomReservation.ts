@@ -198,7 +198,7 @@ public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = 
 
     };
     let _postBody: any = {};
-	let _urlParams: any = { id: id };
+		let _urlParams: any = { id: id};
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -238,6 +238,115 @@ public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = 
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} startDate 
+   *
+   * @param {date} endDate 
+   *
+   * @param {string} hotelId 
+   *
+   * @param {number} type 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public getYearlyReport(startDate: any, endDate: any, hotelId: any, type: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/getYearlyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof hotelId !== 'undefined' && hotelId !== null) _urlParams.hotelId = hotelId;
+    if (typeof type !== 'undefined' && type !== null) _urlParams.type = type;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} startDate 
+   *
+   * @param {date} endDate 
+   *
+   * @param {string} hotelId 
+   *
+   * @param {number} type 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public getMonthlyReport(startDate: any, endDate: any, hotelId: any, type: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/getMonthlyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof hotelId !== 'undefined' && hotelId !== null) _urlParams.hotelId = hotelId;
+    if (typeof type !== 'undefined' && type !== null) _urlParams.type = type;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {date} startDate 
+   *
+   * @param {date} endDate 
+   *
+   * @param {string} hotelId 
+   *
+   * @param {number} type 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public getWeeklyReport(startDate: any, endDate: any, hotelId: any, type: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/roomReservations/getWeeklyReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
+    if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof hotelId !== 'undefined' && hotelId !== null) _urlParams.hotelId = hotelId;
+    if (typeof type !== 'undefined' && type !== null) _urlParams.type = type;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
   /**
    * The name of the model represented by this $resource,
    * i.e. `RoomReservation`.

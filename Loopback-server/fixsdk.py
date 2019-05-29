@@ -75,34 +75,6 @@ def main():
         ]
     })
     fixes.append({
-        'fixName': 'RoomReservation cancellation id and empty params fix',
-        'filePath': os.path.join(relative_path, 'RoomReservation.ts'),
-        'Conditions': [
-            {
-                'line': 122,
-                'toMatch': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, hotelId: any, customHeaders?: Function): Observable<any> {\n'
-            },
-            {
-                'line': 157,
-                'toMatch': 'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
-            }
-        ],
-        'Replaces': [
-            {
-                'line': 122,
-                'toReplace': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = \'\', price: any, hotelDiscountId: any = \'\', hotelId: any, customHeaders?: Function): Observable<any> {\n'
-            },
-            {
-                'line': 162,
-                'toReplace': '\n'
-            },
-            {
-                'line': 165,
-                'toReplace': '\t\tlet _urlParams: any = { id: id};\n'
-            }
-        ]
-    })
-    fixes.append({
         'fixName': 'FindAvailableRooms fix',
         'filePath': os.path.join(relative_path, 'Room.ts'),
         'Conditions': [
@@ -179,36 +151,44 @@ def main():
         ]
     })
     fixes.append({
-      'fixName': 'Room reservations fix',
-      'filePath': os.path.join(relative_path, 'RoomReservation.ts'),
-      'Conditions': [
-        {
-          'line': 154,
-          'toMatch': 'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
-        },
-        {
-          'line': 188,
-          'toMatch': 'public rateHotelAndRoom(id: any, roomRate: any, hotelRate: any, customHeaders?: Function): Observable<any> {\n'
-        }
-      ],
-      'Replaces': [
-        {
-          'line': 159,
-          'toReplace': '\n'
-        },
-        {
-          'line': 162,
-          'toReplace': '\tlet _urlParams: any = { id: id };\n'
-        },
-        {
-          'line': 193,
-          'toReplace': '\n'
-        },
-        {
-          'line': 196,
-          'toReplace': '\tlet _urlParams: any = { id: id };\n'
-        }
-      ]
+        'fixName': 'RoomReservation cancellation id and empty params fix',
+        'filePath': os.path.join(relative_path, 'RoomReservation.ts'),
+        'Conditions': [
+            {
+                'line': 122,
+                'toMatch': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, hotelId: any, customHeaders?: Function): Observable<any> {\n'
+            },
+            {
+                'line': 192,
+                'toMatch': 'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
+            },
+            {
+                'line': 226,
+                'toMatch': 'public rateHotelAndRoom(id: any, roomRate: any, hotelRate: any, customHeaders?: Function): Observable<any> {\n'
+            }
+        ],
+        'Replaces': [
+            {
+                'line': 122,
+                'toReplace': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = \'\', price: any, hotelDiscountId: any = \'\', hotelId: any, customHeaders?: Function): Observable<any> {\n'
+            },
+            {
+                'line': 197,
+                'toReplace': '\n'
+            },
+            {
+                'line': 200,
+                'toReplace': '\t\tlet _urlParams: any = { id: id};\n'
+            },
+            {
+                'line': 231,
+                'toReplace': '\n'
+            },
+            {
+                'line': 234,
+                'toReplace': '\tlet _urlParams: any = { id: id };\n'
+            }
+        ]
     })
     apply_fixes(fixes)
 

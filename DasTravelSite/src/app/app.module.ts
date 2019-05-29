@@ -68,6 +68,7 @@ import { RateRoomAndHotelComponent } from './rate-room-and-hotel/rate-room-and-h
 import { ChangeRentalServiceComponent } from './change-rental-service/change-rental-service.component';
 import { ListBranchesComponent } from './list-branches/list-branches.component';
 import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
+import { RoomBusinessReportsComponent } from './room-business-reports/room-business-reports.component';
 
 
 @NgModule({
@@ -107,7 +108,8 @@ import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.compon
     ReserveCarSpecialComponent,
     FriendsComponent,
     RateCarAndServiceComponent,
-    RateRoomAndHotelComponent
+    RateRoomAndHotelComponent,
+    RoomBusinessReportsComponent
   ],
   imports: [
     BrowserModule,

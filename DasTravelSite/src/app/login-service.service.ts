@@ -31,9 +31,7 @@ export class LoginServiceService {
       if (result.user.type === "hotelAdmin") {
         this.hotelservice.findOne({where: {myuserId: result.user.id}})
           .subscribe((resultHotel: Hotel) => {
-            console.log(resultHotel.id);
             this.itemService.setHotelId(resultHotel.id);
-            console.log(this.itemService.getHotelId());
           }, (err) => console.log());
       }
     });
