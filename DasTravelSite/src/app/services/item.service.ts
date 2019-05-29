@@ -17,6 +17,7 @@ export class ItemService {
   roomToReserve: any;
   carPrices: CarPrice[] = [];
   serviceId;
+  hotelId;
   carSpecialOffer;
 
   carReservationIdForRate;
@@ -52,6 +53,14 @@ export class ItemService {
 
   getServiceId() {
     return this.serviceId;
+  }
+
+  setHotelId(id) {
+    this.hotelId = id;
+  }
+
+  getHotelId() {
+    return this.hotelId;
   }
   
   setCarSpecialOffer(specialOffer) {

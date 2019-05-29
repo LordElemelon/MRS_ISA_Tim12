@@ -4,6 +4,7 @@ import { Room, RoomApi, HotelApi, Hotel, RoomPrice, HotelDiscount } from '../sha
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { RoomPriceApi, HotelDiscountApi, ReservationOfferApi } from '../shared/sdk/services/custom';
 import {MatSnackBar, MatTable} from '@angular/material';
+import {ItemService} from '../services/item.service';
 
 @Component({
   selector: 'app-room',
@@ -78,6 +79,7 @@ export class RoomComponent implements OnInit {
     private roompriceservice: RoomPriceApi,
     private roomdiscountservice: HotelDiscountApi,
     private hotelservice: HotelApi,
+    private itemservice: ItemService,
     private reservationofferservice: ReservationOfferApi,
     public snackBar: MatSnackBar,
     private fb: FormBuilder
@@ -94,7 +96,7 @@ export class RoomComponent implements OnInit {
       this.room = result;
       this.foundRoom = true;
     });
-    this.hotelservice.findOne({'where': {'name' : 'hotel1'}, include: 'hotelSpecialOffers'})
+    this.hotelservice.findOne({'where': {'id' : this.itemservice.getHotelId()}, include: 'hotelSpecialOffers'})
       .subscribe((hotel: Hotel) => {
         this.hotel = hotel;
       });
