@@ -1,12 +1,13 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoopBackConfig } from '../shared/sdk';
+import {Location, LocationApi, LoopBackConfig} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { RentalServiceApi } from '../shared/sdk/services';
 import { RentalService } from '../shared/sdk/models/RentalService';
 import { MatSnackBar } from "@angular/material";
 import {LoginServiceService} from '../login-service.service';
 import { ItemService } from '../services/item.service';
+import {count} from 'rxjs/operators';
 
 @Component({
   selector: 'app-rentalservices',
@@ -40,9 +41,14 @@ export class RentalservicesComponent implements OnInit {
 
   islist: boolean;
 
+  locations = [];
+  filteredLocations: Location[] = [];
+  filteredLocationsStrings = [];
+
   constructor(@Inject('baseURL') private baseURL,
     private rentalServiceService: RentalServiceApi,
     private loginService: LoginServiceService,
+    private locationsservice: LocationApi,
     private fb: FormBuilder,
     public snackBar: MatSnackBar,
     private itemService: ItemService) { 
@@ -56,25 +62,55 @@ export class RentalservicesComponent implements OnInit {
       this.createAddForm();
       this.createRemoveForm();
       this.createSearchForm();
+      this.locationsservice.find().subscribe((locations: Location[]) => {
+          this.locations = locations;
+          this.filteredLocations = this.locations;
+          this.fillLocationsList();
+      }
+    );
       this.loginService.user.subscribe(data => {
         if (data) {
           this.userType = data.user.type;
-          console.log("Usao ovde");
-          console.log(data);
         }
       });
   }
 
-  
-
   ngOnInit() {
-    
+  }
+
+  private _filter(value: string): Location[] {
+    if (value != null) {
+      const filterValue = value.toLowerCase();
+      return this.locations.filter(location => (location.city.toLowerCase() + ', ' + location.country.toLowerCase()).includes(filterValue));
+    } else {
+      return this.locations;
+    }
   }
 
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
        duration: 2000,
     });
+  }
+
+  fillLocationsList() {
+    this.filteredLocationsStrings = [];
+    for (const location of this.filteredLocations) {
+      this.filteredLocationsStrings.push(location.city + ', ' + location.country);
+    }
+  }
+
+  locationExists() {
+    if (this.addForm.value.countryCity == null) return false;
+    const loc = this.addForm.value.countryCity.split(', ');
+    const city = loc[0];
+    const country = loc[1];
+    for (const location of this.locations) {
+      if (location.city === city && location.country === country) {
+        return true;
+      }
+    }
+    return false;
   }
 
   setToAdd() {
@@ -120,8 +156,9 @@ export class RentalservicesComponent implements OnInit {
   addFormErrors = {
     'name': '',
     'address': '',
-    'description': ''
-  }
+    'description': '',
+    'countryCity': ''
+  };
 
   addFormValidationMessages = {
     'name': {
@@ -132,15 +169,25 @@ export class RentalservicesComponent implements OnInit {
     },
     'description': {
       'required': 'Description is required'
+    },
+    'countryCity': {
+      'required': 'Location is required',
+      'min': 'Location must exist'
     }
-  }
+  };
 
   onAddValueChanged(data?:any) {
     if (!this.addForm) { return; }
     const form = this.addForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
+    if (!this.locationExists()) {
+      this.addFormErrors['countryCity'] += this.addFormValidationMessages['countryCity']['min'];
+      this.addForm.controls['countryCity'].setErrors({'min' : true});
+    }
     for (const field in this.addFormErrors) {
       if (this.addFormErrors.hasOwnProperty(field)) {
-        //clear previous error message
+        // clear previous error message
         this.addFormErrors[field] = '';
         const control = form.get(field);
         if (control && !control.valid) {
@@ -159,6 +206,7 @@ export class RentalservicesComponent implements OnInit {
     this.addForm = this.fb.group({
       name: ['', Validators.required],
       address: ['', Validators.required],
+      countryCity: ['', Validators.required],
       description: ['', Validators.required]
     });
     this.addForm.valueChanges
@@ -167,21 +215,38 @@ export class RentalservicesComponent implements OnInit {
   }
 
   onAddSubmit() {
+    const loc = this.addForm.value.countryCity.split(', ');
     this.toAddService = this.addForm.value;
-    this.rentalServiceService.create(this.toAddService)
-    .subscribe(
-      (result) => {
-         this.openSnackBar("Adding succeded", "Dismiss");
-        },
-      (err) => {
-        this.openSnackBar("Adding failed", "Dimsiss");
-      });
-    this.addForm.reset({
-      name: '',
-      address: '',
-      description: ''
+    let country = '';
+    let city = '';
+    if (loc.length === 2) {
+      country = loc[1];
+      city = loc[0];
+    }
+    this.locationsservice.find({where: {city: city, country: country}})
+      .subscribe((locations: Location[]) => {
+        if (locations.length > 0) {
+          const location = locations[0];
+          this.toAddService.locationId = location.id;
+        }
+        this.rentalServiceService.create(this.toAddService)
+          .subscribe(
+            (result) => {
+              this.openSnackBar("Adding succeded", "Dismiss");
+            },
+            (err) => {
+              this.openSnackBar("Adding failed", "Dimsiss");
+            });
+        this.addForm.reset({
+          name: '',
+          address: '',
+          description: '',
+          countryCity: ''
+        });
+        this.addFormDirective.resetForm();
+      }, (err) => {
+       this.openSnackBar('Adding failed', 'Dismiss');
     });
-    this.addFormDirective.resetForm();
   }
 
   removeFormErrors = {
