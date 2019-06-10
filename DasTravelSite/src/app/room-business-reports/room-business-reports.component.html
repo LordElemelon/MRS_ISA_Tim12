@@ -1,0 +1,113 @@
+<mat-toolbar color="primary">
+  <a mat-button (click)="setToIncomeForm()" *ngIf="userType==='hotelAdmin'"> Income reports </a>
+  <a mat-button (click)="setToOccupancyForm()" *ngIf="userType==='hotelAdmin'"> Occupancy reports </a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+<div *ngIf="isIncomeForm&&userType==='hotelAdmin'" >
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="incomeForm" #incomeform="ngForm" (ngSubmit)="onIncomeSubmit()">
+        <p>
+          <mat-form-field class="form-size">
+            <mat-select formControlName="type" placeholder="Type of report">
+              <mat-option value="weekly">
+                Weekly
+              </mat-option>
+              <mat-option value="monthly">
+                Monthly
+              </mat-option>
+              <mat-option value="yearly">
+                Yearly
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="incomeFormErrors.type">
+                {{ incomeFormErrors.type }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="start" [matDatepicker]="myDatepicker" placeholder="Start time">
+            <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker></mat-datepicker>
+            <mat-error *ngIf="incomeFormErrors.start">
+              {{ incomeFormErrors.start }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="end" [matDatepicker]="myDatepicker2" placeholder="End time">
+            <mat-datepicker-toggle [for]="myDatepicker2"></mat-datepicker-toggle>
+            <mat-datepicker #myDatepicker2></mat-datepicker>
+            <mat-error *ngIf="incomeFormErrors.end">
+              {{ incomeFormErrors.end }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="incomeForm.invalid">
+            Submit
+        </button>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="isOccupancyForm&&userType==='hotelAdmin'" >
+  <div fxFlex fxFlexOffset="20px" class="form-size">
+    <form novalidate [formGroup]="occupancyForm" #occupancyform="ngForm" (ngSubmit)="onOccupancySubmit()">
+      <p>
+        <mat-form-field class="form-size">
+          <mat-select formControlName="type" placeholder="Type of report">
+            <mat-option value="weekly">
+              Weekly
+            </mat-option>
+            <mat-option value="monthly">
+              Monthly
+            </mat-option>
+            <mat-option value="yearly">
+              Yearly
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="occupancyFormErrors.type">
+            {{ occupancyFormErrors.type }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="start" [matDatepicker]="myDatepicker1" placeholder="Start time">
+          <mat-datepicker-toggle [for]="myDatepicker1"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker1></mat-datepicker>
+          <mat-error *ngIf="occupancyFormErrors.start">
+            {{ occupancyFormErrors.start }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="end" [matDatepicker]="myDatepicker3" placeholder="End time">
+          <mat-datepicker-toggle [for]="myDatepicker3"></mat-datepicker-toggle>
+          <mat-datepicker #myDatepicker3></mat-datepicker>
+          <mat-error *ngIf="occupancyFormErrors.end">
+            {{ occupancyFormErrors.end }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="occupancyForm.invalid">
+        Submit
+      </button>
+    </form>
+  </div>
+</div>
+
+
+<div *ngIf="isChart">
+  <div fxFlex="50">
+    <canvas baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [legend]="barChartLegend"
+      [chartType]="barChartType"></canvas>
+  </div>
+</div>

@@ -217,4 +217,158 @@ module.exports = function(Roomreservation) {
 		http: {path: '/rateHotelAndRoom', verb: 'post' },
         returns: {type: 'object', arg: 'retval'}
 	})
+
+  Roomreservation.getYearlyReport = function(startDate, endDate, hotelId, type, cb) {
+    var years = Roomreservation.generateYearsArray(startDate, endDate);
+    var baseNum = startDate.getYear();
+    var retval = {};
+    Roomreservation.find({
+      where: {
+        startDate: {
+          lte: endDate
+        },
+        endDate: {
+          gte: startDate
+        }
+      }
+    })
+      .then((result) => {
+        retval.labels = years;
+        retval.sums = [];
+        for (let year of retval.labels) {
+          retval.sums.push(0);
+        }
+        for (let reservation of result) {
+          var tempyear = reservation.startDate.getYear();
+          retval.sums[tempyear - baseNum] += Math.pow(reservation.price, type);
+        }
+        cb(null, retval);
+      })
+  }
+
+  Roomreservation.generateYearsArray = function(startDate, endDate) {
+    var retVal = [];
+    var startYear = startDate.getYear();
+    var endYear = endDate.getYear();
+    var i = startYear;
+    for (; i <= endYear; i++) {
+      retVal.push((1900 + i).toString());
+    }
+    return retVal;
+  }
+
+  Roomreservation.remoteMethod('getYearlyReport', {
+    accepts: [{arg: 'startDate', type: 'date', required: true},
+      {arg: 'endDate', type: 'date', required: true},
+      {arg: 'hotelId', type: 'string', required: true},
+      {arg: 'type', type: 'number', required: true}],
+    http: {path: '/getYearlyReport', verb: 'get'},
+    returns: {type: 'object', arg: 'retval'}
+  });
+
+  Roomreservation.getMonthlyReport = function(startDate, endDate, hotelId, type, cb) {
+    var monthArray = Roomreservation.generateMonthArray(startDate, endDate);
+    var baseNum = startDate.getYear() * 12 + startDate.getMonth();
+    var retval = {};
+    Roomreservation.find({
+      where: {
+        startDate: {
+          lte: endDate
+        },
+        endDate: {
+          gte: startDate
+        }
+      }
+    })
+      .then((result) => {
+        retval.labels = monthArray;
+        retval.sums = [];
+        for (let month of retval.labels) {
+          retval.sums.push(0);
+        }
+        for (let reservation of result) {
+          var tempNum = reservation.startDate.getYear() * 12 + reservation.startDate.getMonth();
+          retval.sums[tempNum - baseNum] += Math.pow(reservation.price, type);
+        }
+        cb(null, retval);
+      })
+  }
+
+  Roomreservation.generateMonthArray = function (startDate, endDate) {
+    var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var start = startDate.getYear() * 12 + startDate.getMonth();
+    var end = endDate.getYear() * 12 + endDate.getMonth();
+    var retval = [];
+    var i = start;
+    for (; i <= end; i++) {
+      var tempYear = (Math.floor(i / 12) + 1900).toString();
+      var tempMonth = monthStrings[i % 12];
+      retval.push(tempYear + ' ' + tempMonth);
+    }
+    return retval;
+  }
+
+  Roomreservation.remoteMethod('getMonthlyReport', {
+    accepts: [{arg: 'startDate', type: 'date', required: true},
+      {arg: 'endDate', type: 'date', required: true},
+      {arg: 'hotelId', type: 'string', required: true},
+      {arg: 'type', type: 'number', required: true}],
+    http: {path: '/getMonthlyReport', verb: 'get'},
+    returns: {type: 'object', arg: 'retval'}
+  });
+
+  Roomreservation.getWeeklyReport = function(startDate, endDate, hotelId, type, cb) {
+    startDate.setDate(startDate.getDate() - startDate.getDay());
+    if (endDate.getDay() != 0) {
+      endDate.setDate(endDate.getDate() + 7 - endDate.getDay());
+    }
+    var weeks = Roomreservation.generateWeekArray(startDate, endDate);
+    var retval = {};
+    Roomreservation.find({
+      where: {
+        startDate: {
+          lte: endDate
+        },
+        endDate: {
+          gte: startDate
+        }
+      }
+    })
+      .then((result) => {
+        retval.labels = weeks
+        retval.sums = []
+        for (let week of retval.labels) {
+          retval.sums.push(0);
+        }
+        for (let reservation of result) {
+          var tempNum = Math.floor((reservation.startDate - startDate)/(1000 * 60 * 60 * 24 * 7));
+          retval.sums[tempNum] += Math.pow(reservation.price, type);
+        }
+        cb(null, retval);
+      })
+  }
+
+  Roomreservation.generateWeekArray = function (startDate, endDate) {
+    var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var retVal = []
+    var weekCount = (endDate - startDate)/(1000 * 60 * 60 * 24 * 7)
+    var i = 0;
+    var currentDate = new Date(startDate.getTime());
+    for (; i < weekCount; i++) {
+      var label = monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate() + ' - '
+      currentDate.setDate(currentDate.getDate() + 7);
+      label += monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate()
+      retVal.push(label);
+    }
+    return retVal;
+  }
+
+  Roomreservation.remoteMethod('getWeeklyReport', {
+    accepts: [{arg: 'startDate', type: 'date', required: true},
+      {arg: 'endDate', type: 'date', required: true},
+      {arg: 'hotelId', type: 'string', required: true},
+      {arg: 'type', type: 'number', required: true}],
+    http: {path: '/getWeeklyReport', verb: 'get'},
+    returns: {type: 'object', arg: 'retval'}
+  });
 };
