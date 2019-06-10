@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {Myuser} from './shared/sdk/models';
+import {Hotel, Myuser} from './shared/sdk/models';
 import {RentalService} from './shared/sdk/models';
-import { RentalServiceApi } from './shared/sdk';
+import {HotelApi, RentalServiceApi} from './shared/sdk';
 import { ItemService } from './services/item.service';
 
 
@@ -13,6 +13,7 @@ export class LoginServiceService {
   observableUser = new BehaviorSubject<any>(null);
   public user: Observable<any>;
   constructor(private rentalServiceService: RentalServiceApi,
+    private hotelservice: HotelApi,
     private itemService: ItemService) {
     this.user = this.observableUser.asObservable();
     this.user.subscribe((result) => {
@@ -27,6 +28,14 @@ export class LoginServiceService {
             console.log(err);
           })
       }
-    })
+      if (result.user.type === "hotelAdmin") {
+        this.hotelservice.findOne({where: {myuserId: result.user.id}})
+          .subscribe((resultHotel: Hotel) => {
+            console.log(resultHotel.id);
+            this.itemService.setHotelId(resultHotel.id);
+            console.log(this.itemService.getHotelId());
+          }, (err) => console.log());
+      }
+    });
   }
 }

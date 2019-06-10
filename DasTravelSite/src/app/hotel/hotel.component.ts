@@ -6,6 +6,7 @@ import { Hotel, Room, HotelSpecialOffer } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatSnackBar, MatTable} from '@angular/material';
 import {LoginServiceService} from '../login-service.service';
+import {ItemService} from '../services/item.service';
 
 @Component({
   selector: 'app-hotel',
@@ -141,6 +142,7 @@ export class HotelComponent implements OnInit {
     private specialofferservice: HotelSpecialOfferApi,
     public snackBar: MatSnackBar,
     private loginService: LoginServiceService,
+    private itemservice: ItemService,
     private fb: FormBuilder
     ) {
       LoopBackConfig.setBaseURL(baseURL);
@@ -159,7 +161,7 @@ export class HotelComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.hotelservice.findOne({'where': {'name' : 'hotel1'}, 'include': 'hotelSpecialOffers'})
+    this.hotelservice.findOne({'where': {'id' : this.itemservice.getHotelId()}, 'include': 'hotelSpecialOffers'})
     .subscribe((hotel: Hotel) => {
       this.myHotel = hotel;
       this.setValueModifyHotelForm();
