@@ -38,5 +38,31 @@
     "name": "postgres",
     "user": "myuser",
     "connector": "postgresql"
+  },
+  "geoRest": {
+    "name": "geoRest",
+    "connector": "rest",
+    "operations": [
+      {
+        "template": {
+          "method": "GET",
+          "url": "https://maps.googleapis.com/maps/api/geocode/json?address={format=json}&key=AIzaSyCS7Tj-OtjMMBnoW_d28O4VoYgt1-3MHGM",
+          "headers": {
+            "accepts": "application/json",
+            "content-type": "application/json"
+          },
+          "query": {
+            "address": "{address}",
+            "sensor": "{sensor=false}"
+          },
+          "responsePath": "$.results[0].geometry.location"
+        },
+        "functions": {
+          "geocode": [
+            "address"
+          ]
+        }
+      }
+    ]
   }
 }

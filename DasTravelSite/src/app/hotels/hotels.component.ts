@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
-import {LoopBackConfig, Room, RoomApi} from '../shared/sdk';
+import {LocationApi, LoopBackConfig, Room, RoomApi, Location} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi } from '../shared/sdk/services';
 import { Hotel } from '../shared/sdk/models/';
@@ -18,6 +18,9 @@ export class HotelsComponent implements OnInit {
 
   foundHotels: Hotel[];
   foundRooms: any[];
+  locations = [];
+  filteredLocations: Location[] = [];
+  filteredLocationsStrings = [];
   addActive = true;
   removeActive = false;
   searchActive = false;
@@ -44,7 +47,8 @@ export class HotelsComponent implements OnInit {
 
   formErrors = {
     'name': '',
-    'address': ''
+    'address': '',
+    'countryCity': ''
   };
 
   validationMessages = {
@@ -53,6 +57,10 @@ export class HotelsComponent implements OnInit {
     },
     'address': {
       'required' : 'Hotel address is required'
+    },
+    'countryCity': {
+      'required': 'Location is required',
+      'min': 'Location must exist'
     }
   };
 
@@ -88,6 +96,7 @@ export class HotelsComponent implements OnInit {
     private hotelservice: HotelApi,
     private roomservice: RoomApi,
     private itemservice: ItemService,
+    private locationsservice: LocationApi,
     private _router: Router,
     private fb: FormBuilder,
     private loginService: LoginServiceService,
@@ -99,15 +108,30 @@ export class HotelsComponent implements OnInit {
       this.createForm();
       this.createSearchHotelForm();
       this.createSearchRoomsForm();
-      this.loginService.user.subscribe(data => {
-        if (data) {
-          this.userType = data.user.type;
-        }
-      });
+    this.hotelservice.find().subscribe((hotels: Hotel[]) => this.foundHotels = hotels);
+    this.locationsservice.find().subscribe((locations: Location[]) => {
+        this.locations = locations;
+        this.filteredLocations = this.locations;
+        this.fillLocationsList();
+      }
+    );
+    this.loginService.user.subscribe(data => {
+      if (data) {
+        this.userType = data.user.type;
+      }
+    });
    }
 
-  ngOnInit() {
-    this.hotelservice.find().subscribe((hotels: Hotel[]) => this.foundHotels = hotels);
+  ngOnInit() { }
+
+
+  private _filter(value: string): Location[] {
+    if (value != null) {
+      const filterValue = value.toLowerCase();
+      return this.locations.filter(location => (location.city.toLowerCase() + ', ' + location.country.toLowerCase()).includes(filterValue));
+    } else {
+      return this.locations;
+    }
   }
 
   openSnackBar(message: string, action: string) {
@@ -116,9 +140,35 @@ export class HotelsComponent implements OnInit {
     });
   }
 
+  fillLocationsList() {
+    this.filteredLocationsStrings = [];
+    for (const location of this.filteredLocations) {
+      this.filteredLocationsStrings.push(location.city + ', ' + location.country);
+    }
+  }
+
+  locationExists() {
+    if (this.hotelForm.value.countryCity == null) return false;
+    const loc = this.hotelForm.value.countryCity.split(', ');
+    const city = loc[0];
+    const country = loc[1];
+    for (const location of this.locations){
+      if (location.city === city && location.country === country) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   onValueChanged(data?: any)  {
     if (!this.hotelForm) {return; }
     const form = this.hotelForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
+    if (!this.locationExists()) {
+      this.formErrors['countryCity'] += this.validationMessages['countryCity']['min'];
+      this.hotelForm.controls['countryCity'].setErrors({'min' : true});
+    }
     for (const field in this.formErrors)  {
       if (this.formErrors.hasOwnProperty(field))  {
         this.formErrors[field] = '';
@@ -139,6 +189,7 @@ export class HotelsComponent implements OnInit {
     this.hotelForm = this.fb.group({
       'name': ['', Validators.required],
       'address': ['', Validators.required],
+      'countryCity': ['', Validators.required],
       'description': ''
     });
 
@@ -148,20 +199,38 @@ export class HotelsComponent implements OnInit {
   }
 
   onSubmit() {
+    const hotel = this.hotelForm.value;
+    const countryCity = hotel.countryCity.split(', ');
+    let country = '';
+    let city = '';
+    if (countryCity.length === 2) {
+      country = countryCity[1];
+      city = countryCity[0];
+    }
     this.newHotel = this.hotelForm.value;
-    this.hotelservice.create(this.newHotel)
-    .subscribe(result =>  {
-      this.hotelForm.reset({
-        name: '',
-        address: '',
-        description: '',
+    this.locationsservice.find({where: {city: city, country: country}})
+      .subscribe((locations: Location[]) => {
+        if (locations.length > 0) {
+          const location = locations[0];
+          this.newHotel.locationId = location.id;
+        }
+        delete this.newHotel[countryCity];
+        this.hotelservice.create(this.newHotel)
+          .subscribe(result =>  {
+            this.hotelForm.reset({
+              name: '',
+              address: '',
+              description: '',
+              countryCity: ''
+            });
+            this.hotelFormDirective.resetForm();
+            this.openSnackBar('Added a hotel succesfully', 'Dismiss');
+          }, err =>  {
+            this.openSnackBar('Can not add this hotel. Check if the name is already taken', 'Dismiss');
+          });
+      }, err => {
+        this.openSnackBar('Can not add this hotel. Check if the name is already taken', 'Dismiss');
       });
-      this.hotelFormDirective.resetForm();
-      this.openSnackBar('Added a hotel succesfully', 'Dismiss');
-    }, err =>  {
-      this.openSnackBar('Can not add this hotel. Check if the name is already taken', 'Dismiss');
-    });
-
   }
 
 

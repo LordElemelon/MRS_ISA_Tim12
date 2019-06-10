@@ -24,6 +24,14 @@
     "address": {
       "type": "string",
       "required": true
+    },
+    "latitude": {
+      "type": "number",
+      "required": false
+    },
+    "longitude": {
+      "type": "number",
+      "required": false
     }
   },
   "validations": [],

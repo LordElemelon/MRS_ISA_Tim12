@@ -30,6 +30,17 @@
           </mat-form-field>
         </p>
         <p>
+          <mat-form-field>
+            <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+            <mat-error *ngIf="formErrors.countryCity">
+              {{ formErrors.countryCity }}
+            </mat-error>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+          </mat-autocomplete>
+        </p>
+        <p>
           <mat-form-field class="half-width">
             <input matInput formControlName="address" placeholder="Address" type="text">
             <mat-error *ngIf="formErrors.address">
@@ -45,9 +56,6 @@
         <button type="submit" mat-button class="background-primary text-floral-white"
         [disabled]="hotelForm.invalid">Submit</button>
       </form>
-      <p *ngIf = "added">
-          Added succesfully.
-      </p>
     </div>
   </div>
 </div>

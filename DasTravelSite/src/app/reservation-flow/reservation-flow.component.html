@@ -1,0 +1,408 @@
+
+  <p>
+    A flight has been reserved for you from July 5th 2019 to July 15th 2019 From Torronto to Vrbas <br>
+    Please finish the reservation process by selecting wether you want a car and or hotel
+  </p>
+
+
+
+
+
+<div *ngIf="!roomIsReserved">
+    Click here to find a room for your trip <br>
+  <button mat-button class="background-primary text-floral-white" (click)="switchToRoomSearch()" [disabled]="roomIsReserved">
+    Find rooms
+  </button> 
+  <br>
+  <br>
+</div>
+<p *ngIf="roomIsReserved">Room reserved</p>
+<div *ngIf="!carIsReserved">
+    Click here to find a vehicle for your trip <br>
+  <button mat-button class="background-primary text-floral-white" (click)="switchToCarSearch()" [disabled]="carIsReserved">
+    Find cars
+  </button>
+  <br>
+  <br>
+</div>
+<p *ngIf="carIsReserved">Car reserved</p>
+<div>
+    Return to home <br>
+    <button mat-button class="background-primary text-floral-white" (click)="homeClick()">
+      Home
+    </button>
+    <br>
+    <br>
+</div>
+
+
+
+
+
+<!--Rooms search form html-->
+<div *ngIf="searchRoomsActive">
+     <!-- *ngIf="qSearchDone"-->
+    <button mat-button class="background-primary text-floral-white" (click)="toggleQuicks()">
+     Show/Hide quick reservation
+    </button>
+    <div *ngIf="displayQuicks">
+        <div fxLayout="flex">
+          <div fxFlex>
+            <table #tablereservations mat-table [dataSource]="reservationsInfo">
+              <ng-container matColumnDef="hotel">
+                <th mat-header-cell *matHeaderCellDef>Hotel</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.hotel.name}} </td>
+              </ng-container>
+              <ng-container matColumnDef="roomNumber">
+                <th mat-header-cell *matHeaderCellDef>Room Number</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.number}}</td>
+              </ng-container>
+              <ng-container matColumnDef="beds">
+                <th mat-header-cell *matHeaderCellDef>Beds</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.room.beds}}</td>
+              </ng-container>
+              <ng-container matColumnDef="startDate">
+                <th mat-header-cell *matHeaderCellDef>Start Date</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.startDate | date:'dd/MM/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="endDate">
+                <th mat-header-cell *matHeaderCellDef>End Date</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.endDate | date:'dd/MM/yyyy'}}</td>
+              </ng-container>
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Price</th>
+                <td mat-cell *matCellDef="let reservationInfo">{{reservationInfo.reservation.price}}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplayReservations"></tr>
+              <tr mat-row *matRowDef="let reservationInfo; columns: columnsToDisplayReservations"
+              (click)="selectRow(reservationInfo.reservation.id)" class="pointer"
+              [ngClass]="{selectedRow: selectedReservationId === reservationInfo.reservation.id}"></tr>
+            </table>
+            <button type="submit" mat-button class="background-primary text-floral-white"
+                    (click)="reserve()" style="margin: 10px">Reserve</button>
+          </div>
+          <div fxFlex>
+            <table #tablespecialoffers mat-table [dataSource]="specialOffers">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Special offers</th>
+                <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}} </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers"></tr>
+              <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffers"></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+  <div class="container"
+       fxLayout="column"
+       fxLayoutGap="10px">
+    <div fxFlex>
+      <div>
+        <form novalidate [formGroup]="searchRoomsForm" #fformSearchRooms="ngForm" (ngSubmit)="onSearchRoomsSubmit()">
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="startDate" [matDatepicker]="myDatepicker1" placeholder="Start date" readonly="true">
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" readonly placeholder="End date" readonly="true">
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width" style="height:50%">
+              <input matInput formControlName="beds" placeholder="Number of beds" type="number">
+              <mat-error *ngIf="searchRoomsFormErrors.beds">
+                {{ searchRoomsFormErrors.beds}}
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="price" placeholder="Max price" type="number">
+              <mat-error *ngIf="searchRoomsFormErrors.price">
+                {{ searchRoomsFormErrors.price}}
+              </mat-error>
+            </mat-form-field>
+          </p>
+          <p>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="name" placeholder="Hotel Name" type="text">
+            </mat-form-field>
+            <mat-form-field class="half-width">
+              <input matInput formControlName="address" placeholder="Address" type="text">
+            </mat-form-field>
+          <p>
+            <button type="submit" mat-button class="background-primary text-floral-white"
+            [disabled]="searchRoomsForm.invalid">Submit</button>
+          </p>
+          <hr>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Car search form html-->
+<div fxLayout="flex" *ngIf="isCarSearch">
+    <button mat-button class="background-primary text-floral-white" (click)="toggleQuicksCar()">
+        Show/Hide quick reservation
+      </button>
+      <br>
+      <br>
+</div>
+
+<div *ngIf="displayCarQuicks&&isCarSearch">
+  <mat-grid-list cols="3" rowHeight="200px">
+      <mat-grid-tile *ngFor="let discount of foundDiscounts">
+        <mat-card id={{discount.nmbr}} (click)="inspectv2($event)" class="pointer">
+          Registration: {{discount.registration}} <br>
+          Start date: {{discount.startDate}} <br>
+          End date: {{discount.endDate}} <br>
+          Total days: {{discount.days}} <br>
+          Total price without discount: {{discount.total}} <br>
+          Discount: {{discount.discount}} <br>
+          Total price with discount: {{discount.totalDiscounted}} <br>
+        </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+    <p *ngIf="!haveCarQuicks">There seem to be no special offers available during this time</p>
+</div>
+
+
+<div fxLayout="flex" *ngIf="isCarSearch">
+    <div fxFlex fxFlexOffset="20px" class="form-size">
+      <form novalidate [formGroup]="searchForm" #searchform="ngForm" (ngSubmit)="onSearchSubmit()">
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="startDate" [matDatepicker]="myDatepicker" placeholder="Start time" readonly="true">
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="endDate" [matDatepicker]="myDatepicker2" placeholder="Return time" readonly="true">
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="make" placeholder="Make" type="text">
+            <mat-error *ngIf="searchFormErrors.make">
+              {{ searchFormErrors.make }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="seats" placeholder="Seats" pattern="[0-9]*" type="text">
+            <mat-error *ngIf="searchFormErrors.seats">
+              {{ searchFormErrors.seats }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <p>
+          <mat-form-field class="half-width">
+            <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
+            <mat-error *ngIf="searchFormErrors.rentalService">
+              {{ searchFormErrors.rentanService }}
+            </mat-error>
+          </mat-form-field>
+        </p>
+        <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="searchForm.invalid">
+            Submit
+        </button>
+      </form>
+    </div>
+    <div fxFlex>
+      <mat-grid-list cols="3" rowHeight="200px">
+        <mat-grid-tile *ngFor="let car of foundCars">
+          <mat-card id={{car.id}} (click)="inspect($event)" class="pointer">
+            Registration: {{car.registration}} | Make:  {{car.make}} | Seats:  {{car.seats}} | Price: {{car.price}} | Category:  {{car.category}}
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+
+  <div *ngIf="CarQuickReservationTime">
+      <form (ngSubmit)="onQuickCarSubmit()">
+          <p>
+              Registration: 
+              <mat-form-field class="form-size">
+                  <input matInput placeholder={{specialOffer.registration}} type="text" [readonly]="true">
+              </mat-form-field>
+          </p>
+          <p>
+              Start date:
+              <mat-form-field class="form-size">
+                  <input matInput placeholder={{specialOffer.startDate}} type="text" [readonly]="true">
+              </mat-form-field>
+          </p>
+          <p>
+              End date:
+              <mat-form-field class="form-size">
+                  <input matInput placeholder={{specialOffer.endDate}} type="text" [readonly]="true">
+              </mat-form-field>
+          </p>
+          <p>
+              Total days:
+              <mat-form-field class="form-size">
+                  <input matInput placeholder={{specialOffer.days}} type="text" [readonly]="true">
+              </mat-form-field>
+          </p>
+          <p>
+            Total price without discount:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{specialOffer.total}} type="text" [readonly]="true">
+            </mat-form-field>
+          </p>
+          <p>
+            Discount:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{specialOffer.discount}} type="text" [readonly]="true">
+            </mat-form-field>
+          </p>
+          <p>
+              Total price with discount
+              <mat-form-field class="form-size">
+                  <input matInput placeholder={{specialOffer.totalDiscounted}} type="text" [readonly]="true">
+              </mat-form-field>
+          </p>
+          <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
+              Submit
+          </button>
+      </form>
+  </div>
+
+
+<!--Rooms card list html-->
+<div *ngIf="searchDone">
+  <mat-grid-list cols="3" rowHeight="200px">
+    <mat-grid-tile *ngFor="let room of foundRooms">
+      <mat-card class="pointer" (click) ="clickRoom(foundRooms.indexOf(room))">
+        <mat-card-content>
+          <h3>{{foundRooms.indexOf(room) + 1}}</h3>
+          Hotel: {{room.hotel}} <br>
+          Room number: {{room.room.number}} <br>
+          Room description: {{room.room.description}} <br>
+          Price: {{room.price}}
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
+
+
+<!--Reserve room html-->
+<div *ngIf="RoomReservationTime">
+  <form novalidate [formGroup]="reserveForm" (ngSubmit)="onReserveRoomSubmit()">
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="startDate" readonly placeholder="Start date">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="endDate" readonly placeholder="End date">
+      </mat-form-field>
+      <mat-form-field class="half-width" style="height:50%">
+        <input matInput formControlName="hotel" readonly placeholder="Hotel" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="roomNumber" readonly placeholder="Room number" type="number">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="beds" readonly placeholder="Number of beds" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="description" readonly placeholder="Description" type="text">
+      </mat-form-field>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="price" readonly placeholder="Price" type="number">
+      </mat-form-field>
+    </p>
+    <div fxLayout="row">
+      <div fxFlex>
+        <button type="submit" mat-button class="background-primary text-floral-white"
+                [disabled]="userType!=='registeredUser'">Submit</button>
+      </div>
+      <div fxFlex>
+        <h3>
+          Select special offers
+        </h3>
+        <table mat-table [dataSource]="availableOffers">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}}</td>
+          </ng-container>
+          <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef>Price</th>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.price}}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffer"></tr>
+          <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffer"
+              (click)="toggleRow(specialOffer.id)" class="pointer"
+              [ngClass]="{selectedRow: selectedOffers.indexOf(specialOffer.id)>=0}"></tr>
+        </table>
+      </div>
+    </div>
+    <hr>
+  </form>
+</div>
+
+<div *ngIf="CarReservationTime">
+    <form (ngSubmit)="onQuickCarSubmit()">
+        <p>
+            Registration: 
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.registration}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Make:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.make}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Seats:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.seats}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Category:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.category}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Start date:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.start}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            End date:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.end}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Total days:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.days}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Total price:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.price}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <p>
+            Total price:
+            <mat-form-field class="form-size">
+                <input matInput placeholder={{car.totalPrice}} type="text" [readonly]="true">
+            </mat-form-field>
+        </p>
+        <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
+            Submit
+        </button>
+    </form>
+</div>
