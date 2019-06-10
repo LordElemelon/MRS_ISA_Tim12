@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 'use strict';
 
 module.exports = function(Rentalservice) {
@@ -67,4 +68,32 @@ module.exports = function(Rentalservice) {
         http: {path: '/getAvailableServices', verb: 'get' },
         returns: {type: 'object', arg: 'retval'}
     })
+
+    Rentalservice.observe('before save', function findLatLong(ctx, next) {
+        let instance = ctx.instance.__data;
+        let address = instance.address;
+        let queryString = address;
+        let locationId = instance.locationId;
+        Rentalservice.app.models.Location.findById(locationId, (err, result) => {
+            if (err) next(new Error('Something went wrong'));
+            else {
+              if (result != null) {
+                queryString = result.country + ' ' + result.city + ' ' + address;
+              }
+              var geoService = Rentalservice.app.dataSources.geoRest;
+              geoService.geocode(queryString, (err, result) => {
+                if (err) next(new Error('Something went wrong'));
+                else if (result.length > 0) {
+                  instance.latitude = result[0].lat;
+                  instance.longitude = result[0].lng;
+                  next();
+                } else {
+                  instance.latitude = 0;
+                  instance.longitude = 0;
+                  next();
+                }
+              });
+            }
+        });
+    });
 };

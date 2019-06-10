@@ -25,5 +25,6 @@ export * from './CarSpecialOffer';
 export * from './QuickFlightReservation';
 export * from './Friendship';
 export * from './ReservationOffer';
+export * from './Location';
 export * from './BaseModels';
 export * from './FireLoopRef';

@@ -136,5 +136,9 @@
   "reservationOffer": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "location": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }

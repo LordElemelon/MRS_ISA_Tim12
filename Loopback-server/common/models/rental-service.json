@@ -17,6 +17,14 @@
       "type": "string",
       "required": true
     },
+    "latitude": {
+      "type": "number",
+      "required": false
+    },
+    "longitude": {
+      "type": "number",
+      "required": false
+    },
     "description": {
       "type": "string",
       "required": true
@@ -45,6 +53,11 @@
     "carPrices": {
       "type": "hasMany",
       "model": "CarPrice",
+      "foreignKey": ""
+    },
+    "location": {
+      "type": "belongsTo",
+      "model": "location",
       "foreignKey": ""
     }
   },

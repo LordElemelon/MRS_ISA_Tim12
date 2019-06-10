@@ -2,34 +2,43 @@
 import {
   Branch,
   Car,
-  CarPrice
+  CarPrice,
+  Location
 } from '../index';
 
 declare var Object: any;
 export interface RentalServiceInterface {
   "name": string;
   "address": string;
+  "latitude"?: number;
+  "longitude"?: number;
   "description": string;
   "rating"?: number;
   "ratingCount"?: number;
   "id"?: any;
   "myuserId"?: any;
+  "locationId"?: any;
   branches?: Branch[];
   cars?: Car[];
   carPrices?: CarPrice[];
+  location?: Location;
 }
 
 export class RentalService implements RentalServiceInterface {
   "name": string;
   "address": string;
+  "latitude": number;
+  "longitude": number;
   "description": string;
   "rating": number;
   "ratingCount": number;
   "id": any;
   "myuserId": any;
+  "locationId": any;
   branches: Branch[];
   cars: Car[];
   carPrices: CarPrice[];
+  location: Location;
   constructor(data?: RentalServiceInterface) {
     Object.assign(this, data);
   }
@@ -71,6 +80,14 @@ export class RentalService implements RentalServiceInterface {
           name: 'address',
           type: 'string'
         },
+        "latitude": {
+          name: 'latitude',
+          type: 'number'
+        },
+        "longitude": {
+          name: 'longitude',
+          type: 'number'
+        },
         "description": {
           name: 'description',
           type: 'string'
@@ -91,6 +108,10 @@ export class RentalService implements RentalServiceInterface {
         },
         "myuserId": {
           name: 'myuserId',
+          type: 'any'
+        },
+        "locationId": {
+          name: 'locationId',
           type: 'any'
         },
       },
@@ -118,6 +139,14 @@ export class RentalService implements RentalServiceInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'rentalServiceId'
+        },
+        location: {
+          name: 'location',
+          type: 'Location',
+          model: 'Location',
+          relationType: 'belongsTo',
+                  keyFrom: 'locationId',
+          keyTo: 'id'
         },
       }
     }
