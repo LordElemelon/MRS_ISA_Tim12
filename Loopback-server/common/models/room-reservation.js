@@ -193,9 +193,18 @@ module.exports = function(Roomreservation) {
 				return Roomreservation.replaceById(myReservation.id, myReservation, {transaction: tx});
 			})
 			.then((result) => {
-				tx.commit();
+        return Roomreservation.app.models.myuser.findById(requestid);
+				
+      })
+      .then((result) => {
+        var new_points = Math.round(myReservation.price / 10) + result.bonusPoints;
+        result.bonusPoints = new_points;
+        return Roomreservation.app.models.myuser.replaceById(result.id, result, {transaction: tx});
+      })
+      .then((result) => {
+        tx.commit();
 				cb(null, result);
-			})
+      })
 			.catch((err) => {
 				tx.rollback();
 				cb(err, null);

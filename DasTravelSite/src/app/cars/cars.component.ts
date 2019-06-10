@@ -403,7 +403,6 @@ export class CarsComponent implements OnInit {
 
   matchCarsAndPrices(cars, prices: CarPrice[], start) {
     start = new Date(start);
-
     for (let car of cars) {
       car.price = 0;
       car.start = new Date(0);
