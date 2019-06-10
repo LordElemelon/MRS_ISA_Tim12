@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule, MatTableModule} from '@angular/material';
+import {MatAutocompleteModule, MatNativeDateModule, MatTableModule} from '@angular/material';
 import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -70,6 +70,9 @@ import { ListBranchesComponent } from './list-branches/list-branches.component';
 import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
 import { RoomBusinessReportsComponent } from './room-business-reports/room-business-reports.component';
 import { ReservationFlowComponent } from './reservation-flow/reservation-flow.component';
+import { LocationsComponent } from './locations/locations.component';
+import { MapComponent } from './map/map.component';
+import {AgmCoreModule} from '@agm/core';
 
 
 @NgModule({
@@ -111,7 +114,9 @@ import { ReservationFlowComponent } from './reservation-flow/reservation-flow.co
     RateCarAndServiceComponent,
     RateRoomAndHotelComponent,
     RoomBusinessReportsComponent,
-    ReservationFlowComponent
+    ReservationFlowComponent,
+    LocationsComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -138,7 +143,11 @@ import { ReservationFlowComponent } from './reservation-flow/reservation-flow.co
     ReactiveFormsModule,
     BrowserAnimationsModule,
     ChartsModule,
-    SDKBrowserModule.forRoot()
+    SDKBrowserModule.forRoot(),
+    MatAutocompleteModule,
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyCS7Tj-OtjMMBnoW_d28O4VoYgt1-3MHGM'
+    })
   ],
   providers: [
     {provide: 'baseURL', useValue: baseURL}, ItemService,

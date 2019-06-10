@@ -1,0 +1,34 @@
+<div class="container"
+     fxLayout="column"
+     fxLayoutGap="10px">
+
+  <div fxFlex>
+    <div>
+      <h3>Add a location</h3>
+      <hr>
+    </div>
+  </div>
+
+  <div fxFlex class="form-size">
+    <form novalidate [formGroup]="addLocationForm" #fformAddLocation="ngForm" (ngSubmit)="onAddLocationSubmit()">
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="country" placeholder="Country" type="text">
+          <mat-error *ngIf="addLocationFormErrors.country">
+            {{ addLocationFormErrors.country }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field class="half-width">
+          <input matInput formControlName="city" placeholder="City" type="text">
+          <mat-error *ngIf="addLocationFormErrors.city">
+            {{ addLocationFormErrors.city}}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <button type="submit" mat-button class="background-primary text-floral-white"
+              [disabled]="addLocationForm.invalid">Submit</button>
+    </form>
+  </div>
+</div>

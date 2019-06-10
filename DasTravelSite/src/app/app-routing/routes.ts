@@ -21,6 +21,8 @@ import { ListCarDiscountsComponent } from '../list-car-discounts/list-car-discou
 import { ReserveCarSpecialComponent } from '../reserve-car-special/reserve-car-special.component';
 import { RoomBusinessReportsComponent } from '../room-business-reports/room-business-reports.component';
 import { ReservationFlowComponent } from '../reservation-flow/reservation-flow.component';
+import {LocationsComponent} from '../locations/locations.component';
+import {MapComponent} from '../map/map.component';
 
 export const routes: Routes = [
     {path: 'home', component: HomeComponent},
@@ -45,5 +47,7 @@ export const routes: Routes = [
     {path: 'listCarDiscounts', component: ListCarDiscountsComponent},
     {path: 'reserveCarSpecial', component: ReserveCarSpecialComponent},
     {path: 'roomBusinessReports', component: RoomBusinessReportsComponent},
-    {path: 'reservationFlow', component: ReservationFlowComponent}
+    {path: 'reservationFlow', component: ReservationFlowComponent},
+    {path: 'locations', component: LocationsComponent},
+    {path: 'maps', component: MapComponent}
 ];

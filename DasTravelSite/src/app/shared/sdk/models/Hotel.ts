@@ -3,36 +3,45 @@ import {
   Room,
   RoomPrice,
   HotelSpecialOffer,
-  HotelDiscount
+  HotelDiscount,
+  Location
 } from '../index';
 
 declare var Object: any;
 export interface HotelInterface {
   "name": string;
   "address": string;
+  "latitude"?: number;
+  "longitude"?: number;
   "description"?: string;
   "ratingCount"?: number;
   "rating"?: number;
   "id"?: any;
   "myuserId"?: any;
+  "locationId"?: any;
   rooms?: Room[];
   roomPrices?: RoomPrice[];
   hotelSpecialOffers?: HotelSpecialOffer[];
   hotelDiscounts?: HotelDiscount[];
+  location?: Location;
 }
 
 export class Hotel implements HotelInterface {
   "name": string;
   "address": string;
+  "latitude": number;
+  "longitude": number;
   "description": string;
   "ratingCount": number;
   "rating": number;
   "id": any;
   "myuserId": any;
+  "locationId": any;
   rooms: Room[];
   roomPrices: RoomPrice[];
   hotelSpecialOffers: HotelSpecialOffer[];
   hotelDiscounts: HotelDiscount[];
+  location: Location;
   constructor(data?: HotelInterface) {
     Object.assign(this, data);
   }
@@ -74,6 +83,14 @@ export class Hotel implements HotelInterface {
           name: 'address',
           type: 'string'
         },
+        "latitude": {
+          name: 'latitude',
+          type: 'number'
+        },
+        "longitude": {
+          name: 'longitude',
+          type: 'number'
+        },
         "description": {
           name: 'description',
           type: 'string'
@@ -94,6 +111,10 @@ export class Hotel implements HotelInterface {
         },
         "myuserId": {
           name: 'myuserId',
+          type: 'any'
+        },
+        "locationId": {
+          name: 'locationId',
           type: 'any'
         },
       },
@@ -129,6 +150,14 @@ export class Hotel implements HotelInterface {
           relationType: 'hasMany',
                   keyFrom: 'id',
           keyTo: 'hotelId'
+        },
+        location: {
+          name: 'location',
+          type: 'Location',
+          model: 'Location',
+          relationType: 'belongsTo',
+                  keyFrom: 'locationId',
+          keyTo: 'id'
         },
       }
     }

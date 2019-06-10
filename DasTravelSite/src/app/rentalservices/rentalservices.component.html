@@ -21,6 +21,17 @@
       </mat-form-field>
       </p>
       <p>
+        <mat-form-field>
+          <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+          <mat-error *ngIf="addFormErrors.countryCity">
+            {{ addFormErrors.countryCity }}
+          </mat-error>
+        </mat-form-field>
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+        </mat-autocomplete>
+      </p>
+      <p>
       <mat-form-field class="form-size">
           <input matInput formControlName="address" placeholder="Address" type="text">
           <mat-error *ngIf="addFormErrors.address">
