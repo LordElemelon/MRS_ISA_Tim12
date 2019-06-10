@@ -73,9 +73,6 @@ export class ItemService {
 
   getPrices() {
     const my_observable = new Observable(observer => {
-      if (this.carPrices.length != 0) {
-        observer.next(this.carPrices);
-      } else {
         this.carPriceService.find()
         .subscribe(
           (result) => {
@@ -89,7 +86,7 @@ export class ItemService {
             observer.next([]);
           }
         )
-      }
+      
     });
     return my_observable;
   }

@@ -3,62 +3,67 @@
 module.exports = function(Carreservation) {
 
 	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
+
+		var myPrices;
+
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
 			postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;", null, (err, result) => {
 				if (err) {
 					tx.rollback();
 					cb(err, null);
+					return;
 				}
-				else{
-					Carreservation.app.models.Carid.find({where: {carId: carId}}, {transaction: tx}, (err, res) => {
-						if (err){
-							tx.rollback();
-							cb(err, null);
-						}
-						else{
-							//var car_promise = Carreservation.apnbvcnbcp.models.car.find({where: {id: '\"' + carId + '\"'}});
-							Carreservation.find({
-								where: {
-									carsId: carId,
-									startDate: {
-										lte: endDate
-									},
-									endDate: {
-										gte: startDate
-									}
-								}}, {transaction: tx}, (err, res) => {
-									if (err) {
-										tx.rollback();
-										cb(err, null);
-									}
-									else{
-										if (res.length > 0){
-											tx.rollback();
-											cb(new Error('Can not reserve on this date'), null);
-										}else{
-											//console.log(rentalid);
-											Carreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid, rated: false, isSpecialOffer: false}, {transaction: tx},
-											(err, res) => {
-												if (err) {
-													tx.rollback();
-													cb(err, null);
-												}else{
-													tx.commit();
-													cb(null, res);
-												}
-											});
-										}
-									}
-								});
-							// console.log("usao");
-							// setTimeout(() => {console.log('izas'); tx.commit();cb(null, res);}, 5000);
-						}
-					});
-				}
+
+				Carreservation.app.models.Carid.find({where: {carId : carId}} , {transaction:tx})
+				.then((result) => {
+					return Carreservation.find({
+						where: {
+							carsId: carId,
+							startDate: {
+								lte: endDate
+							},
+							endDate: {
+								gte: startDate
+							}
+						}}, {transaction: tx});
+				})
+				.then((result) => {
+					if (result.length > 0) {
+						throw new Error("Cannot reserve on this date");
+					}
+					return Carreservation.app.models.CarPrice.find({where: {rentalServiceId: rentalid,
+						start: {lte: startDate}}, order: "start DESC"})
+				})
+				.then((result) => {
+					myPrices = result;
+					if (myPrices.length == 0) throw new Error("No price defined for this vehicle");
+					return Carreservation.app.models.car.findById(carId);
+				})
+				.then((car) => {
+					if (!Carreservation.matchCarWithPrice(myPrices, car, startDate, endDate, price)) throw new Error("Price sent does not match");
+					return Carreservation.create({startDate: startDate, endDate: endDate,
+						price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid,
+						 rated: false, isSpecialOffer: false}, {transaction: tx});
+				})
+				.then((result) => {
+					tx.commit();
+					cb(null, result);
+				})
+				.catch((err) => {
+					tx.rollback();
+					cb(err, null);
+				});				
 			});
 		});
+	}
+
+	Carreservation.matchCarWithPrice = function(prices, car, startDate, endDate, price) {
+		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+		var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+		//console.log("Pokusana: " + price);
+		//console.log("Sracunata: " + prices[0]['cat' + car.category + 'Price']);
+		return prices[0]['cat' + car.category + 'Price'] * days == price;
 	}
 	
 	Carreservation.remoteMethod('makeReservation',{
@@ -71,6 +76,9 @@ module.exports = function(Carreservation) {
         http: {path: '/makeReservation', verb: 'post' },
         returns: {type: 'object', arg: 'retval'}
 	})
+
+
+
 	
 	Carreservation.cancel = function(id, options, cb) {
 		if (options.accessToken == null) {
@@ -226,7 +234,6 @@ module.exports = function(Carreservation) {
 			}
 		})
 		.then((result) => {
-			console.log(result);
 			retval.labels = years;
 			retval.sums = []
 			for (let year of retval.labels) {
