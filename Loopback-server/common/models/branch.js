@@ -10,7 +10,30 @@ module.exports = function(Branch) {
                     if (err) next(err);
                     if (!exists)
                         return next(new Error('Bad foreign key: ' + rentalServiceId));
-                    return next();
+                    let instance = ctx.instance.__data;
+                    let address = instance.address;
+                    let queryString = address;
+                    app.models.RentalService.findById(rentalServiceId, (err, result) => {
+                        if (err) next(err);
+                        let locationId = result.locationId;
+                        Branch.app.models.Location.findById(locationId, (err, result) => {
+                            if (err) next(new Error('Something went wrong'));
+                            if (result != null) {
+                                queryString = result.country + ' ' + result.city + ' ' + address;
+                            }
+                            var geoService = Branch.app.dataSources.geoRest;
+                            geoService.geocode(queryString, (err, result) => {
+                                if (err) next(new Error('Something went wrong'));
+                                else if (result.length > 0) {
+                                    instance.latitude = result[0].lat;
+                                    instance.longitude = result[0].lng;
+                                    next();
+                                } else {
+                                    next();
+                                }
+                            });
+                        });
+                    });
                 })
             })
         }

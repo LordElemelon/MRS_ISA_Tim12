@@ -26,6 +26,7 @@ import { CarSpecialOffer } from '../../models/CarSpecialOffer';
 import { QuickFlightReservation } from '../../models/QuickFlightReservation';
 import { Friendship } from '../../models/Friendship';
 import { ReservationOffer } from '../../models/ReservationOffer';
+import { Location } from '../../models/Location';
 
 export interface Models { [name: string]: any }
 
@@ -59,6 +60,7 @@ export class SDKModels {
     QuickFlightReservation: QuickFlightReservation,
     Friendship: Friendship,
     ReservationOffer: ReservationOffer,
+    Location: Location,
     
   };
 

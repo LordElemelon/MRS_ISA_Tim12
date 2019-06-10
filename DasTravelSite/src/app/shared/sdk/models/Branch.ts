@@ -7,6 +7,8 @@ declare var Object: any;
 export interface BranchInterface {
   "name": string;
   "address": string;
+  "latitude"?: number;
+  "longitude"?: number;
   "id"?: any;
   "rentalServiceId"?: any;
   rentalService?: RentalService;
@@ -15,6 +17,8 @@ export interface BranchInterface {
 export class Branch implements BranchInterface {
   "name": string;
   "address": string;
+  "latitude": number;
+  "longitude": number;
   "id": any;
   "rentalServiceId": any;
   rentalService: RentalService;
@@ -58,6 +62,14 @@ export class Branch implements BranchInterface {
         "address": {
           name: 'address',
           type: 'string'
+        },
+        "latitude": {
+          name: 'latitude',
+          type: 'number'
+        },
+        "longitude": {
+          name: 'longitude',
+          type: 'number'
         },
         "id": {
           name: 'id',
