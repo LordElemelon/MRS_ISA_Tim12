@@ -8,6 +8,7 @@ import { Myuser } from '../shared/sdk/models';
 import {LoginServiceService} from '../login-service.service';
 import {Location} from '@angular/common';
 import {Router} from '@angular/router';
+import { ItemService } from '../services/item.service';
 
 @Component({
   selector: 'app-header',
@@ -16,20 +17,37 @@ import {Router} from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   userType: string;
+  bonusPoints = 0;
   constructor(public dialog: MatDialog,
     private myUserService: MyuserApi,
     private location: Location,
     private loginService: LoginServiceService,
+    private itemservice: ItemService,
     private _router: Router,
     public snackBar: MatSnackBar) {
       loginService.user.subscribe(data => {
         if (data) {
           this.userType = data.user.type;
+
         }
       });
+      this.loginService.user.subscribe(data => {
+        if (data) {
+          this.bonusPoints = data.user.bonusPoints;
+        }
+      });
+      itemservice.setHeader(this);
     }
 
   ngOnInit() {
+  }
+
+  removeBonusPoints() {
+    this.bonusPoints -= 100;
+  }
+
+  getBonusPoints() {
+    return this.bonusPoints;
   }
 
   openSnackBar(message: string, action: string) {

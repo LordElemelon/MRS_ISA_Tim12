@@ -71,6 +71,7 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
     this.loggedUser = this.myuserservice.getCachedCurrent();
+    console.log(this.loggedUser);
     console.log(this.loggedUser.id);
     this.hasInfo = false;
     this.userinfoservice.find().subscribe(

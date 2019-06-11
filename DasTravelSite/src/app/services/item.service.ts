@@ -19,6 +19,7 @@ export class ItemService {
   serviceId;
   hotelId;
   carSpecialOffer;
+  header;
 
   carReservationIdForRate;
   roomReservationIdForRate;
@@ -97,4 +98,13 @@ export class ItemService {
   getReservableRoom() {
     return this.roomToReserve;
   }
+
+  setHeader(header) {
+    this.header = header;
+  }
+
+  getHeader() {
+    return this.header;
+  }
+
 }

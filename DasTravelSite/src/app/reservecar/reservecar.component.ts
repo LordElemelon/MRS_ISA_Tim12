@@ -20,6 +20,7 @@ export class ReservecarComponent implements OnInit {
   canReserve = false;
   userType;
   userId;
+  canUseBonusPointsCar = false;
 
   constructor(@Inject('baseURL') private baseURL,
   private itemService: ItemService,
@@ -33,6 +34,7 @@ export class ReservecarComponent implements OnInit {
     var temp = this.itemService.getReservableCar();
     if (temp) {
       this.car = temp;
+      this.car.usingBonus = false;
     } else {
       this.car =  {
         'registration' : "",
@@ -40,7 +42,8 @@ export class ReservecarComponent implements OnInit {
         'end': 0,
         'days': 0,
         'seats': 0,
-        'category': ''
+        'category': '',
+        'usingBonus': false
       }
     }
     var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
@@ -55,6 +58,9 @@ export class ReservecarComponent implements OnInit {
         this.userId = data.user.id
         if (this.userType == "registeredUser") {
           this.canReserve = true;
+          if (this.itemService.getHeader().getBonusPoints() >= 100) {
+            this.canUseBonusPointsCar = true;
+          }
         }
       }
     });
@@ -77,10 +83,19 @@ export class ReservecarComponent implements OnInit {
         var car_result = result as Car;
         var startDate = new Date(this.car.start).toJSON();
         var endDate = new Date(this.car.end).toJSON();
-        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, this.car.totalPrice, car_result.rentalServiceId)
+        console.log(this.car.usingBonus)
+        var temp_price = this.car.totalPrice;
+        if (this.car.usingBonus)  {
+          temp_price = Math.round(this.car.totalPrice * 0.9);
+        }
+        
+        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, temp_price, car_result.rentalServiceId, this.car.usingBonus)
         .subscribe(
           (result) => {
             this.openSnackBar("Reservation successfuly made", "Dismiss");
+            if (this.car.usingBonus) {
+              this.itemService.getHeader().removeBonusPoints();
+            }
           },
           (err) => {
             this.openSnackBar("Failed to make reservation", "Dismiss");

@@ -47,29 +47,29 @@ def main():
         'filePath': os.path.join(relative_path, 'CarReservation.ts'),
         'Conditions': [
             {
-                'line': 154,
+                'line': 157,
                 'toMatch':   'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
-              'line': 188,
+              'line': 191,
               'toMatch': 'public rateServiceAndCar(id: any, carRate: any, rentalRate: any, customHeaders?: Function): Observable<any> {\n'
             }
         ],
         'Replaces': [
             {
-                'line':  159,
+                'line':  162,
                 'toReplace': '\n'
             },
             {
-                'line': 162,
+                'line': 165,
                 'toReplace': '\tlet _urlParams: any = { id: id };\n'
             },
             {
-              'line': 193,
+              'line': 196,
               'toReplace': '\n'
             },
             {
-              'line': 196,
+              'line': 199,
               'toReplace': '\tlet _urlParams: any = { id: id };\n'
             }
         ]

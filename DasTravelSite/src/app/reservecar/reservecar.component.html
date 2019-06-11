@@ -42,7 +42,7 @@
         </mat-form-field>
     </p>
     <p>
-        Total price:
+        Price per day:
         <mat-form-field class="form-size">
             <input matInput placeholder={{car.price}} type="text" [readonly]="true">
         </mat-form-field>
@@ -52,6 +52,9 @@
         <mat-form-field class="form-size">
             <input matInput placeholder={{car.totalPrice}} type="text" [readonly]="true">
         </mat-form-field>
+    </p>
+    <p *ngIf="canUseBonusPointsCar">
+        <mat-checkbox [(ngModel)] = "car.usingBonus" [ngModelOptions]="{standalone: true}">Use bonus points (100 for 10% off)</mat-checkbox>
     </p>
     <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
         Submit

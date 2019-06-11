@@ -44,6 +44,7 @@ export class ReservationFlowComponent implements OnInit {
         if (this.userType === 'registeredUser') {
           this.canReserve = true;
           this.userId = data.user.id
+          
         }
       }
     });
@@ -82,6 +83,7 @@ export class ReservationFlowComponent implements OnInit {
   haveCarQuicks = false;
   specialOffer;
   CarQuickReservationTime = false;
+  canUseBonusPointsCar = false;
 
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
@@ -98,6 +100,7 @@ export class ReservationFlowComponent implements OnInit {
     this.CarReservationTime = false;
     this.onSearchQRoomsSubmit();
     this.CarQuickReservationTime = false;
+    this.canUseBonusPointsCar = false;
   }
 
 
@@ -112,6 +115,7 @@ export class ReservationFlowComponent implements OnInit {
     this.CarReservationTime = false;
     this.onSearchQCarsSubmit();
     this.CarQuickReservationTime = false;
+    this.canUseBonusPointsCar = false;
   }
 
 
@@ -462,6 +466,7 @@ export class ReservationFlowComponent implements OnInit {
         var temp = this.itemservice.getReservableCar();
           if (temp) {
             this.car = temp;
+            this.car.usingBonus = false;
           } else {
             this.car =  {
               'registration' : "",
@@ -469,7 +474,8 @@ export class ReservationFlowComponent implements OnInit {
               'end': 0,
               'days': 0,
               'seats': 0,
-              'category': ''
+              'category': '',
+              'usingBonus': false
           }
     }
     var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
@@ -478,6 +484,9 @@ export class ReservationFlowComponent implements OnInit {
     this.car.days = 1 + Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
     this.car.totalPrice = this.car.days * this.car.price
     this.CarReservationTime = true;
+    if (this.itemservice.getHeader().getBonusPoints() >= 100) {
+      this.canUseBonusPointsCar = true;
+    }
       }
     }
   }
@@ -513,10 +522,19 @@ export class ReservationFlowComponent implements OnInit {
         var car_result = result as Car;
         var startDate = new Date(this.car.start).toJSON();
         var endDate = new Date(this.car.end).toJSON();
-        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, this.car.totalPrice, car_result.rentalServiceId)
+
+        var temp_price = this.car.totalPrice;
+        if (this.car.usingBonus)  {
+          temp_price = Math.round(this.car.totalPrice * 0.9);
+        }
+        
+        this.reservationService.makeReservation(startDate, endDate, car_result.id, this.userId, temp_price, car_result.rentalServiceId, this.car.usingBonus)
         .subscribe(
           (result) => {
             this.openSnackBar("Reservation successfuly made", "Dismiss");
+            if (this.car.usingBonus) {
+              this.itemservice.getHeader().removeBonusPoints();
+            }
             this.isCarSearch = false;
             this.CarReservationTime = false;
             this.CarQuickReservationTime = false;

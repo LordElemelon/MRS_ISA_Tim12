@@ -2,7 +2,7 @@
 
 module.exports = function(Carreservation) {
 
-	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, cb) {
+	Carreservation.makeReservation = function(startDate, endDate, carId, userId, price, rentalid, usePoints, cb) {
 
 		var myPrices;
 
@@ -41,7 +41,10 @@ module.exports = function(Carreservation) {
 					return Carreservation.app.models.car.findById(carId);
 				})
 				.then((car) => {
-					if (!Carreservation.matchCarWithPrice(myPrices, car, startDate, endDate, price)) throw new Error("Price sent does not match");
+					return Carreservation.matchCarWithPrice(myPrices, car, startDate, endDate, price, usePoints, userId, tx)
+				})
+				.then((matched) => {
+					if (!matched) throw new Error("Price sent does not match");
 					return Carreservation.create({startDate: startDate, endDate: endDate,
 						price: price, myuserId: userId, carsId: carId, rentalServiceId: rentalid,
 						 rated: false, isSpecialOffer: false}, {transaction: tx});
@@ -56,14 +59,44 @@ module.exports = function(Carreservation) {
 				});				
 			});
 		});
-	}
+	
+	}	
 
-	Carreservation.matchCarWithPrice = function(prices, car, startDate, endDate, price) {
-		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-		var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
-		//console.log("Pokusana: " + price);
-		//console.log("Sracunata: " + prices[0]['cat' + car.category + 'Price']);
-		return prices[0]['cat' + car.category + 'Price'] * days == price;
+	Carreservation.matchCarWithPrice = function(prices, car, startDate, endDate, price, usePoints, userId, tx) {
+
+		var myPromise = new Promise(function(resolve, reject) {
+			if (!usePoints) {
+				var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+				var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+				//console.log("Pokusana: " + price);
+				//console.log("Sracunata: " + prices[0]['cat' + car.category + 'Price']);
+				resolve(prices[0]['cat' + car.category + 'Price'] * days == price);
+			} else {
+				Carreservation.app.models.myuser.findById(userId)
+				.then((result) => {
+					if (userId.bonusPoints < 100) throw new Error("User does not have enough points");
+					var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+					var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+					var to_check = days * prices[0]['cat' + car.category + 'Price'];
+					console.log(to_check);
+					to_check = Math.round(to_check * 0.9);
+
+					console.log("Pokusana: " + to_check);
+					console.log("Potrebna: " + price);
+
+					if (to_check != price) throw new Error("Price does not match");
+					result.bonusPoints -= 100;
+					return Carreservation.app.models.myuser.replaceById(result.id, result, {transaction: tx});
+				})
+				.then((result) => {
+					resolve(true);
+				})
+				.catch((err) => {
+					reject(err);
+				})
+			}
+		});
+		return myPromise;
 	}
 	
 	Carreservation.remoteMethod('makeReservation',{
@@ -72,7 +105,8 @@ module.exports = function(Carreservation) {
 				  {arg:'carId', type: 'string', required: true},
 				  {arg:'userId', type: 'string', required: true},
 				  {arg: 'price', type: 'number', required: true},
-				  {arg: 'rentalid', type: 'string', required: true}],
+				  {arg: 'rentalid', type: 'string', required: true},
+				  {arg: 'usePoints', type: 'boolean', required: true}],
         http: {path: '/makeReservation', verb: 'post' },
         returns: {type: 'object', arg: 'retval'}
 	})
