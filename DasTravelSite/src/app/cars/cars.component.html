@@ -8,7 +8,9 @@
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
 
-
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+</mat-autocomplete>
 
 <div *ngIf="isAdd&&userType==='rentalServiceAdmin'" >
     <div fxFlex fxFlexOffset="20px" class="form-size">
@@ -158,7 +160,15 @@
         <mat-form-field class="half-width">
           <input matInput formControlName="rentalService" placeholder="RentalService" type="text">
           <mat-error *ngIf="searchFormErrors.rentalService">
-            {{ searchFormErrors.rentanService }}
+            {{ searchFormErrors.rentalService }}
+          </mat-error>
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+          <mat-error *ngIf="searchFormErrors.countryCity">
+            {{ searchFormErrors.countryCity }}
           </mat-error>
         </mat-form-field>
       </p>

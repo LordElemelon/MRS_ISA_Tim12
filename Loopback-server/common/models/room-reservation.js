@@ -25,31 +25,52 @@ module.exports = function(Roomreservation) {
 									endDate: {
 										gte: startDate,
 									},
-								}}, {transaction: tx}, (err, res) => {
-									if (err) {
-										tx.rollback();
-										cb(err, null);
-									}	else {
-										if (res.length > 0) {
-											tx.rollback();
-											cb(new Error('Can not reserve on this date'), null);
-										} else {
-										  console.log(hotelId);
-										  // TODO find the price manually, add special offers price etc etc
-											Roomreservation.create({startDate: startDate, endDate: endDate,
-												price: price, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
-                        hotelId: hotelId}, {transaction: tx},
-											(err, res) => {
-												if (err) {
-													tx.rollback();
-													cb(err, null);
-												} else {
-													tx.commit();
-													cb(null, res);
-												}
-											});
-										}
-									}
+								},
+              }, {transaction: tx}, (err, res) => {
+                if (err) {
+                  tx.rollback();
+                  cb(err, null);
+                }	else {
+                  if (res.length > 0) {
+                    tx.rollback();
+                    cb(new Error('Can not reserve on this date'), null);
+                  } else {
+                    // TODO find the price manually, add special offers price etc etc
+                    Roomreservation.app.models.RoomPrice.findOne({
+                      where: {startDate: {lte: startDate}, roomId: roomId},
+                      order: 'startDate DESC',
+                    })
+                      .then(roomPrice => {
+                        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+                        const numDays = Math.round(Math.abs((new Date(startDate).getTime() - new Date(endDate).getTime()) / (oneDay)));
+                        let priceAllDays = 0;
+                        if (hotelDiscountId == '' || hotelDiscountId == null){
+                          priceAllDays = roomPrice.price * numDays;
+                        } else {
+                          priceAllDays = price * numDays;
+                        }
+                        if (priceAllDays !== price && (hotelDiscountId == null && hotelDiscountId == '')) {
+                          tx.rollback();
+                          cb(new Error('The price has changed'), null);
+                          return;
+                        }
+                        Roomreservation.create({
+                            startDate: startDate, endDate: endDate,
+                            price: priceAllDays, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
+                            hotelId: hotelId
+                          }, {transaction: tx},
+                          (err, res) => {
+                            if (err) {
+                              tx.rollback();
+                              cb(err, null);
+                            } else {
+                              tx.commit();
+                              cb(null, res);
+                            }
+                          });
+                      });
+                    }
+                  }
 								});
 							// console.log("usao");
 							// setTimeout(() => {console.log('izas'); tx.commit();cb(null, res);}, 5000);
@@ -73,7 +94,7 @@ module.exports = function(Roomreservation) {
     });
 
 	Roomreservation.quickReservation = function(reservationId, myuserId, roomId, cb) {
-	  Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx){
+	  Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
       const postgres = Roomreservation.app.dataSources.postgres;
       postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '\"" + roomId + "\"' FOR UPDATE;", null, (err, result) => {
         if (err) {
@@ -138,15 +159,15 @@ module.exports = function(Roomreservation) {
   Roomreservation.remoteMethod('cancel', {
     accepts: [
       {arg: 'id', type: 'number', 'required': true},
-      {arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+      {arg: 'options', type: 'object', 'http': 'optionsFromRequest'},
     ],
-    http: {path: '/cancel', verb: 'post' },
-    returns: {type: 'object', arg: 'retval'}
-	})
-	
+    http: {path: '/cancel', verb: 'post'},
+    returns: {type: 'object', arg: 'retval'},
+	});
+
 	Roomreservation.rateHotelAndRoom = function(id, roomRate, hotelRate, options, cb) {
 		if (options.accessToken == null) {
-			cb(new Error("No user logged in"),null);
+			cb(new Error('No user logged in'), null);
 			return;
 		}
 		var requestid = options.accessToken.userId;
@@ -156,17 +177,17 @@ module.exports = function(Roomreservation) {
 			Roomreservation.findById(id)
 			.then((result) => {
 				if (result == null) {
-					throw new Error("Reservation with this id does not exist");
+					throw new Error('Reservation with this id does not exist');
 				}
 				if (result.rated) {
-					throw new Error("User already rated this reservation");
+					throw new Error('User already rated this reservation');
 				}
 				if (requestid != result.myuserId) {
-					throw new Error("User is not owner of the reservation");
+					throw new Error('User is not owner of the reservation');
 				}
 				var hours = (result.endDate - new Date()) / 36e5;
 				if (result.endDate > new Date()) {
-					throw new Error("Cannot rate before reservation finishes");
+					throw new Error('Cannot rate before reservation finishes');
 				}
 				myReservation = result;
 				return Roomreservation.app.models.room.findById(myReservation.roomId);
@@ -208,24 +229,23 @@ module.exports = function(Roomreservation) {
 			.catch((err) => {
 				tx.rollback();
 				cb(err, null);
-			})
+			});
 		})
 		.catch((err) => {
 			cb(err, null);
 		});
-
-	}
+	};
 
 	Roomreservation.remoteMethod('rateHotelAndRoom', {
 		accepts: [
 			{arg: 'id', type: 'number', required: true},
 			{arg: 'roomRate', type: 'number', required: true},
 			{arg: 'hotelRate', type: 'number', required: true},
-			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'}
+			{arg: 'options', type: 'object', 'http': 'optionsFromRequest'},
 		],
-		http: {path: '/rateHotelAndRoom', verb: 'post' },
-        returns: {type: 'object', arg: 'retval'}
-	})
+		http: {path: '/rateHotelAndRoom', verb: 'post'},
+        returns: {type: 'object', arg: 'retval'},
+	});
 
   Roomreservation.getYearlyReport = function(startDate, endDate, hotelId, type, cb) {
     var years = Roomreservation.generateYearsArray(startDate, endDate);
@@ -234,12 +254,12 @@ module.exports = function(Roomreservation) {
     Roomreservation.find({
       where: {
         startDate: {
-          lte: endDate
+          lte: endDate,
         },
         endDate: {
-          gte: startDate
-        }
-      }
+          gte: startDate,
+        },
+      },
     })
       .then((result) => {
         retval.labels = years;
@@ -252,8 +272,8 @@ module.exports = function(Roomreservation) {
           retval.sums[tempyear - baseNum] += Math.pow(reservation.price, type);
         }
         cb(null, retval);
-      })
-  }
+      });
+  };
 
   Roomreservation.generateYearsArray = function(startDate, endDate) {
     var retVal = [];
@@ -264,7 +284,7 @@ module.exports = function(Roomreservation) {
       retVal.push((1900 + i).toString());
     }
     return retVal;
-  }
+  };
 
   Roomreservation.remoteMethod('getYearlyReport', {
     accepts: [{arg: 'startDate', type: 'date', required: true},
@@ -272,7 +292,7 @@ module.exports = function(Roomreservation) {
       {arg: 'hotelId', type: 'string', required: true},
       {arg: 'type', type: 'number', required: true}],
     http: {path: '/getYearlyReport', verb: 'get'},
-    returns: {type: 'object', arg: 'retval'}
+    returns: {type: 'object', arg: 'retval'},
   });
 
   Roomreservation.getMonthlyReport = function(startDate, endDate, hotelId, type, cb) {
@@ -282,12 +302,12 @@ module.exports = function(Roomreservation) {
     Roomreservation.find({
       where: {
         startDate: {
-          lte: endDate
+          lte: endDate,
         },
         endDate: {
-          gte: startDate
-        }
-      }
+          gte: startDate,
+        },
+      },
     })
       .then((result) => {
         retval.labels = monthArray;
@@ -300,10 +320,10 @@ module.exports = function(Roomreservation) {
           retval.sums[tempNum - baseNum] += Math.pow(reservation.price, type);
         }
         cb(null, retval);
-      })
-  }
+      });
+  };
 
-  Roomreservation.generateMonthArray = function (startDate, endDate) {
+  Roomreservation.generateMonthArray = function(startDate, endDate) {
     var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     var start = startDate.getYear() * 12 + startDate.getMonth();
     var end = endDate.getYear() * 12 + endDate.getMonth();
@@ -315,7 +335,7 @@ module.exports = function(Roomreservation) {
       retval.push(tempYear + ' ' + tempMonth);
     }
     return retval;
-  }
+  };
 
   Roomreservation.remoteMethod('getMonthlyReport', {
     accepts: [{arg: 'startDate', type: 'date', required: true},
@@ -323,7 +343,7 @@ module.exports = function(Roomreservation) {
       {arg: 'hotelId', type: 'string', required: true},
       {arg: 'type', type: 'number', required: true}],
     http: {path: '/getMonthlyReport', verb: 'get'},
-    returns: {type: 'object', arg: 'retval'}
+    returns: {type: 'object', arg: 'retval'},
   });
 
   Roomreservation.getWeeklyReport = function(startDate, endDate, hotelId, type, cb) {
@@ -336,41 +356,41 @@ module.exports = function(Roomreservation) {
     Roomreservation.find({
       where: {
         startDate: {
-          lte: endDate
+          lte: endDate,
         },
         endDate: {
-          gte: startDate
-        }
-      }
+          gte: startDate,
+        },
+      },
     })
       .then((result) => {
-        retval.labels = weeks
-        retval.sums = []
+        retval.labels = weeks;
+        retval.sums = [];
         for (let week of retval.labels) {
           retval.sums.push(0);
         }
         for (let reservation of result) {
-          var tempNum = Math.floor((reservation.startDate - startDate)/(1000 * 60 * 60 * 24 * 7));
+          var tempNum = Math.floor((reservation.startDate - startDate) / (1000 * 60 * 60 * 24 * 7));
           retval.sums[tempNum] += Math.pow(reservation.price, type);
         }
         cb(null, retval);
-      })
-  }
+      });
+  };
 
-  Roomreservation.generateWeekArray = function (startDate, endDate) {
+  Roomreservation.generateWeekArray = function(startDate, endDate) {
     var monthStrings = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var retVal = []
-    var weekCount = (endDate - startDate)/(1000 * 60 * 60 * 24 * 7)
+    var retVal = [];
+    var weekCount = (endDate - startDate) / (1000 * 60 * 60 * 24 * 7);
     var i = 0;
     var currentDate = new Date(startDate.getTime());
     for (; i < weekCount; i++) {
-      var label = monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate() + ' - '
+      var label = monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate() + ' - ';
       currentDate.setDate(currentDate.getDate() + 7);
-      label += monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate()
+      label += monthStrings[currentDate.getMonth()] + ' ' + currentDate.getDate();
       retVal.push(label);
     }
     return retVal;
-  }
+  };
 
   Roomreservation.remoteMethod('getWeeklyReport', {
     accepts: [{arg: 'startDate', type: 'date', required: true},
@@ -378,6 +398,6 @@ module.exports = function(Roomreservation) {
       {arg: 'hotelId', type: 'string', required: true},
       {arg: 'type', type: 'number', required: true}],
     http: {path: '/getWeeklyReport', verb: 'get'},
-    returns: {type: 'object', arg: 'retval'}
+    returns: {type: 'object', arg: 'retval'},
   });
 };

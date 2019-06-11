@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectionStrategy } from '@angular/core';
-import { LoopBackConfig, RentalService, CarPrice } from '../shared/sdk';
+import {LoopBackConfig, RentalService, CarPrice, Location, LocationApi} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { CarApi, RentalServiceApi } from '../shared/sdk/services';
 import { Car } from '../shared/sdk/models/Car';
@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material';
 import { Router } from '@angular/router';
 import { ItemService } from '../services/item.service';
 import {LoginServiceService} from '../login-service.service';
+import {count} from 'rxjs/operators';
 
 @Component({
   selector: 'app-cars',
@@ -41,12 +42,17 @@ export class CarsComponent implements OnInit {
 
   isList: boolean;
 
+  locations = [];
+  filteredLocations: Location[] = [];
+  filteredLocationsStrings = [];
+
   constructor(@Inject('baseURL') private baseURL,
               private carservice: CarApi,
               private fb: FormBuilder,
               private rentalServiceService: RentalServiceApi,
               private loginService: LoginServiceService,
               public snackBar: MatSnackBar,
+              private locationsservice: LocationApi,
               private _router: Router,
               private itemService: ItemService) {
     LoopBackConfig.setBaseURL(baseURL);
@@ -55,6 +61,12 @@ export class CarsComponent implements OnInit {
     this.createRemoveForm();
     this.createChangeForm();
     this.createSearchForm();
+    this.locationsservice.find().subscribe((locations: Location[]) => {
+        this.locations = locations;
+        this.filteredLocations = this.locations;
+        this.fillLocationsList();
+      }
+    );
     this.loginService.user.subscribe(data => {
       if (data) {
         this.userType = data.user.type;
@@ -105,10 +117,45 @@ export class CarsComponent implements OnInit {
     this.isList = true;
   }
 
+  private _filter(value: string): Location[] {
+    if (value != null) {
+      const filterValue = value.toLowerCase();
+      return this.locations.filter(location => (location.city.toLowerCase() + ', ' + location.country.toLowerCase()).includes(filterValue));
+    } else {
+      return this.locations;
+    }
+  }
+
   openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
       duration: 2000,
     });
+  }
+
+  fillLocationsList() {
+    this.filteredLocationsStrings = [];
+    for (const location of this.filteredLocations) {
+      this.filteredLocationsStrings.push(location.city + ', ' + location.country);
+    }
+  }
+
+  locationExists() {
+    if (this.addForm.value.countryCity == null) return false;
+    const loc = this.addForm.value.countryCity.split(', ');
+    const city = loc[0];
+    const country = loc[1];
+    for (const location of this.locations) {
+      if (location.city === city && location.country === country) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getCityCountry(countryCity) {
+    countryCity = countryCity.split(', ');
+    if (countryCity.length !== 2) return ['', ''];
+    return [countryCity[0], countryCity[1]];
   }
 
   addFormErrors = {
@@ -346,7 +393,8 @@ export class CarsComponent implements OnInit {
     'endDate': '',
     'make': '',
     'seats': '',
-    'rentalService': ''
+    'rentalService': '',
+    'countryCity': ''
   };
 
   searchFormValidationMessages = {
@@ -363,7 +411,8 @@ export class CarsComponent implements OnInit {
       'required': 'Seats are required',
       'pattern': 'Seats have to be a number'
     },
-    'rentalService': {}
+    'rentalService': {},
+    'countryCity': {}
   };
 
   onSearchValueChanged(data?: any) {
@@ -371,6 +420,8 @@ export class CarsComponent implements OnInit {
       return;
     }
     const form = this.searchForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
     for (const field in this.searchFormErrors) {
       if (this.searchFormErrors.hasOwnProperty(field)) {
         //clear previous error message
@@ -394,7 +445,8 @@ export class CarsComponent implements OnInit {
       endDate: ['', Validators.required],
       make: [''],
       seats: ['', Validators.pattern],
-      rentalService: ['']
+      rentalService: [''],
+      countryCity: ['']
     });
     this.searchForm.valueChanges
       .subscribe(data => this.onSearchValueChanged(data));
@@ -425,6 +477,10 @@ export class CarsComponent implements OnInit {
     var startDate = new Date(this.searchForm.value.startDate).toJSON();
     var endDate = new Date(this.searchForm.value.endDate).toJSON();
 
+    const cityCountry = this.getCityCountry(this.searchForm.value.countryCity);
+    const city = cityCountry[0];
+    const country = cityCountry[1];
+
     if (this.searchForm.value.make != '') {
       make = this.searchForm.value.make;
     }
@@ -444,9 +500,19 @@ export class CarsComponent implements OnInit {
           (result_prices) => {
             var result_cars = result as Car[];
             this.matchCarsAndPrices(result_cars, result_prices as CarPrice[], this.searchForm.value.startDate);
-            this.foundCars = result_cars;
-            if (this.foundCars.length == 0) {
-              this.openSnackBar("No cars match search parameters", "Dismiss");
+            if (city === '') {
+              this.foundCars = result_cars;
+            } else {
+              this.foundCars = [];
+              for (const car of result_cars) {
+                this.rentalServiceService.findById(car.rentalServiceId, {include: 'location'})
+                  .subscribe((rac: RentalService) => {
+                      if (rac.location.city === city && rac.location.country === country) {
+                        this.foundCars.push(car);
+                      }
+                  }, err => this.openSnackBar("Could not get rental service location, stopping search", "Dismiss"));
+              }
+              this.openSnackBar('Search done', 'Dismiss');
             }
           },
           (err) => {

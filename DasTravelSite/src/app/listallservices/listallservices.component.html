@@ -2,7 +2,7 @@
   <div fxFlex>
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let service of foundServices">
-        <mat-card routerLink="" class="pointer">
+        <mat-card class="pointer" (click)="openMap(service)">
           {{service.name}} <br>
           {{service.address}} <br>
           {{service.description}} <br>
