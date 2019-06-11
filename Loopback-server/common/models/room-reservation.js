@@ -3,7 +3,7 @@
 'use strict';
 
 module.exports = function(Roomreservation) {
-	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, hotelDiscountId, hotelId, cb) {
+	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, hotelDiscountId, hotelId, usePoints, cb) {
 		Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
 			const postgres = Roomreservation.app.dataSources.postgres;
 			postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '" + roomId + "' FOR UPDATE;", null, (err, result) => {
@@ -54,7 +54,40 @@ module.exports = function(Roomreservation) {
                           cb(new Error('The price has changed'), null);
                           return;
                         }
-                        Roomreservation.create({
+                        if (usePoints) {
+                          priceAllDays = Math.round(priceAllDays * 0.9);
+                          Roomreservation.app.models.myuser.findById(userId)
+                          .then((result) => {
+                            if (result.bonusPoints < 100) {
+                              tx.rollback();
+                              cb(new Error("User does not have enough bonus points"), null);
+                              return;
+                            }
+                            result.bonusPoints -= 100;
+                            Roomreservation.app.models.myuser.replaceById(result.id, result, {transaction: tx})
+                            .then((result) => {
+                              Roomreservation.create({
+                                startDate: startDate, endDate: endDate,
+                                price: priceAllDays, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
+                                hotelId: hotelId
+                              }, {transaction: tx},
+                              (err, res) => {
+                                if (err) {
+                                  tx.rollback();
+                                  cb(err, null);
+                                } else {
+                                  tx.commit();
+                                  cb(null, res);
+                                }
+                              });
+                            })
+                          })
+                          .catch((err) => {
+                            tx.rollback();
+                            cb(new Error("User not found"), null);
+                          });
+                        } else {
+                          Roomreservation.create({
                             startDate: startDate, endDate: endDate,
                             price: priceAllDays, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
                             hotelId: hotelId
@@ -68,6 +101,7 @@ module.exports = function(Roomreservation) {
                               cb(null, res);
                             }
                           });
+                        }
                       });
                     }
                   }
@@ -88,7 +122,8 @@ module.exports = function(Roomreservation) {
 				  {arg: 'userId', type: 'string', required: false},
 				  {arg: 'price', type: 'number', required: true},
           {arg: 'hotelDiscountId', type: 'string', required: false},
-          {arg: 'hotelId', type: 'string', required: true}],
+          {arg: 'hotelId', type: 'string', required: true},
+          {arg: 'usePoints', type:'boolean',  required: true}],
         http: {path: '/makeReservation', verb: 'post'},
         returns: {type: 'object', arg: 'retval'},
     });

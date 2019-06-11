@@ -11,8 +11,12 @@ def apply_fixes(fixes):
             print(fix['fixName'] + ' FAILED\nReason: file does not exist')
             continue
         conditions_met = True
+        if fix['fixName'] == 'RoomReservation cancellation id and empty params fix':
+          pass
         for condition in fix['Conditions']:
             if lines[condition['line']].strip() != condition['toMatch'].strip():
+                print("Line that that tried to match: " + condition['toMatch'].strip())
+                print("Line that was gotten: " + lines[condition['line']].strip())
                 conditions_met = False
                 break
         if not conditions_met:
@@ -155,37 +159,37 @@ def main():
         'filePath': os.path.join(relative_path, 'RoomReservation.ts'),
         'Conditions': [
             {
-                'line': 122,
-                'toMatch': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, hotelId: any, customHeaders?: Function): Observable<any> {\n'
+                'line': 124,
+                'toMatch': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = {}, price: any, hotelDiscountId: any = {}, hotelId: any, usePoints: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
-                'line': 192,
+                'line': 195,
                 'toMatch': 'public cancel(id: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
-                'line': 226,
+                'line': 229,
                 'toMatch': 'public rateHotelAndRoom(id: any, roomRate: any, hotelRate: any, customHeaders?: Function): Observable<any> {\n'
             }
         ],
         'Replaces': [
             {
-                'line': 122,
-                'toReplace': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = \'\', price: any, hotelDiscountId: any = \'\', hotelId: any, customHeaders?: Function): Observable<any> {\n'
-            },
-            {
-                'line': 197,
-                'toReplace': '\n'
+                'line': 124,
+                'toReplace': 'public makeReservation(startDate: any, endDate: any, roomId: any, userId: any = \'\', price: any, hotelDiscountId: any = \'\', hotelId: any, usePoints: any, customHeaders?: Function): Observable<any> {\n'
             },
             {
                 'line': 200,
-                'toReplace': '\t\tlet _urlParams: any = { id: id};\n'
-            },
-            {
-                'line': 231,
                 'toReplace': '\n'
             },
             {
+                'line': 203,
+                'toReplace': '\t\tlet _urlParams: any = { id: id};\n'
+            },
+            {
                 'line': 234,
+                'toReplace': '\n'
+            },
+            {
+                'line': 237,
                 'toReplace': '\tlet _urlParams: any = { id: id };\n'
             }
         ]

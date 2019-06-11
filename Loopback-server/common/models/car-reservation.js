@@ -74,15 +74,15 @@ module.exports = function(Carreservation) {
 			} else {
 				Carreservation.app.models.myuser.findById(userId)
 				.then((result) => {
-					if (userId.bonusPoints < 100) throw new Error("User does not have enough points");
+					if (result.bonusPoints < 100) throw new Error("User does not have enough points");
 					var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
 					var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
 					var to_check = days * prices[0]['cat' + car.category + 'Price'];
 					console.log(to_check);
 					to_check = Math.round(to_check * 0.9);
 
-					console.log("Pokusana: " + to_check);
-					console.log("Potrebna: " + price);
+					//console.log("Pokusana: " + to_check);
+					//console.log("Potrebna: " + price);
 
 					if (to_check != price) throw new Error("Price does not match");
 					result.bonusPoints -= 100;

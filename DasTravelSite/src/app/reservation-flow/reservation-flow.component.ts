@@ -67,6 +67,7 @@ export class ReservationFlowComponent implements OnInit {
   specialOffersDict = {};
   columnsToDisplayReservations = ['hotel', 'roomNumber', 'beds', 'startDate', 'endDate', 'price'];
   columnsToDisplaySpecialOffers = ['name'];
+  columnsToDisplaySpecialOffers1 = ['name', 'price'];
   specialOffers = [];
   selectedReservationId;
   displayQuicks = false;
@@ -84,10 +85,14 @@ export class ReservationFlowComponent implements OnInit {
   specialOffer;
   CarQuickReservationTime = false;
   canUseBonusPointsCar = false;
+  canUseBonusPointsRoom = false;
+  usingBonusPointsRoom = false;
+  realPrice = 0;
 
 
   @ViewChild('tablereservations') tableReservations: MatTable<any>;
   @ViewChild('tablespecialoffers') tableSpecialOffers: MatTable<any>;
+  @ViewChild('tablespecialoffers2') tableSpecialOffers2: MatTable<any>;
 
   switchToRoomSearch() {
     this.searchRoomsActive = true;
@@ -101,6 +106,8 @@ export class ReservationFlowComponent implements OnInit {
     this.onSearchQRoomsSubmit();
     this.CarQuickReservationTime = false;
     this.canUseBonusPointsCar = false;
+    this.canUseBonusPointsRoom = false;
+    this.usingBonusPointsRoom = false;
   }
 
 
@@ -116,6 +123,8 @@ export class ReservationFlowComponent implements OnInit {
     this.onSearchQCarsSubmit();
     this.CarQuickReservationTime = false;
     this.canUseBonusPointsCar = false;
+    this.canUseBonusPointsRoom = false;
+    this.usingBonusPointsRoom = false;
   }
 
 
@@ -215,6 +224,7 @@ export class ReservationFlowComponent implements OnInit {
 
 
   updateReserveForm() {
+    this.realPrice = this.room.room.price;
     this.reserveForm.reset({
       startDate: this.room.startDate.getDate() + '/' + (this.room.startDate.getMonth() + 1) + '/' + this.room.startDate.getFullYear(),
       endDate: this.room.endDate.getDate() + '/' + (this.room.endDate.getMonth() + 1) + '/' + this.room.endDate.getFullYear(),
@@ -228,7 +238,7 @@ export class ReservationFlowComponent implements OnInit {
 
   onSearchRoomsSubmit() {
     const data = this.searchRoomsForm.value;
-    this.roomservice.findAvailableRooms(new Date(data.startDate).toISOString(), new Date(data.endDate).toISOString(),
+    this.itemservice.findAvailableRooms1(new Date(data.startDate), new Date(data.endDate),
       data.address, data.price, data.beds)
       .subscribe(result => {
         this.foundRooms = result.retval;
@@ -252,8 +262,12 @@ export class ReservationFlowComponent implements OnInit {
       .subscribe((specialOffers: HotelSpecialOffer[]) => {
         this.availableOffers = specialOffers;
         this.RoomReservationTime = true;
-        console.log("Wuhu");
+
       }, err => this.openSnackBar('Can not find special offers for this hotel', 'Dismiss'));
+
+      if (this.itemservice.getHeader().getBonusPoints() >= 100) {
+        this.canUseBonusPointsRoom = true;
+      }
     
   }
 
@@ -266,9 +280,12 @@ export class ReservationFlowComponent implements OnInit {
   onReserveRoomSubmit() {
     this.roomreservationservice.makeReservation(this.room.startDate.toISOString(),
       this.room.endDate.toISOString(), this.room.room.room.id,
-      this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId)
+      this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId, this.usingBonusPointsRoom)
       .subscribe(result => {
         this.openSnackBar('Reserved succesfully', 'Dismiss');
+        if (this.usingBonusPointsRoom) {
+          this.itemservice.getHeader().removeBonusPoints();
+        }
         this.roomIsReserved = true;
         this.RoomReservationTime = false;
         this.searchDone = false;
@@ -482,7 +499,8 @@ export class ReservationFlowComponent implements OnInit {
     var firstDate = new Date(this.car.start);
     var secondDate = new Date(this.car.end);
     this.car.days = 1 + Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
-    this.car.totalPrice = this.car.days * this.car.price
+    this.car.totalPrice = this.car.days * this.car.price;
+    this.car.showPrice = this.car.totalPrice;
     this.CarReservationTime = true;
     if (this.itemservice.getHeader().getBonusPoints() >= 100) {
       this.canUseBonusPointsCar = true;
@@ -612,6 +630,49 @@ export class ReservationFlowComponent implements OnInit {
     (err) => {
       this.openSnackBar("Failed to make quick reservation", "Dismiss");
     })
+  }
+
+
+  toggleRow(id: number) {
+    let specialOffer = null;
+    for (const offer of this.availableOffers) {
+      if (offer.id === id) {
+        specialOffer = offer;
+        break;
+      }
+    }
+    const index = this.selectedOffers.indexOf(id);
+    const price = this.reserveForm.value.price;
+    if (index >= 0)  {
+      this.selectedOffers.splice(index, 1);
+      this.reserveForm.patchValue({'price': price - specialOffer.price});
+    } else  {
+      this.selectedOffers.push(id);
+      this.reserveForm.patchValue({'price': price + specialOffer.price});
+    }
+  }
+
+  roomCheckboxClicked() {
+    if (!this.usingBonusPointsRoom) {
+      this.reserveForm.patchValue({
+        'price': Math.round(this.realPrice * 0.1 + this.reserveForm.value.price)}
+      )
+    } else {
+      this.reserveForm.patchValue({
+        price: Math.round(this.reserveForm.value.price - 0.1 * this.realPrice)}
+      )
+    }
+    
+  }
+
+
+  carCheckboxClicked() {
+    console.log("Wuhu");
+    if (this.car.usingBonus) {
+       this.car.showPrice = this.car.totalPrice - Math.round(this.car.totalPrice * 0.1)
+    } else {
+       this.car.showPrice = this.car.totalPrice;
+    }
   }
 
 }

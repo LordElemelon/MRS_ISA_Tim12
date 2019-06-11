@@ -51,6 +51,7 @@ export class ReservecarComponent implements OnInit {
     var secondDate = new Date(this.car.end);
     this.car.days = 1 + Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
     this.car.totalPrice = this.car.days * this.car.price
+    this.car.showPrice = this.car.totalPrice;
     loginService.user
     .subscribe(data => {
       if (data) {
@@ -64,6 +65,15 @@ export class ReservecarComponent implements OnInit {
         }
       }
     });
+   }
+
+
+   carCheckboxClicked() {
+     if (this.car.usingBonus) {
+        this.car.showPrice = this.car.totalPrice - Math.round(this.car.totalPrice * 0.1)
+     } else {
+        this.car.showPrice = this.car.totalPrice;
+     }
    }
 
   ngOnInit() {
