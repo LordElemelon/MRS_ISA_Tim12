@@ -69,6 +69,7 @@ import { ChangeRentalServiceComponent } from './change-rental-service/change-ren
 import { ListBranchesComponent } from './list-branches/list-branches.component';
 import { ListCarsAdminComponent } from './list-cars-admin/list-cars-admin.component';
 import { RoomBusinessReportsComponent } from './room-business-reports/room-business-reports.component';
+import { ReservationFlowComponent } from './reservation-flow/reservation-flow.component';
 import { LocationsComponent } from './locations/locations.component';
 import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
@@ -113,6 +114,7 @@ import {AgmCoreModule} from '@agm/core';
     RateCarAndServiceComponent,
     RateRoomAndHotelComponent,
     RoomBusinessReportsComponent,
+    ReservationFlowComponent,
     LocationsComponent,
     MapComponent
   ],
