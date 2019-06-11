@@ -443,7 +443,7 @@ module.exports = function(Roomreservation) {
 		.then((result) => {
 			retval.hotel = {};
 			retval.hotel.name = result.name;
-			retval.hotel.rating = result.rating;
+			retval.hotel.rating = result.rating.toFixed(2);
 			retval.hotel.ratingCount = result.ratingCount;
 			return Roomreservation.app.models.room.find({where: {hotelId: hotelId}});
 		})
@@ -453,7 +453,7 @@ module.exports = function(Roomreservation) {
 				retval.rooms.push(
 					{
 						number: room.number,
-						rating: room.rating,
+						rating: room.rating.toFixed(2),
 						ratingCount: room.ratingCount
 					}
 				)

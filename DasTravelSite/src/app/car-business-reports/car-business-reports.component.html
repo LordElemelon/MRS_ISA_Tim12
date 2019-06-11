@@ -95,6 +95,30 @@
   </div>
 </div>
 
-<div *ngIf="isRatingReport">
-  It is I, rating report
+<div fxLayout="column" *ngIf="isRatingReport">
+    <div fxFlex fxFlexOffset="20px" class="form-size">
+      Rental service <b>{{rentalServiceForRating.name}}</b> <br>
+      Rating: {{rentalServiceForRating.rating}}/5 <br>
+      Total ratings from users: {{rentalServiceForRating.ratingCount}} <br>
+    </div>
+    <div fxFlex fxFlexOffset="20px" class="form-size">
+      <table mat-table [dataSource]="carsForRating">
+        <ng-container matColumnDef="registration">
+            <th mat-header-cell *matHeaderCellDef>Registration</th>
+            <td mat-cell *matCellDef="let car">{{car.registration}}</td>
+          </ng-container>
+          <ng-container matColumnDef="rating">
+            <th mat-header-cell *matHeaderCellDef>Rating</th>
+            <td mat-cell *matCellDef="let car">{{car.rating}}</td>
+          </ng-container>
+          <ng-container matColumnDef="ratingCount">
+            <th mat-header-cell *matHeaderCellDef>Number of rates</th>
+            <td mat-cell *matCellDef="let car">{{car.ratingCount}}</td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplayCar"></tr>
+          <tr mat-row *matRowDef="let car; columns: columnsToDisplayCar">
+          </tr>
+      </table>
+    </div>
 </div>
+

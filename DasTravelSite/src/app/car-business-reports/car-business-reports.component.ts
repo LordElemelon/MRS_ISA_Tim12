@@ -19,6 +19,10 @@ export class CarBusinessReportsComponent implements OnInit {
   isOccupancyForm = null;
   isRatingReport = null;
 
+  carsForRating = [];
+  rentalServiceForRating = {name: '', rating: '', ratingCount: ''};
+  columnsToDisplayCar = ['registration', 'rating', 'ratingCount'];
+
   @ViewChild('incomeform') incomeFormDirective;
   incomeForm : FormGroup;
 
@@ -52,6 +56,7 @@ export class CarBusinessReportsComponent implements OnInit {
   }
 
   setToRatingReport() {
+    this.createRatingReport();
     this.isIncomeForm = null;
     this.isIncomeChart = null;
     this.isOccupancyForm = null;
@@ -82,6 +87,7 @@ export class CarBusinessReportsComponent implements OnInit {
     });
     this.createIncomeForm();
     this.createOccupancyForm();
+    this.createRatingReport();
   }
 
   openSnackBar(message: string, action: string) {
@@ -93,6 +99,9 @@ export class CarBusinessReportsComponent implements OnInit {
   ngOnInit() {
   }
 
+
+
+ 
 
   createIncomeForm() {
     this.incomeForm = this.fb.group({
@@ -237,6 +246,20 @@ export class CarBusinessReportsComponent implements OnInit {
       }
     )
 
+  }
+
+  createRatingReport() {
+    this.reservationService.getRatingReport(this.itemService.getServiceId())
+    .subscribe(
+      (result) => {
+        this.carsForRating = result.retval.cars;
+        this.rentalServiceForRating = result.retval.rentalService;
+      },
+      (err) => {
+        this.openSnackBar("Failed to retrieve rating report", "Dismiss");
+      }
+    )
+    
   }
 
 }

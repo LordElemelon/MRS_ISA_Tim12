@@ -479,7 +479,7 @@ module.exports = function(Carreservation) {
 		.then((result) => {
 			retval.rentalService = {};
 			retval.rentalService.name = result.name;
-			retval.rentalService.rating = result.rating;
+			retval.rentalService.rating = result.rating.toFixed(2);
 			retval.rentalService.ratingCount = result.ratingCount;
 			return Carreservation.app.models.car.find({where: {rentalServiceId: rentalServiceId}});
 		})
@@ -489,7 +489,7 @@ module.exports = function(Carreservation) {
 				retval.cars.push(
 					{
 						registration: car.registration,
-						rating: car.rating,
+						rating: car.rating.toFixed(2),
 						ratingCount: car.ratingCount
 					}
 				)
