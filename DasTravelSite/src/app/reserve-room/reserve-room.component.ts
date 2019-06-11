@@ -19,6 +19,9 @@ export class ReserveRoomComponent implements OnInit {
   availableOffers: HotelSpecialOffer[];
   selectedOffers = [];
   columnsToDisplaySpecialOffer = ['name', 'price'];
+  canUseBonusPointsRoom = false;
+  usingBonusPointsRoom = false;
+  realPrice = 0;
 
   constructor(@Inject('baseURL') private baseURL,
               private itemservice: ItemService,
@@ -32,6 +35,9 @@ export class ReserveRoomComponent implements OnInit {
     loginService.user.subscribe(data => {
       if (data) {
         this.userType = data.user.type;
+        if (data.user.bonusPoints >= 100 && this.userType === 'registeredUser') {
+          this.canUseBonusPointsRoom = true;
+        }
       }
     });
     this.createReserveForm();
@@ -65,6 +71,7 @@ export class ReserveRoomComponent implements OnInit {
   }
 
   updateReserveForm() {
+    this.realPrice = this.room.room.price;
     this.reserveForm.reset({
       startDate: this.room.startDate.getDate() + '/' + (this.room.startDate.getMonth() + 1) + '/' + this.room.startDate.getFullYear(),
       endDate: this.room.endDate.getDate() + '/' + (this.room.endDate.getMonth() + 1) + '/' + this.room.endDate.getFullYear(),
@@ -79,7 +86,7 @@ export class ReserveRoomComponent implements OnInit {
   onReserveRoomSubmit() {
     this.roomreservationservice.makeReservation(this.room.startDate.toISOString(),
       this.room.endDate.toISOString(), this.room.room.room.id,
-      this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId)
+      this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId, this.usingBonusPointsRoom)
       .subscribe(result => {
         this.openSnackBar('Reserved succesfully', 'Dismiss');
         let i = 0;
@@ -112,6 +119,20 @@ export class ReserveRoomComponent implements OnInit {
       this.selectedOffers.push(id);
       this.reserveForm.patchValue({'price': price + specialOffer.price});
     }
+  }
+
+
+  roomCheckboxClicked() {
+    if (!this.usingBonusPointsRoom) {
+      this.reserveForm.patchValue({
+        'price': Math.round(this.realPrice * 0.1 + this.reserveForm.value.price)}
+      )
+    } else {
+      this.reserveForm.patchValue({
+        price: Math.round(this.reserveForm.value.price - 0.1 * this.realPrice)}
+      )
+    }
+    
   }
 
 }

@@ -37,7 +37,7 @@ export class ListCarDiscountsComponent implements OnInit {
           temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
           temp.startDate = temp.startDate.toLocaleDateString("en-US");
           temp.endDate = temp.endDate.toLocaleDateString("en-US");
-          temp.total = temp.basePrice * temp.days;
+          temp.total = temp.basePrice;
           temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
         }
         this.foundDiscounts = result;

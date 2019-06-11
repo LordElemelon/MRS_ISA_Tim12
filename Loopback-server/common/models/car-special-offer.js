@@ -1,19 +1,19 @@
 'use strict';
 
 module.exports = function(Carspecialoffer) {
+    var myPrices;
     Carspecialoffer.makeSpecialOffer = function(startDate, endDate, carId, price, rentalid, discount, registration, cb) {
         Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
         .then((tx) => {
             const postgres = Carspecialoffer.app.dataSources.postgres;
             postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;",
              null, (err, result) => {
-                //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                 if (err) {
                     throw err;
                 }
                 Carspecialoffer.app.models.carReservation.find({
                     where: {
-                        carsId: '\"' + carId + '\"',
+                        carsId:  carId,
                         startDate: {
                             lte: endDate
                         },
@@ -23,7 +23,7 @@ module.exports = function(Carspecialoffer) {
                     }}, {transaction: tx})
                 .then((result) => {
                     if (result.length > 0) {
-                        throw new Error('Can not make a special offer on this date, conflicting resrevation');
+                        throw new Error('Can not make a special offer on this date, conflicting reserevation');
                     }
                     return Carspecialoffer.find({where: {
                         carsId: carId,
@@ -39,16 +39,29 @@ module.exports = function(Carspecialoffer) {
                     if (result.length > 0) {
                         throw new Error('Can not make a special offer on this date, conflicting special offer');
                     }
+                    return Carspecialoffer.app.models.CarPrice.find({where: {rentalServiceId: rentalid,
+                        start: {lte: startDate}}, order: "start DESC"});
+                })
+                .then((result) => {
+                    myPrices = result;
+                    if (myPrices.length == 0) throw new Error("No price defined for this vehicle");
+                    return Carspecialoffer.app.models.car.findById(carId);
+                })
+                .then((car) => {
+
+                    if (!Carspecialoffer.matchCarWithPrice(myPrices, car, startDate, endDate, price)) throw new Error("Price sent does not match");
+                    if (discount <= 0 || discount >= 100) throw new Error("Invalid discount percentage");
                     var oneDay = 24*60*60*1000;
                     var days = Math.round(Math.abs(startDate.getTime() - endDate.getTime()) / oneDay) + 1;
-                    var total_price = Math.round(days * price * (100 - discount) / 100);
+                    
+                    var total_price = Math.round(price * (100 - discount) / 100);
+                    console.log(total_price);
                     return Carspecialoffer.app.models.carReservation.create({
                         startDate: startDate, endDate: endDate, isSpecialOffer: true,
                         price: total_price, myuserId: null, carsId: carId, rentalServiceId: rentalid
                     }, {transaction: tx});
                 })
                 .then((result) => {
-                    
                     return Carspecialoffer.create({startDate: startDate, endDate: endDate, carsId: carId, basePrice: price,
                          rentalServiceId: rentalid, carReservationsId: result.id,discount: discount, myuserId: null,
                          registration: registration}, {transaction: tx});
@@ -68,6 +81,14 @@ module.exports = function(Carspecialoffer) {
             cb(err, null);
         });
     };
+
+    Carspecialoffer.matchCarWithPrice = function(prices, car, startDate, endDate, price) {
+		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+        console.log("Pokusana: " + price);
+		console.log("Sracunata: " + (prices[0]['cat' + car.category + 'Price']) * days);
+		return prices[0]['cat' + car.category + 'Price'] * days == price;
+	}
 
     Carspecialoffer.remoteMethod('makeSpecialOffer',{
         accepts: [{arg: 'startDate', type: 'date', required: true}, 
