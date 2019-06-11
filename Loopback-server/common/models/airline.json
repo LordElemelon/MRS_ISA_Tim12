@@ -42,11 +42,10 @@
       "permission": "ALLOW"
     },
     {
-      "accessType": "EXECUTE",
+      "accessType": "WRITE",
       "principalType": "ROLE",
       "principalId": "admin",
-      "permission": "ALLOW",
-      "property": "create"
+      "permission": "ALLOW"
     },
     {
       "accessType": "WRITE",

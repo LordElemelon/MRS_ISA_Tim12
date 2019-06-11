@@ -1,0 +1,44 @@
+<mat-toolbar color="primary">
+  <a mat-button (click) = "addButton()" *ngIf="userType==='admin'"> Add</a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+</mat-autocomplete>
+
+<div *ngIf="addActive&&userType==='admin'">
+  <form novalidate [formGroup]="addAirlineForm" #fformAddAirline="ngForm" (ngSubmit)="onAddAirlineSubmit()">
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="name" placeholder="Airline Name" type="text">
+        <mat-error *ngIf="addAirlineFormErrors.name">
+          {{ addAirlineFormErrors.name }}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+        <mat-error *ngIf="addAirlineFormErrors.countryCity">
+          {{ addAirlineFormErrors.countryCity }}
+        </mat-error>
+      </mat-form-field>
+
+    </p>
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="address" placeholder="Address" type="text">
+        <mat-error *ngIf="addAirlineFormErrors.address">
+          {{ addAirlineFormErrors.address}}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field class="full-width">
+        <textarea matInput formControlName="description" placeholder="Airline description" rows=5></textarea>
+      </mat-form-field>
+    </p>
+    <button type="submit" mat-button class="background-primary text-floral-white"
+            [disabled]="addAirlineForm.invalid">Submit</button>
+  </form>
+</div>

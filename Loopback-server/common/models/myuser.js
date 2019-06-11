@@ -68,7 +68,8 @@ module.exports = function (Myuser) {
 
   Myuser.registerAnAdmin = function(username, password, type, email, realm, emailVerified, cb) {
     const user = {username: username, password: password,
-      type: type, email: email, realm: realm, emailVerified: emailVerified};
+      type: type, email: email, realm: realm, emailVerified: emailVerified,
+      passwordChanged: false};
     Myuser.create(user)
       .then((result, err) =>{
         if (err) return cb(err, null)

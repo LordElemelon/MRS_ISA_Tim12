@@ -238,6 +238,8 @@ export class RentalservicesComponent implements OnInit {
           const location = locations[0];
           this.toAddService.locationId = location.id;
         }
+        delete this.toAddService['countryCity'];
+        this.toAddService.myuserId = '';
         this.rentalServiceService.create(this.toAddService)
           .subscribe(
             (result) => {
