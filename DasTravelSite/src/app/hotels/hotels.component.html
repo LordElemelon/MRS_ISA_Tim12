@@ -6,7 +6,9 @@
   <a mat-button (click) = "quickReservationButton()"> Quick reservation </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
-
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+</mat-autocomplete>
 <div *ngIf = "addActive&&userType==='admin'">
   <div class="container"
     fxLayout="column"
@@ -36,9 +38,7 @@
               {{ formErrors.countryCity }}
             </mat-error>
           </mat-form-field>
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
-          </mat-autocomplete>
+
         </p>
         <p>
           <mat-form-field class="half-width">
@@ -74,8 +74,11 @@
           <mat-form-field class="half-width">
             <input matInput formControlName="name" placeholder="Hotel Name" type="text">
           </mat-form-field>
-          <mat-form-field class="half-width">
-            <input matInput formControlName="address" placeholder="Address" type="text">
+          <mat-form-field>
+            <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+            <mat-error *ngIf="formErrors.countryCity">
+              {{ formErrors.countryCity }}
+            </mat-error>
           </mat-form-field>
           <p>
             <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
@@ -87,7 +90,7 @@
     <div fxFlex>
       <mat-grid-list cols="3" rowHeight="200px">
         <mat-grid-tile *ngFor="let hotel of hotelsFound">
-          <mat-card routerLink="" class="pointer">
+          <mat-card (click)="openMap(hotel)" class="pointer">
             <mat-card-content>
               {{hotel.name}} | {{hotel.address}} | {{hotel.description}}
             </mat-card-content>
@@ -141,8 +144,11 @@
             <mat-form-field class="half-width">
               <input matInput formControlName="name" placeholder="Hotel Name" type="text">
             </mat-form-field>
-            <mat-form-field class="half-width">
-              <input matInput formControlName="address" placeholder="Address" type="text">
+            <mat-form-field>
+              <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+              <mat-error *ngIf="formErrors.countryCity">
+                {{ formErrors.countryCity }}
+              </mat-error>
             </mat-form-field>
           <p>
             <button type="submit" mat-button class="background-primary text-floral-white"
@@ -164,7 +170,7 @@
           Hotel: {{room.hotel}} <br>
           Room number: {{room.room.number}} <br>
           Room description: {{room.room.description}} <br>
-          Price: {{room.price}}
+          Price/night: {{room.price}}
         </mat-card-content>
       </mat-card>
     </mat-grid-tile>

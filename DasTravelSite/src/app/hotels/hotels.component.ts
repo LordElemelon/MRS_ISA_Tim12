@@ -4,10 +4,12 @@ import { API_VERSION } from '../shared/baseUrl';
 import { HotelApi } from '../shared/sdk/services';
 import { Hotel } from '../shared/sdk/models/';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {LoginServiceService} from '../login-service.service';
 import {ItemService} from '../services/item.service';
 import {Router} from '@angular/router';
+import {MapComponent} from '../map/map.component';
+import {count} from 'rxjs/operators';
 
 @Component({
   selector: 'app-hotels',
@@ -38,7 +40,7 @@ export class HotelsComponent implements OnInit {
   @ViewChild('fformAdd') hotelFormDirective;
 
   searchHotelForm: FormGroup;
-  searchHotelParameters: Hotel;
+  searchHotelParameters;
   hotelsFound: Hotel[];
   @ViewChild('fformSearchHotels') searchHotelFormDirective;
 
@@ -100,6 +102,7 @@ export class HotelsComponent implements OnInit {
     private _router: Router,
     private fb: FormBuilder,
     private loginService: LoginServiceService,
+    public dialog: MatDialog,
     public snackBar: MatSnackBar
     ) {
       LoopBackConfig.setBaseURL(baseURL);
@@ -150,6 +153,7 @@ export class HotelsComponent implements OnInit {
   locationExists() {
     if (this.hotelForm.value.countryCity == null) return false;
     const loc = this.hotelForm.value.countryCity.split(', ');
+    if (loc.length !== 2) return false;
     const city = loc[0];
     const country = loc[1];
     for (const location of this.locations){
@@ -158,6 +162,12 @@ export class HotelsComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  getCityCountry(countryCity) {
+    countryCity = countryCity.split(', ');
+    if (countryCity.length !== 2) return ['', ''];
+    return [countryCity[0], countryCity[1]];
   }
 
   onValueChanged(data?: any)  {
@@ -237,6 +247,8 @@ export class HotelsComponent implements OnInit {
   onValueChangedSearchHotels(data?: any)  {
     if (!this.searchHotelForm) {return; }
     const form = this.searchHotelForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
     for (const field in this.searchHotelFormErrors)  {
       if (this.searchHotelFormErrors.hasOwnProperty(field))  {
         this.searchHotelFormErrors[field] = '';
@@ -255,8 +267,8 @@ export class HotelsComponent implements OnInit {
 
   createSearchHotelForm() {
     this.searchHotelForm = this.fb.group({
-      'name': ['', Validators.required],
-      'address': ['', Validators.required]
+      'name': '',
+      'countryCity': ''
     });
 
     this.searchHotelForm.valueChanges
@@ -270,20 +282,42 @@ export class HotelsComponent implements OnInit {
     if (this.searchHotelParameters.name != '' && this.searchHotelParameters.name != undefined){
       this.params['name'] = this.searchHotelParameters.name;
     }
-    if (this.searchHotelParameters.address != '' && this.searchHotelParameters.address != undefined){
-      this.params['address'] = this.searchHotelParameters.address;
+    let city = '';
+    let country = '';
+    if (this.searchHotelParameters.countryCity != '' && this.searchHotelParameters.countryCity != undefined) {
+      const countryCity = this.getCityCountry(this.searchHotelParameters.countryCity);
+      city = countryCity[0];
+      country = countryCity[1];
     }
     if (this.params !== {})  {
-      this.hotelservice.find({where : this.params})
+      this.hotelservice.find({where : this.params, include: {relation: 'location', scope: {where: {city: {like: '/*' + city + '/*', country: {like: '.*' + country + '.*'}}}}}})
       .subscribe((result: Hotel[]) =>  {
-        this.hotelsFound = result;
+        if (city === '') {
+          this.hotelsFound = result;
+        } else {
+          this.hotelsFound = [];
+          for (const hotel of result) {
+            if (hotel.hasOwnProperty('location')) {
+              this.hotelsFound.push(hotel);
+            }
+          }
+        }
       }, err => {
         this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
       });
     } else{
-      this.hotelservice.find()
+      this.hotelservice.find({include: {relation: 'location', scope: {where: {city: {like: '/*' + city + '/*', country: {like: '.*' + country + '.*'}}}}}})
       .subscribe((result: Hotel[]) =>  {
-        this.hotelsFound = result;
+        if (city === '') {
+          this.hotelsFound = result;
+        } else {
+          this.hotelsFound = [];
+          for (const hotel of result) {
+            if (hotel.hasOwnProperty('location')) {
+              this.hotelsFound.push(hotel);
+            }
+          }
+        }
       }, err => {
         this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
       });
@@ -293,6 +327,8 @@ export class HotelsComponent implements OnInit {
   onValueChangedSearchRooms(data?: any)  {
     if (!this.searchRoomsForm) {return; }
     const form = this.searchRoomsForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
     for (const field in this.searchRoomsFormErrors) {
       if (this.searchRoomsFormErrors.hasOwnProperty(field)) {
         this.searchRoomsFormErrors[field] = '';
@@ -329,7 +365,7 @@ export class HotelsComponent implements OnInit {
       endDate: [this.minDate, [Validators.required]],
       beds : [0, [Validators.required, Validators.min(1)]],
       price: [0, Validators.min(1)],
-      address: '',
+      countryCity: '',
       name: ''
     });
 
@@ -340,10 +376,28 @@ export class HotelsComponent implements OnInit {
 
   onSearchRoomsSubmit() {
     const data = this.searchRoomsForm.value;
-    this.roomservice.findAvailableRooms(new Date(data.startDate).toISOString(), new Date(data.endDate).toISOString(),
-      data.address, data.price, data.beds)
+    const countryCity = this.getCityCountry(data.countryCity);
+    const city = countryCity[0];
+    const country = countryCity[1];
+    this.itemservice.findAvailableRooms1(new Date(data.startDate), new Date(data.endDate),
+      '', data.price, data.beds)
       .subscribe(result => {
-        this.foundRooms = result.retval;
+        if (city === '') {
+          this.foundRooms = result.retval;
+        } else {
+          this.foundRooms = [];
+          for (const room of result.retval) {
+            this.hotelservice.findById(room.hotelId, {include: 'location'})
+              .subscribe(hotel => {
+                if (hotel.hasOwnProperty('location')) {
+                  // @ts-ignore
+                  if (hotel.location.city === city && hotel.location.country === country) {
+                    this.foundRooms.push(room);
+                  }
+                }
+              }, err => this.openSnackBar('Something went wrong. Please try again', 'Dismiss'));
+          }
+        }
         this.searchDone = true;
         this.searchRoomsActive = false;
       }, err => {
@@ -404,4 +458,7 @@ export class HotelsComponent implements OnInit {
     this.quickReservationActive = true;
   }
 
+  openMap(hotel: Hotel) {
+    this.dialog.open(MapComponent, {width: '80%', height: '80%', data: {lat: hotel.latitude, lng: hotel.longitude}});
+  }
 }

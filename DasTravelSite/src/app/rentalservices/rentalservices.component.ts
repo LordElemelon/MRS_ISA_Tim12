@@ -4,10 +4,12 @@ import {Location, LocationApi, LoopBackConfig} from '../shared/sdk';
 import { API_VERSION } from '../shared/baseUrl';
 import { RentalServiceApi } from '../shared/sdk/services';
 import { RentalService } from '../shared/sdk/models/RentalService';
-import { MatSnackBar } from "@angular/material";
+import {MatDialog, MatSnackBar} from '@angular/material';
 import {LoginServiceService} from '../login-service.service';
 import { ItemService } from '../services/item.service';
 import {count} from 'rxjs/operators';
+import {RegisterComponent} from '../register/register.component';
+import {MapComponent} from '../map/map.component';
 
 @Component({
   selector: 'app-rentalservices',
@@ -50,6 +52,7 @@ export class RentalservicesComponent implements OnInit {
     private loginService: LoginServiceService,
     private locationsservice: LocationApi,
     private fb: FormBuilder,
+    public dialog: MatDialog,
     public snackBar: MatSnackBar,
     private itemService: ItemService) { 
       /*
@@ -66,8 +69,8 @@ export class RentalservicesComponent implements OnInit {
           this.locations = locations;
           this.filteredLocations = this.locations;
           this.fillLocationsList();
-      }
-    );
+        }
+      );
       this.loginService.user.subscribe(data => {
         if (data) {
           this.userType = data.user.type;
@@ -111,6 +114,12 @@ export class RentalservicesComponent implements OnInit {
       }
     }
     return false;
+  }
+
+  getCityCountry(countryCity) {
+    countryCity = countryCity.split(', ');
+    if (countryCity.length !== 2) return ['', ''];
+    return [countryCity[0], countryCity[1]];
   }
 
   setToAdd() {
@@ -319,7 +328,7 @@ export class RentalservicesComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       name: [''],
-      address: ['']
+      countryCity: ['']
     })
     this.searchForm.valueChanges
     .subscribe(data => this.onSearchValueChanged(data));
@@ -328,8 +337,9 @@ export class RentalservicesComponent implements OnInit {
 
   searchFormErrors = {
     'startDate': '',
-    'endDate': ''
-  }
+    'endDate': '',
+    'countryCity': ''
+  };
 
   searchFormValidationMessages = {
     'startDate': {
@@ -337,12 +347,15 @@ export class RentalservicesComponent implements OnInit {
     },
     'endDate': {
       'required': 'End date is required for search'
-    }
-  }
+    },
+    'countryCity': {}
+  };
 
   onSearchValueChanged(data?:any) {
     if (!this.searchForm) { return; }
     const form = this.searchForm;
+    this.filteredLocations = this._filter(form.value.countryCity);
+    this.fillLocationsList();
     for (const field in this.searchFormErrors) {
       if (this.searchFormErrors.hasOwnProperty(field)) {
         //clear previous error message
@@ -372,14 +385,30 @@ export class RentalservicesComponent implements OnInit {
 
     var startDate = new Date(this.searchForm.value.startDate).toJSON();
     var endDate = new Date(this.searchForm.value.endDate).toJSON();
+    const cityCountry = this.getCityCountry(this.searchForm.value.countryCity);
+    const city = cityCountry[0];
+    const country = cityCountry[1];
 
-    //these two values will change once we actually have resrvations
+    // these two values will change once we actually have resrvations
     this.rentalServiceService.getAvailableServices(startDate,
-      endDate, name, address)
+      endDate, name, null)
     .subscribe((result) => {
-      this.foundServices = result.retval as RentalService[];
-      if (this.foundServices.length == 0) {
-        this.openSnackBar("No services match your query", "Dismiss");
+      this.foundServices = [];
+      if (city === '') {
+        this.foundServices = result.retval as RentalService[];
+      } else {
+        for (const rac of result.retval) {
+          this.locationsservice.findById(rac.locationId)
+            .subscribe((res: Location) => {
+              if (res.city === city && res.country === country) {
+                this.foundServices.push(rac);
+              }
+            }, err => {
+              this.openSnackBar('Something went wrong. Please try again', 'Dismiss')
+            });
+
+        }
+        this.openSnackBar('Search done', 'Dismiss');
       }
     },
     (err) => {
@@ -387,4 +416,7 @@ export class RentalservicesComponent implements OnInit {
     });
   }
 
+  openMap(service) {
+    this.dialog.open(MapComponent, {width: '80%', height: '80%', data: {lat: service.latitude, lng: service.longitude}});
+  }
 }
