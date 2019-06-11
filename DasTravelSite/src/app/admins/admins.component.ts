@@ -117,8 +117,10 @@ export class AdminsComponent implements OnInit {
               this.airlineservice.updateAttributes(airline.id,
                 {myuserId: result.id})
                 .subscribe(result1 => {
-                console.log(result1);
-              });
+                this.openSnackBar('Added admin succesfully', 'Dismiss');
+              }, err => {
+                  this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
+                });
               break;
             }
           }
@@ -130,7 +132,9 @@ export class AdminsComponent implements OnInit {
               this.hotelservice.updateAttributes(hotel.id,
                 hotel)
                 .subscribe(result1 => {
-                  console.log(result1);
+                  this.openSnackBar('Added admin succesfully', 'Dismiss');
+                }, err => {
+                  this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
                 });
               break;
             }
@@ -142,7 +146,9 @@ export class AdminsComponent implements OnInit {
               this.rentalserviceservice.updateAttributes(rac.id,
                 rac)
                 .subscribe(result1 => {
-                  console.log(result1);
+                  this.openSnackBar('Added admin succesfully', 'Dismiss');
+                }, err => {
+                  this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
                 });
               break;
             }
