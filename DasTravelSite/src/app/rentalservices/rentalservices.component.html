@@ -8,6 +8,10 @@
   <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
 
+<mat-autocomplete #auto="matAutocomplete">
+  <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
+</mat-autocomplete>
+
 <div *ngIf="isAdd&&userType==='admin'">
   
   <div fxFlex fxFlexOffset="20px" class="form-size">
@@ -27,9 +31,6 @@
             {{ addFormErrors.countryCity }}
           </mat-error>
         </mat-form-field>
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let location of filteredLocationsStrings" [value]="location">{{location}}</mat-option>
-        </mat-autocomplete>
       </p>
       <p>
       <mat-form-field class="form-size">
@@ -105,8 +106,11 @@
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field class="half-width">
-          <input matInput formControlName="address" placeholder="Address" type="text">
+        <mat-form-field>
+          <input matInput formControlName="countryCity" placeholder="Location" type="text" [matAutocomplete]="auto">
+          <mat-error *ngIf="searchFormErrors.countryCity">
+            {{ searchFormErrors.countryCity }}
+          </mat-error>
         </mat-form-field>
       </p>
       <button type="submit" mat-button class="background-primary text-floral-white" (ngSubmit)="onSearchSubmit()" [disabled]="searchForm.invalid">
@@ -117,7 +121,7 @@
   <div fxFlex>
     <mat-grid-list cols="3" rowHeight="200px">
       <mat-grid-tile *ngFor="let service of foundServices">
-        <mat-card routerLink="" class="pointer">
+        <mat-card (click)="openMap(service)" class="pointer">
           {{service.name}} | {{service.address}} | {{service.description}}
         </mat-card>
       </mat-grid-tile>

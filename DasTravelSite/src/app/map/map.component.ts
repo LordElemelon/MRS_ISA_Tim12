@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
+import {MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-map',
@@ -6,13 +7,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit {
-
-  lat = 51.678418;
-  lng = 7.809007;
-
-  constructor() { }
+  lat = 0;
+  lng = 0;
+  constructor(  @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
+    this.lat = this.data.lat;
+    this.lng = this.data.lng;
   }
-
 }

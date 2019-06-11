@@ -152,7 +152,7 @@ import {AgmCoreModule} from '@agm/core';
     LoginServiceService
   ],
   entryComponents: [
-    RegisterComponent, LoginComponent, RateCarAndServiceComponent, RateRoomAndHotelComponent
+    RegisterComponent, LoginComponent, RateCarAndServiceComponent, RateRoomAndHotelComponent, MapComponent
   ],
   bootstrap: [AppComponent]
 })

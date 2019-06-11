@@ -82,9 +82,13 @@ export class ReserveRoomComponent implements OnInit {
       this.myuserservice.getCachedCurrent().id, this.room.room.price, '', this.room.room.hotelId)
       .subscribe(result => {
         this.openSnackBar('Reserved succesfully', 'Dismiss');
+        let i = 0;
         for (const offerId of this.selectedOffers) {
-          this.reservationofferservice.create({'specialOfferId': offerId, 'roomReservationId': result.retval.id})
-            .subscribe(() => console.log());
+          setTimeout(() => {
+            this.reservationofferservice.create({'specialOfferId': offerId, 'roomReservationId': result.retval.id})
+              .subscribe(() => console.log());
+          }, i * 1000);
+          i++;
         }
       }, err => {
         this.openSnackBar('Can not reserve on this date. Please search and try again.', 'Dismiss');
@@ -92,11 +96,21 @@ export class ReserveRoomComponent implements OnInit {
   }
 
   toggleRow(id: number) {
+    let specialOffer = null;
+    for (const offer of this.availableOffers) {
+      if (offer.id === id) {
+        specialOffer = offer;
+        break;
+      }
+    }
     const index = this.selectedOffers.indexOf(id);
+    const price = this.reserveForm.value.price;
     if (index >= 0)  {
       this.selectedOffers.splice(index, 1);
+      this.reserveForm.patchValue({'price': price - specialOffer.price});
     } else  {
       this.selectedOffers.push(id);
+      this.reserveForm.patchValue({'price': price + specialOffer.price});
     }
   }
 
