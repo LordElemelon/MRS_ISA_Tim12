@@ -391,4 +391,39 @@ module.exports = function(Roomreservation) {
     http: {path: '/getWeeklyReport', verb: 'get'},
     returns: {type: 'object', arg: 'retval'},
   });
+
+
+  Roomreservation.getRatingReport = function(hotelId, cb) {
+		var retval = {};
+		Roomreservation.app.models.hotel.findById(hotelId)
+		.then((result) => {
+			retval.hotel = {};
+			retval.hotel.name = result.name;
+			retval.hotel.rating = result.rating;
+			retval.hotel.ratingCount = result.ratingCount;
+			return Roomreservation.app.models.room.find({where: {hotelId: hotelId}});
+		})
+		.then((result) => {
+			retval.rooms = [];
+			for (let room of result) {
+				retval.rooms.push(
+					{
+						number: room.number,
+						rating: room.rating,
+						ratingCount: room.ratingCount
+					}
+				)
+			}
+			cb(null, retval);
+		})
+		.catch((err) => {
+			cb(err, null);
+		})
+	}
+
+	Roomreservation.remoteMethod('getRatingReport', {
+		accepts: [{arg: 'hotelId', type: 'string', required: true}],
+		http: {path: '/getRatingReport', verb: 'get'},
+		returns: {type: 'objects', arg: 'retval'}
+	});
 };

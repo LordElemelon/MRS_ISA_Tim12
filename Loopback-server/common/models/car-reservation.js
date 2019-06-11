@@ -420,9 +420,44 @@ module.exports = function(Carreservation) {
 		accepts: [{arg: 'startDate', type: 'date', required: true},
 				  {arg: 'endDate', type: 'date', required: true},
 				  {arg: 'rentalServiceId', type: 'string', required: true}],
-		httP: {path: '/getOccupancyReport', verb: 'get'},
+		http: {path: '/getOccupancyReport', verb: 'get'},
 		returns: {type: 'objects', arg: 'retval'}
 	});
+
+	Carreservation.getRatingReport = function(rentalServiceId, cb) {
+		var retval = {};
+		Carreservation.app.models.rentalService.findById(rentalServiceId)
+		.then((result) => {
+			retval.rentalService = {};
+			retval.rentalService.name = result.name;
+			retval.rentalService.rating = result.rating;
+			retval.rentalService.ratingCount = result.ratingCount;
+			return Carreservation.app.models.car.find({where: {rentalServiceId: rentalServiceId}});
+		})
+		.then((result) => {
+			retval.cars = [];
+			for (let car of result) {
+				retval.cars.push(
+					{
+						registration: car.registration,
+						rating: car.rating,
+						ratingCount: car.ratingCount
+					}
+				)
+			}
+			cb(null, retval);
+		})
+		.catch((err) => {
+			cb(err, null);
+		})
+	}
+
+	Carreservation.remoteMethod('getRatingReport', {
+		accepts: [{arg: 'rentalServiceId', type: 'string', required: true}],
+		http: {path: '/getRatingReport', verb: 'get'},
+		returns: {type: 'objects', arg: 'retval'}
+	});
+
 
 
 

@@ -1,6 +1,7 @@
 <mat-toolbar color="primary">
     <a mat-button (click)="setToIncomeForm()" *ngIf="userType==='rentalServiceAdmin'"> Income reports </a>
     <a mat-button (click)="setToOccupancyForm()" *ngIf="userType==='rentalServiceAdmin'"> Occupancy reports </a>
+    <a mat-button (click)="setToRatingReport()" *ngIf="userType==='rentalServiceAdmin'"> Ratings report </a>
     <span class="flex-spacer"></span>
     <!--<a mat-button (click)="openLoginForm()"><span class="fa fa-sign-in fa-lg">Login</span></a>-->
 </mat-toolbar>
@@ -92,4 +93,8 @@
       [legend]="barChartLegend"
       [chartType]="barChartType"></canvas>
   </div>
+</div>
+
+<div *ngIf="isRatingReport">
+  It is I, rating report
 </div>
