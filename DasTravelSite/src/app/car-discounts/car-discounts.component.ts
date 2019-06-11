@@ -258,8 +258,15 @@ export class CarDiscountsComponent implements OnInit {
             this.matchCarAndPrice(car_res, prices, this.addForm.value.start)
             var startDate = new Date(this.addForm.value.start).toJSON();
             var endDate = new Date(this.addForm.value.end).toJSON();
+
+            console.log(startDate);
+            console.log(endDate);
+
+            var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+            var days = 1 + Math.round(Math.abs((new Date(startDate).getTime() - new Date(endDate).getTime())/(oneDay)));
+            var totalPrice = days * car_res.price
             this.specialOfferService.makeSpecialOffer(startDate, endDate, car_res.id,
-               car_res.price, car_res.rentalServiceId, this.addForm.value.discount, car_res.registration)
+               totalPrice, car_res.rentalServiceId, this.addForm.value.discount, car_res.registration)
             .subscribe((result) => {
               this.openSnackBar("Successfully added special offer at this date", "Dismiss");
             },

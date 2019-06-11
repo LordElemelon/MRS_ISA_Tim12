@@ -22,6 +22,9 @@
       <mat-form-field class="half-width">
         <input matInput formControlName="price" readonly placeholder="Price" type="number">
       </mat-form-field>
+      <span *ngIf="canUseBonusPointsRoom">
+        <mat-checkbox [(ngModel)] = "usingBonusPointsRoom" [ngModelOptions]="{standalone: true}" (change)="roomCheckboxClicked()">Use bonus points (100 for 10% off)</mat-checkbox>
+      </span>
     </p>
     <div fxLayout="row">
       <div fxFlex>

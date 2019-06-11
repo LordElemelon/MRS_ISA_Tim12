@@ -110,6 +110,8 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `rentalid` – `{string}` - 
    *
+   *  - `usePoints` – `{boolean}` - 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -118,7 +120,7 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, customHeaders?: Function): Observable<any> {
+  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, usePoints: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/makeReservation";
@@ -131,6 +133,7 @@ export class CarReservationApi extends BaseLoopBackApi {
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
     if (typeof rentalid !== 'undefined' && rentalid !== null) _urlParams.rentalid = rentalid;
+    if (typeof usePoints !== 'undefined' && usePoints !== null) _urlParams.usePoints = usePoints;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }

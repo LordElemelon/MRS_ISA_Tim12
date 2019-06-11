@@ -20,6 +20,7 @@ export class ItemService {
   serviceId;
   hotelId;
   carSpecialOffer;
+  header;
 
   carReservationIdForRate;
   roomReservationIdForRate;
@@ -74,9 +75,6 @@ export class ItemService {
 
   getPrices() {
     const my_observable = new Observable(observer => {
-      if (this.carPrices.length != 0) {
-        observer.next(this.carPrices);
-      } else {
         this.carPriceService.find()
         .subscribe(
           (result) => {
@@ -90,7 +88,7 @@ export class ItemService {
             observer.next([]);
           }
         )
-      }
+      
     });
     return my_observable;
   }
@@ -100,6 +98,14 @@ export class ItemService {
 
   getReservableRoom() {
     return this.roomToReserve;
+  }
+
+  setHeader(header) {
+    this.header = header;
+  }
+
+  getHeader() {
+    return this.header;
   }
 
   findAvailableRooms1(date1: Date, date2: Date, location, price: number, beds: number): Observable<any> {

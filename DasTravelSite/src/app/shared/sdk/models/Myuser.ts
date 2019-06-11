@@ -8,6 +8,7 @@ import {
 declare var Object: any;
 export interface MyuserInterface {
   "type": string;
+  "bonusPoints"?: number;
   "realm"?: string;
   "username"?: string;
   "email": string;
@@ -22,6 +23,7 @@ export interface MyuserInterface {
 
 export class Myuser implements MyuserInterface {
   "type": string;
+  "bonusPoints": number;
   "realm": string;
   "username": string;
   "email": string;
@@ -69,6 +71,11 @@ export class Myuser implements MyuserInterface {
           name: 'type',
           type: 'string',
           default: 'registeredUser'
+        },
+        "bonusPoints": {
+          name: 'bonusPoints',
+          type: 'number',
+          default: 0
         },
         "realm": {
           name: 'realm',
