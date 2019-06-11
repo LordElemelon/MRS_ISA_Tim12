@@ -17,6 +17,11 @@ export class CarBusinessReportsComponent implements OnInit {
   isIncomeForm = null;
   isIncomeChart = null;
   isOccupancyForm = null;
+  isRatingReport = null;
+
+  carsForRating = [];
+  rentalServiceForRating = {name: '', rating: '', ratingCount: ''};
+  columnsToDisplayCar = ['registration', 'rating', 'ratingCount'];
 
   @ViewChild('incomeform') incomeFormDirective;
   incomeForm : FormGroup;
@@ -33,20 +38,31 @@ export class CarBusinessReportsComponent implements OnInit {
     this.isIncomeForm = true;
     this.isIncomeChart = null;
     this.isOccupancyForm = null;
+    this.isRatingReport = null;
   }
 
   setToIncomeChart() {
     this.isIncomeForm = null;
     this.isIncomeChart = true;
     this.isOccupancyForm = null;
+    this.isRatingReport = null;
   }
 
   setToOccupancyForm() {
     this.isIncomeForm = null;
     this.isIncomeChart = null;
     this.isOccupancyForm = true;
+    this.isRatingReport = null;
   }
 
+  setToRatingReport() {
+    this.createRatingReport();
+    this.isIncomeForm = null;
+    this.isIncomeChart = null;
+    this.isOccupancyForm = null;
+    this.isRatingReport = true;
+  }
+  
 
 
   public barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
@@ -71,6 +87,7 @@ export class CarBusinessReportsComponent implements OnInit {
     });
     this.createIncomeForm();
     this.createOccupancyForm();
+    this.createRatingReport();
   }
 
   openSnackBar(message: string, action: string) {
@@ -82,6 +99,9 @@ export class CarBusinessReportsComponent implements OnInit {
   ngOnInit() {
   }
 
+
+
+ 
 
   createIncomeForm() {
     this.incomeForm = this.fb.group({
@@ -226,6 +246,20 @@ export class CarBusinessReportsComponent implements OnInit {
       }
     )
 
+  }
+
+  createRatingReport() {
+    this.reservationService.getRatingReport(this.itemService.getServiceId())
+    .subscribe(
+      (result) => {
+        this.carsForRating = result.retval.cars;
+        this.rentalServiceForRating = result.retval.rentalService;
+      },
+      (err) => {
+        this.openSnackBar("Failed to retrieve rating report", "Dismiss");
+      }
+    )
+    
   }
 
 }

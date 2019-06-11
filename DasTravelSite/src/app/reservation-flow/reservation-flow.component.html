@@ -315,6 +315,9 @@
       <mat-form-field class="half-width">
         <input matInput formControlName="price" readonly placeholder="Price" type="number">
       </mat-form-field>
+      <span *ngIf="canUseBonusPointsRoom">
+        <mat-checkbox [(ngModel)] = "usingBonusPointsRoom" [ngModelOptions]="{standalone: true}" (change)="roomCheckboxClicked()">Use bonus points (100 for 10% off)</mat-checkbox>
+      </span>
     </p>
     <div fxLayout="row">
       <div fxFlex>
@@ -325,19 +328,19 @@
         <h3>
           Select special offers
         </h3>
-        <table mat-table [dataSource]="availableOffers">
+        <table #tablespecialoffers2 mat-table [dataSource]="availableOffers">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Name</th>
-            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}}</td>
+            <td mat-cell *matCellDef="let specialOffer">{{specialOffer.name}} </td>
           </ng-container>
           <ng-container matColumnDef="price">
             <th mat-header-cell *matHeaderCellDef>Price</th>
             <td mat-cell *matCellDef="let specialOffer">{{specialOffer.price}}</td>
           </ng-container>
-          <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffer"></tr>
-          <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffer"
-              (click)="toggleRow(specialOffer.id)" class="pointer"
-              [ngClass]="{selectedRow: selectedOffers.indexOf(specialOffer.id)>=0}"></tr>
+          <tr mat-header-row *matHeaderRowDef="columnsToDisplaySpecialOffers1"></tr>
+          <tr mat-row *matRowDef="let specialOffer; columns: columnsToDisplaySpecialOffers1"
+          (click)="toggleRow(specialOffer.id)" class="pointer"
+          [ngClass]="{selectedRow: selectedOffers.indexOf(specialOffer.id)>=0}"></tr>
         </table>
       </div>
     </div>
@@ -346,7 +349,7 @@
 </div>
 
 <div *ngIf="CarReservationTime">
-    <form (ngSubmit)="onQuickCarSubmit()">
+    <form (ngSubmit)="onCarReserve()">
         <p>
             Registration: 
             <mat-form-field class="form-size">
@@ -390,7 +393,7 @@
             </mat-form-field>
         </p>
         <p>
-            Total price:
+            Price per day:
             <mat-form-field class="form-size">
                 <input matInput placeholder={{car.price}} type="text" [readonly]="true">
             </mat-form-field>
@@ -398,8 +401,11 @@
         <p>
             Total price:
             <mat-form-field class="form-size">
-                <input matInput placeholder={{car.totalPrice}} type="text" [readonly]="true">
+                <input matInput placeholder={{car.showPrice}} type="text" [readonly]="true">
             </mat-form-field>
+        </p>
+        <p *ngIf="canUseBonusPointsCar">
+            <mat-checkbox [(ngModel)] = "car.usingBonus" [ngModelOptions]="{standalone: true}" (change)="carCheckboxClicked()">Use bonus points (100 for 10% off)</mat-checkbox>
         </p>
         <button *ngIf="canReserve" type="submit" mat-button class="background-primary text-floral-white">
             Submit

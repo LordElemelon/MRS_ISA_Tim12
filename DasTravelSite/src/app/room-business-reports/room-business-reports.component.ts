@@ -16,6 +16,11 @@ export class RoomBusinessReportsComponent implements OnInit {
   isIncomeForm = null;
   isOccupancyForm = null;
   isChart = null;
+  isRatingReport = null;
+
+  roomsForRating = [];
+  hotelForRating = {name: '', rating: '', ratingCount: ''};
+  columnsToDisplayRoom = ['number', 'rating', 'ratingCount'];
 
   @ViewChild('incomeform') incomeFormDirective;
   incomeForm: FormGroup;
@@ -32,18 +37,30 @@ export class RoomBusinessReportsComponent implements OnInit {
     this.isIncomeForm = true;
     this.isChart = null;
     this.isOccupancyForm = null;
+    this.isRatingReport = null;
   }
 
   setToChart() {
     this.isIncomeForm = null;
     this.isChart = true;
     this.isOccupancyForm = null;
+    this.isRatingReport = null;
   }
 
   setToOccupancyForm() {
     this.isIncomeForm = null;
     this.isChart = null;
     this.isOccupancyForm = true;
+    this.isRatingReport = null;
+  }
+
+  setToRatingReport() {
+    this.createRatingReport();
+    this.isIncomeForm = null;
+    this.isChart = null;
+    this.isOccupancyForm = null;
+    this.isRatingReport = null;
+    this.isRatingReport = true;
   }
 
   public barChartLabels = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
@@ -244,6 +261,30 @@ export class RoomBusinessReportsComponent implements OnInit {
           this.openSnackBar("Failed to find hotel1", "Dismiss");
         }
       )
+  }
+
+  createRatingReport() {
+    console.log('harru');
+    this.hotelService.findOne({where: {name: 'hotel1'}})
+    .subscribe(
+      (result) => {
+          var my_result = result as Hotel;
+          console.log("Haru");
+          this.reservationService.getRatingReport(my_result.id)
+          .subscribe(
+            (result) => {
+              this.roomsForRating = result.retval.rooms;
+              this.hotelForRating = result.retval.hotel;
+              console.log(this.hotelForRating);
+            },
+            (err) => {
+              this.openSnackBar("Failed to retrieve business report", "Dismiss");
+            }
+          )
+      },
+      (err) => {
+        this.openSnackBar("Failed to find hotel1", "Dismiss");
+      });
   }
 
 }

@@ -110,6 +110,8 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `rentalid` – `{string}` - 
    *
+   *  - `usePoints` – `{boolean}` - 
+   *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
    *   from the server.
@@ -118,7 +120,7 @@ export class CarReservationApi extends BaseLoopBackApi {
    *
    *  - `retval` – `{object}` - 
    */
-  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, customHeaders?: Function): Observable<any> {
+  public makeReservation(startDate: any, endDate: any, carId: any, userId: any, price: any, rentalid: any, usePoints: any, customHeaders?: Function): Observable<any> {
     let _method: string = "POST";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/makeReservation";
@@ -131,6 +133,7 @@ export class CarReservationApi extends BaseLoopBackApi {
     if (typeof userId !== 'undefined' && userId !== null) _urlParams.userId = userId;
     if (typeof price !== 'undefined' && price !== null) _urlParams.price = price;
     if (typeof rentalid !== 'undefined' && rentalid !== null) _urlParams.rentalid = rentalid;
+    if (typeof usePoints !== 'undefined' && usePoints !== null) _urlParams.usePoints = usePoints;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
   }
@@ -309,13 +312,11 @@ export class CarReservationApi extends BaseLoopBackApi {
          * (The remote method definition does not provide any description.)
          * </em>
    *
-   * @param {object} data Request data.
+   * @param {date} startDate 
    *
-   *  - `startDate` – `{date}` - 
+   * @param {date} endDate 
    *
-   *  - `endDate` – `{date}` - 
-   *
-   *  - `rentalServiceId` – `{string}` - 
+   * @param {string} rentalServiceId 
    *
    * @returns {object} An empty reference that will be
    *   populated with the actual data once the response is returned
@@ -326,7 +327,7 @@ export class CarReservationApi extends BaseLoopBackApi {
    *  - `retval` – `{objects}` - 
    */
   public getOccupancyReport(startDate: any, endDate: any, rentalServiceId: any, customHeaders?: Function): Observable<any> {
-    let _method: string = "POST";
+    let _method: string = "GET";
     let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
     "/carReservations/getOccupancyReport";
     let _routeParams: any = {};
@@ -334,6 +335,33 @@ export class CarReservationApi extends BaseLoopBackApi {
     let _urlParams: any = {};
     if (typeof startDate !== 'undefined' && startDate !== null) _urlParams.startDate = startDate;
     if (typeof endDate !== 'undefined' && endDate !== null) _urlParams.endDate = endDate;
+    if (typeof rentalServiceId !== 'undefined' && rentalServiceId !== null) _urlParams.rentalServiceId = rentalServiceId;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {string} rentalServiceId 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{objects}` - 
+   */
+  public getRatingReport(rentalServiceId: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "GET";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/carReservations/getRatingReport";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
     if (typeof rentalServiceId !== 'undefined' && rentalServiceId !== null) _urlParams.rentalServiceId = rentalServiceId;
     let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
     return result;
