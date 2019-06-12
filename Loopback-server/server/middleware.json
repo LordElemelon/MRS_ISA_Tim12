@@ -40,10 +40,14 @@
       ]
     }
   },
-  "files": {},
-  "final": {
-    "loopback#urlNotFound": {}
+  "files": {
+	"loopback#static": {
+	  "params": "$!../client/"
+	}
   },
+  "final": {
+    "./middleware/custom404": {}
+   },
   "final:after": {
     "strong-error-handler": {}
   }

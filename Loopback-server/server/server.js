@@ -3,11 +3,16 @@
 var loopback = require('loopback');
 var boot = require('loopback-boot');
 
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
 var app = module.exports = loopback();
 
 app.start = function() {
   // start the web server
-  return app.listen(function() {
+  return app.listen(/*function() {
     app.emit('started');
     var baseUrl = app.get('url').replace(/\/$/, '');
     console.log('Web server listening at: %s', baseUrl);
@@ -15,7 +20,7 @@ app.start = function() {
       var explorerPath = app.get('loopback-component-explorer').mountPath;
       console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
     }
-  });
+  }*/port);
 };
 
 // Bootstrap the application, configure models, datasources and middleware.
