@@ -11,7 +11,7 @@ module.exports = function (Myuser) {
       from: 'DasTravelSite@gmail.com',
       subject: 'Thanks for registering',
       template: path.resolve(__dirname, '../../server/views/verify.ejs'),
-      redirect: 'http://localhost:4200',
+      redirect: 'https://das-travel-site.herokuapp.com',
       user: userInstance,
     };
 
