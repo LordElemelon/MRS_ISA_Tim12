@@ -386,7 +386,8 @@ export class CarsComponent implements OnInit {
 
   searchFormValidationMessages = {
     'startDate': {
-      'required': 'Start date is required'
+      'required': 'Start date is required',
+      'minv': 'Start date has to be before end date'
     },
     'endDate': {
       'required': 'End date is required'
@@ -424,6 +425,15 @@ export class CarsComponent implements OnInit {
         }
       }
     }
+    const startDate = new Date(form.get('startDate').value);
+    const endDate = new Date(form.get('endDate').value);
+
+    if (startDate > endDate) {
+      this.searchFormErrors['startDate'] += this.searchFormValidationMessages['startDate']['minv'] + ' ';
+      this.searchForm.controls['startDate'].setErrors({'minv' : true});
+    }
+
+
   }
 
   createSearchForm() {
@@ -519,6 +529,9 @@ export class CarsComponent implements OnInit {
         (car as any).start = this.searchForm.value.startDate;
         (car as any).end = this.searchForm.value.endDate;
         this.itemService.setReservableCar(car);
+        if (new Date(this.searchForm.value.startDate) < new Date()) {
+          return;
+        }
         this._router.navigate(['/carreservation'])
       }
     }

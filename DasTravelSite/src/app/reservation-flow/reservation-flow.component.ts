@@ -367,7 +367,9 @@ export class ReservationFlowComponent implements OnInit {
 
   searchFormValidationMessages = {
     'make': {
-      'required': 'Make is required'
+      'required': 'Make is required',
+      'minv': 'Start date has to be before end date',
+      'ming': 'Start date has to be after today'
     },
     'seats': {
       'required': 'Seats are required',
@@ -395,6 +397,19 @@ export class ReservationFlowComponent implements OnInit {
           }
         }
       }
+    }
+
+    const today = new Date();
+    const startDate = new Date(form.get('startDate').value);
+    const endDate = new Date(form.get('endDate').value);
+
+    if (startDate < today) {
+      this.searchFormErrors['startDate'] += this.searchFormValidationMessages['startDate']['ming'] + ' ';
+      this.searchForm.controls['startDate'].setErrors({'ming' : true});
+    }
+    if (startDate > endDate) {
+      this.searchFormErrors['startDate'] += this.searchFormValidationMessages['startDate']['minv'] + ' ';
+      this.searchForm.controls['startDate'].setErrors({'minv' : true});
     }
   }
 
