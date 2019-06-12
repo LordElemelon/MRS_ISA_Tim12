@@ -70,6 +70,7 @@ export class HeaderComponent implements OnInit {
       (result) => {
         this.openSnackBar("Logged out successfuly ","Dismiss");
         this.userType = null;
+        this.loginService.observableUser.next(null);
         this._router.navigate(['/home']);
       },
       (err) => {

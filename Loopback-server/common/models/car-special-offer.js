@@ -6,8 +6,7 @@ module.exports = function(Carspecialoffer) {
         Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
         .then((tx) => {
             const postgres = Carspecialoffer.app.dataSources.postgres;
-            postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;",
-             null, (err, result) => {
+            postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
                 if (err) {
                     throw err;
                 }
@@ -108,8 +107,7 @@ module.exports = function(Carspecialoffer) {
         Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
         .then((tx) => {
             const postgres = Carspecialoffer.app.dataSources.postgres;
-            postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;",
-            null, (err, result) => {
+            postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
                 if (err) throw err;
                 Carspecialoffer.findById(specialOfferId)
                 .then((result) => {
@@ -154,8 +152,7 @@ module.exports = function(Carspecialoffer) {
             Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
             .then((tx) => {
                 const postgres = Carspecialoffer.app.dataSources.postgres;
-                postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + result.carsId + "\"' FOR UPDATE;",
-                function(err, result) {
+                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
                     //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                     if (err) {
                         throw err;
@@ -213,8 +210,7 @@ module.exports = function(Carspecialoffer) {
             Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
             .then((tx) => {
                 const postgres = Carspecialoffer.app.dataSources.postgres;
-                postgres.connector.execute("SELECT carid FROM carid WHERE carid = '\"" + result.carsId + "\"' FOR UPDATE;",
-                function(err, result) {
+                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
                     //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                     if (err) {
                         throw err;
