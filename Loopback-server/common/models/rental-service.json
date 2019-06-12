@@ -62,7 +62,7 @@
     }
   },
   "acls": [
-    {
+	{
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",
@@ -75,15 +75,15 @@
       "permission": "ALLOW"
     },
     {
-      "accessType": "WRITE",
-      "principalType": "ROLE",
-      "principalId": "admin",
-      "permission": "ALLOW"
-    },
-    {
-      "accessType": "WRITE",
+      "accessType": "*",
       "principalType": "ROLE",
       "principalId": "rentalServiceAdmin",
+      "permission": "ALLOW"
+    },
+	{
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
       "permission": "ALLOW"
     }
   ],

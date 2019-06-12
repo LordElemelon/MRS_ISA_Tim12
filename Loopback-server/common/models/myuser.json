@@ -11,7 +11,7 @@
       "required": true,
       "default": "registeredUser"
     },
-    "bonusPoints" : {
+    "bonusPoints": {
       "type": "number",
       "default": 0
     }
@@ -44,15 +44,29 @@
     {
       "accessType": "EXECUTE",
       "principalType": "ROLE",
-      "principalId": "admin",
+      "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": "registerAnAdmin"
+      "property": "getCarReservations"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getRoomReservations"
     },
     {
       "accessType": "READ",
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "registerAnAdmin"
     }
   ],
   "methods": {}

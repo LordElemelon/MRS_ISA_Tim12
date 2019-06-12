@@ -29,7 +29,7 @@
     }
   },
   "acls": [
-    {
+  {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",
