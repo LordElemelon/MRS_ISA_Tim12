@@ -1,9 +1,8 @@
 <mat-toolbar color="primary">
   <a mat-button (click) = "addButton()" *ngIf="userType==='admin'"> Add</a>
-  <a mat-button (click) = "removeButton()" *ngIf="userType==='admin'"> Remove a hotel </a>
-  <a mat-button (click) = "searchButton()"> Search </a>
-  <a mat-button (click) = "searchRoomsButton()"> Rooms </a>
-  <a mat-button (click) = "quickReservationButton()"> Quick reservation </a>
+  <a mat-button (click) = "searchButton()" *ngIf="userType!='admin'"> Search </a>
+  <a mat-button (click) = "searchRoomsButton()" *ngIf="userType!='admin'"> Rooms </a>
+  <a mat-button (click) = "quickReservationButton()" *ngIf="userType!='admin'"> Quick reservation </a>
   <span class="flex-spacer"></span>
 </mat-toolbar>
 <mat-autocomplete #auto="matAutocomplete">
