@@ -91,7 +91,9 @@ export class CarDiscountsComponent implements OnInit {
 
   addFormValidationMessages = {
     'start': {
-      'required': 'Start time is required'
+      'required': 'Start time is required',
+      'minv': 'Start time has to be smaller than end time',
+      'ming': 'Start time has to be after today'
     },
     'end': {
       'required': 'End time is required'
@@ -125,6 +127,23 @@ export class CarDiscountsComponent implements OnInit {
         }
       }
     }
+
+    const startDate = new Date(this.addForm.get('start').value);
+    const now = new Date();
+    const endDate = new Date(this.addForm.get('end').value);
+
+    if (startDate > endDate) {
+      this.addFormErrors['start'] += this.addFormValidationMessages['start']['minv'] + ' ';
+      this.addForm.controls['start'].setErrors({'minv' : true});
+    }
+
+    if (startDate < now ) {
+      this.addFormErrors['start'] += this.addFormValidationMessages['start']['ming'] + ' ';
+      this.addForm.controls['start'].setErrors({'ming' : true});
+    }
+
+
+
   }
 
   onDeleteValueChanged(data?: any) {
