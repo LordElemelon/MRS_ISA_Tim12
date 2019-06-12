@@ -60,6 +60,13 @@
       "principalType": "ROLE",
       "principalId": "rentalServiceAdmin",
       "permission": "ALLOW"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "searchCars"
     }
   ],
   "methods": {}
