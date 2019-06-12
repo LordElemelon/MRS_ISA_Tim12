@@ -14,7 +14,7 @@ import {Airline, Hotel, RentalService} from '../shared/sdk/models';
 export class AdminsComponent implements OnInit {
   userType: string;
   addActive = true;
-  selectedType = 'airlineAdmin';
+  selectedType = 'airportAdmin';
   availableCompanies = ['1', 'cao', '3'];
   selectedCompany = '';
   addAdminForm: FormGroup;
@@ -110,7 +110,7 @@ export class AdminsComponent implements OnInit {
       user.email, 'boro', true)
       .subscribe(result => {
         console.log(result);
-        if (this.selectedType === 'airlineAdmin') {
+        if (this.selectedType === 'airportAdmin') {
           for (const airline of this.airlines) {
             if (this.selectedCompany === airline.name) {
               airline.myuserId = result.retval.id;
@@ -162,7 +162,7 @@ export class AdminsComponent implements OnInit {
   changeCompanies() {
     this.selectedCompany = '';
     this.availableCompanies = [];
-    if (this.selectedType === 'airlineAdmin'){
+    if (this.selectedType === 'airportAdmin'){
       for (const airline of this.airlines) {
         this.availableCompanies.push(airline.name);
       }
