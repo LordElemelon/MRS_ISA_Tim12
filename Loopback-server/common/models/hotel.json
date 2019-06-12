@@ -84,7 +84,7 @@
       "principalId": "hotelAdmin",
       "permission": "ALLOW"
     },
-	{
+    {
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "admin",
