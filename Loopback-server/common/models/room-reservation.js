@@ -131,7 +131,7 @@ module.exports = function(Roomreservation) {
 	Roomreservation.quickReservation = function(reservationId, myuserId, roomId, cb) {
 	  Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
       const postgres = Roomreservation.app.dataSources.postgres;
-      postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '\"" + roomId + "\"' FOR UPDATE;", null, (err, result) => {
+      postgres.connector.execute('SELECT roomid FROM roomid WHERE roomid = $1 FOR UPDATE;', ['"' + roomId + '"'], {transaction: tx}, (err, result) => {
         if (err) {
           tx.rollback();
           cb(err, null);

@@ -187,10 +187,21 @@ export class RoomQuickReservationComponent implements OnInit {
   }
 
   reserve() {
+    let i = 0;
+    let roomId = 1;
+    for (const reservationInfo of this.reservationsInfo) {
+      if (reservationInfo.reservation.id === this.selectedReservationId) {
+        roomId = reservationInfo.room.id;
+        break;
+      }
+      i++;
+    }
     this.roomreservationservice.quickReservation(this.selectedReservationId,
-      this.myuserservice.getCachedCurrent().id, '1')
+      this.myuserservice.getCachedCurrent().id, roomId)
       .subscribe(reservation => {
-        this.openSnackBar('Reservation succesful', 'Dismiss');
+        this.reservationsInfo.splice(i, 1);
+        this.tableReservations.renderRows();
+        this.openSnackBar('Reservation successful', 'Dismiss');
       }, err => {
         this.openSnackBar('Reservation failed. Please search and try again', 'Dismiss');
       });
