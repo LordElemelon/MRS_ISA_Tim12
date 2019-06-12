@@ -8,7 +8,7 @@ module.exports = function(Carreservation) {
 
 		Carreservation.beginTransaction({isolationLevel: Carreservation.Transaction.READ_COMMITED}, function(err, tx){
 			const postgres = Carreservation.app.dataSources.postgres;
-			postgres.connector.execute("SELECT carid FROM carid WHERE carid = '" + carId + "' FOR UPDATE;", null, (err, result) => {
+			postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
 				if (err) {
 					tx.rollback();
 					cb(err, null);

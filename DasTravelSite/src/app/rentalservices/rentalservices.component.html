@@ -42,7 +42,7 @@
       </p>
       <p>
         <mat-form-field class="form-size">
-            <input matInput formControlName="description" placeholder="Description" type="text">
+          <textarea matInput formControlName="description" placeholder="Description" type="text" rows=5></textarea>
             <mat-error *ngIf="addFormErrors.description">
                 {{ addFormErrors.description }}
             </mat-error>

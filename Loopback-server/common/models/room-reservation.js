@@ -6,7 +6,7 @@ module.exports = function(Roomreservation) {
 	Roomreservation.makeReservation = function(startDate, endDate, roomId, userId, price, hotelDiscountId, hotelId, usePoints, cb) {
 		Roomreservation.beginTransaction({isolationLevel: Roomreservation.Transaction.READ_COMMITED}, function(err, tx) {
 			const postgres = Roomreservation.app.dataSources.postgres;
-			postgres.connector.execute("SELECT roomid FROM roomid WHERE roomid = '" + roomId + "' FOR UPDATE;", null, (err, result) => {
+			postgres.connector.execute('SELECT roomid FROM roomid WHERE roomid = $1 FOR UPDATE;', ['"' + roomId + '"'], {transaction: tx}, (err, result) => {
 				if (err) {
 					tx.rollback();
 					cb(err, null);
@@ -44,7 +44,7 @@ module.exports = function(Roomreservation) {
                         const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
                         const numDays = Math.round(Math.abs((new Date(startDate).getTime() - new Date(endDate).getTime()) / (oneDay)));
                         let priceAllDays = 0;
-                        if (hotelDiscountId == '' || hotelDiscountId == null){
+                        if (hotelDiscountId == '' || hotelDiscountId == null) {
                           priceAllDays = roomPrice.price * numDays;
                         } else {
                           priceAllDays = price * numDays;
@@ -90,7 +90,7 @@ module.exports = function(Roomreservation) {
                           Roomreservation.create({
                             startDate: startDate, endDate: endDate,
                             price: priceAllDays, myuserId: userId, roomId: roomId, hotelDiscountId: hotelDiscountId,
-                            hotelId: hotelId
+                            hotelId: hotelId,
                           }, {transaction: tx},
                           (err, res) => {
                             if (err) {

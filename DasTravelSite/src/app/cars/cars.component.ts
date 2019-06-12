@@ -139,19 +139,6 @@ export class CarsComponent implements OnInit {
     }
   }
 
-  locationExists() {
-    if (this.addForm.value.countryCity == null) return false;
-    const loc = this.addForm.value.countryCity.split(', ');
-    const city = loc[0];
-    const country = loc[1];
-    for (const location of this.locations) {
-      if (location.city === city && location.country === country) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   getCityCountry(countryCity) {
     countryCity = countryCity.split(', ');
     if (countryCity.length !== 2) return ['', ''];

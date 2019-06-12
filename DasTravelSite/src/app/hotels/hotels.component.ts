@@ -224,7 +224,8 @@ export class HotelsComponent implements OnInit {
           const location = locations[0];
           this.newHotel.locationId = location.id;
         }
-        delete this.newHotel[countryCity];
+        delete this.newHotel['countryCity'];
+        this.newHotel.myuserId = '';
         this.hotelservice.create(this.newHotel)
           .subscribe(result =>  {
             this.hotelForm.reset({

@@ -1,0 +1,48 @@
+<mat-toolbar color="primary">
+  <a mat-button (click) = "addButton()" *ngIf="userType==='admin'"> Add</a>
+  <span class="flex-spacer"></span>
+</mat-toolbar>
+
+
+<div *ngIf="addActive&&userType==='admin'">
+  <form novalidate [formGroup]="addAdminForm" #fformAddAirline="ngForm" (ngSubmit)="onAddAdminSubmit()">
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="username" placeholder="Username" type="text">
+        <mat-error *ngIf="addAdminFormErrors.username">
+          {{ addAdminFormErrors.username }}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field class="half-width">
+        <input matInput formControlName="email" placeholder="E-mail" type="text">
+        <mat-error *ngIf="addAdminFormErrors.email">
+          {{ addAdminFormErrors.email }}
+        </mat-error>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>User type</mat-label>
+        <mat-select [(value)]="selectedType" (valueChange)="changeCompanies()">
+          <mat-option value="airlineAdmin">Airline admin</mat-option>
+          <mat-option value="hotelAdmin">Hotel admin</mat-option>
+          <mat-option value="rentalServiceAdmin">Rental service admin</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>Company</mat-label>
+        <mat-select [(value)]="selectedCompany">
+          <mat-option *ngFor="let company of availableCompanies" [value]="company">
+            {{company}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </p>
+    <button type="submit" mat-button class="background-primary text-floral-white"
+            [disabled]="addAdminForm.invalid">Submit</button>
+  </form>
+</div>

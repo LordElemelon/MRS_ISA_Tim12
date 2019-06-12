@@ -73,6 +73,8 @@ import { ReservationFlowComponent } from './reservation-flow/reservation-flow.co
 import { LocationsComponent } from './locations/locations.component';
 import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
+import { AirlinesSysAdminComponent } from './airlines-sys-admin/airlines-sys-admin.component';
+import { AdminsComponent } from './admins/admins.component';
 
 
 @NgModule({
@@ -116,7 +118,9 @@ import {AgmCoreModule} from '@agm/core';
     RoomBusinessReportsComponent,
     ReservationFlowComponent,
     LocationsComponent,
-    MapComponent
+    MapComponent,
+    AirlinesSysAdminComponent,
+    AdminsComponent
   ],
   imports: [
     BrowserModule,
