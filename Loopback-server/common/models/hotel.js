@@ -8,7 +8,6 @@ module.exports = function(Hotel) {
       let queryString = address;
       let locationId = instance.locationId;
 
-      console.log(locationId);
       if (locationId != null && locationId != undefined) {
         Hotel.app.models.Location.findById(locationId, (err, result) => {
           if (err) next(new Error('Something went wrong'));

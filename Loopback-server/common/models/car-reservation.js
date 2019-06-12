@@ -78,7 +78,6 @@ module.exports = function(Carreservation) {
 					var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
 					var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
 					var to_check = days * prices[0]['cat' + car.category + 'Price'];
-					console.log(to_check);
 					to_check = Math.round(to_check * 0.9);
 
 					//console.log("Pokusana: " + to_check);

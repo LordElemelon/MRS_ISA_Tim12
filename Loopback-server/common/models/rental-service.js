@@ -74,26 +74,31 @@ module.exports = function(Rentalservice) {
         let address = instance.address;
         let queryString = address;
         let locationId = instance.locationId;
-        Rentalservice.app.models.Location.findById(locationId, (err, result) => {
-            if (err) next(new Error('Something went wrong'));
-            else {
-              if (result != null) {
-                queryString = result.country + ' ' + result.city + ' ' + address;
-              }
-              var geoService = Rentalservice.app.dataSources.geoRest;
-              geoService.geocode(queryString, (err, result) => {
-                if (err) next(new Error('Something went wrong'));
-                else if (result.length > 0) {
-                  instance.latitude = result[0].lat;
-                  instance.longitude = result[0].lng;
-                  next();
-                } else {
-                  instance.latitude = 0;
-                  instance.longitude = 0;
-                  next();
-                }
-              });
-            }
-        });
+		
+		if (locationId != null && locationId != undefined) {
+			Rentalservice.app.models.Location.findById(locationId, (err, result) => {
+				if (err) next(new Error('Something went wrong'));
+				else {
+				  if (result != null) {
+					queryString = result.country + ' ' + result.city + ' ' + address;
+				  }
+				  var geoService = Rentalservice.app.dataSources.geoRest;
+				  geoService.geocode(queryString, (err, result) => {
+					if (err) next(new Error('Something went wrong'));
+					else if (result.length > 0) {
+					  instance.latitude = result[0].lat;
+					  instance.longitude = result[0].lng;
+					  next();
+					} else {
+					  instance.latitude = 0;
+					  instance.longitude = 0;
+					  next();
+					}
+				  });
+				}
+			});
+	    } else {
+			next();
+	    }
     });
 };
