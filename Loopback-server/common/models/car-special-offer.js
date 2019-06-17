@@ -84,6 +84,7 @@ module.exports = function(Carspecialoffer) {
     Carspecialoffer.matchCarWithPrice = function(prices, car, startDate, endDate, price) {
 		var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
         var days = 1 + Math.round(Math.abs((startDate.getTime() - endDate.getTime())/(oneDay)));
+        console.log("Pokusani dani " + days);
         console.log("Pokusana: " + price);
 		console.log("Sracunata: " + (prices[0]['cat' + car.category + 'Price']) * days);
 		return prices[0]['cat' + car.category + 'Price'] * days == price;
