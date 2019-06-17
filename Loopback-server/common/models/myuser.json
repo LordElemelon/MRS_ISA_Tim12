@@ -67,6 +67,13 @@
       "principalId": "admin",
       "permission": "ALLOW",
       "property": "registerAnAdmin"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "connectAdminToCompany"
     }
   ],
   "methods": {}

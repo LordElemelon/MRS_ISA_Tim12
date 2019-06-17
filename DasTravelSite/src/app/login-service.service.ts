@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
-import {Hotel, Myuser} from './shared/sdk/models';
+import {Hotel, Myuser, AdminCompany} from './shared/sdk/models';
 import {RentalService} from './shared/sdk/models';
-import {HotelApi, RentalServiceApi} from './shared/sdk';
+import {HotelApi, RentalServiceApi, AdminCompanyApi} from './shared/sdk';
 import { ItemService } from './services/item.service';
+
 
 
 @Injectable({
@@ -14,19 +15,27 @@ export class LoginServiceService {
   public user: Observable<any>;
   constructor(private rentalServiceService: RentalServiceApi,
     private hotelservice: HotelApi,
-    private itemService: ItemService) {
+    private itemService: ItemService,
+    private adminCompanyService: AdminCompanyApi) {
     this.user = this.observableUser.asObservable();
     this.user.subscribe((result) => {
       if (result == null) return;
       if (result.user.type === "rentalServiceAdmin") {
-        this.rentalServiceService.findOne({where: {myuserId: result.user.id}})
+        this.adminCompanyService.find()
         .subscribe(
-          (result)=> {
-            this.itemService.setServiceId((result as RentalService).id);
+          (result2) => {
+            console.log(result2);
+            for (let mini_result of result2) {
+              if (mini_result.adminid == result.user.id) {
+                this.itemService.setServiceId(mini_result.companyid);
+                break;
+              }
+            }
           },
           (err) => {
             console.log(err);
-          })
+          }
+        )
       }
       if (result.user.type === "hotelAdmin") {
         this.hotelservice.findOne({where: {myuserId: result.user.id}})

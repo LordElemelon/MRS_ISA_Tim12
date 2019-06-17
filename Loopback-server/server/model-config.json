@@ -140,5 +140,9 @@
   "location": {
     "dataSource": "MongoDB",
     "public": true
+  },
+  "adminCompany": {
+    "dataSource": "MongoDB",
+    "public": true
   }
 }
