@@ -613,20 +613,26 @@ export class ReservationFlowComponent implements OnInit {
     .subscribe(
       (result) => {
         var i = 0;
+        console.log(result);
+        this.foundDiscounts = [];
         for (let mini_result of result) {
+          
           var temp = mini_result as any;
-          temp.nmbr = i;
-          i++;
-          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-          temp.startDate = new Date(temp.startDate);
-          temp.endDate = new Date(temp.endDate);
-          temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
-          temp.startDate = temp.startDate.toLocaleDateString("en-US");
-          temp.endDate = temp.endDate.toLocaleDateString("en-US");
-          temp.total = temp.basePrice * temp.days;
-          temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
+          if (temp.myuserId == null) {
+            temp.nmbr = i;
+            i++;
+            var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+            temp.startDate = new Date(temp.startDate);
+            temp.endDate = new Date(temp.endDate);
+            temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
+            temp.startDate = temp.startDate.toLocaleDateString("en-US");
+            temp.endDate = temp.endDate.toLocaleDateString("en-US");
+            temp.total = temp.basePrice * temp.days;
+            temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
+            this.foundDiscounts.push(temp);
+          }
+          
         }
-        this.foundDiscounts = result;
         if (result.length == 0) {
           this.haveCarQuicks = false;
         } else {

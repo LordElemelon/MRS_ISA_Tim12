@@ -30,7 +30,8 @@ export class RegisterComponent implements OnInit {
     this.registerForm = this.fb.group({
       'username': ['', Validators.required],
       'password': ['', Validators.required],
-      'email': ['', [Validators.required, Validators.email]]
+      'email': ['', [Validators.required, Validators.email]],
+      'repeatPassword': ['', [Validators.required]]
     })
     this.registerForm.valueChanges
     .subscribe((data) => this.onRegisterValueChanged(data));
@@ -55,12 +56,26 @@ export class RegisterComponent implements OnInit {
         }
       }
     }
+
+    if (form.get('password').value != form.get('repeatPassword').value) {
+      this.registerFormErrors['repeatPassword'] += this.registerFormValidationMessages['repeatPassword']['match'];
+      this.registerForm.controls['repeatPassword'].setErrors({'match': true});
+    }
+
+
+
+
+
+
+
+
   }
 
   registerFormErrors = {
     'username': '',
     'password': '',
-    'email': ''
+    'email': '',
+    'repeatPassword': ''
   }
 
   registerFormValidationMessages = {
@@ -73,6 +88,10 @@ export class RegisterComponent implements OnInit {
     'email': {
       'required': 'Email is required',
       'email': 'This has to be a valid email address'
+    },
+    'repeatPassword': {
+      'required': 'Password has to be entered here as well',
+      'match': 'Passwords have to match'
     }
   }
 

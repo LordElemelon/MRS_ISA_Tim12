@@ -26,8 +26,9 @@ export class LoginServiceService {
           (result2) => {
             console.log(result2);
             for (let mini_result of result2) {
-              if (mini_result.adminid == result.user.id) {
-                this.itemService.setServiceId(mini_result.companyid);
+              var temp = mini_result as AdminCompany;
+              if (temp.adminid == result.user.id) {
+                this.itemService.setServiceId(temp.companyid);
                 break;
               }
             }

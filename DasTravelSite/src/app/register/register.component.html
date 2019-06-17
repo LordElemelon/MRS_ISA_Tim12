@@ -28,6 +28,14 @@
         </mat-error>
     </mat-form-field>
   </p>
+  <p>
+    <mat-form-field class="form-size">
+      <input matInput formControlName="repeatPassword" placeholder="Repeat password" type="password">
+      <mat-error *ngIf="registerFormErrors.repeatPassword">
+        {{ registerFormErrors.repeatPassword }}
+      </mat-error>
+  </mat-form-field>
+  </p>
   <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="registerForm.invalid">
     Submit
   </button>
