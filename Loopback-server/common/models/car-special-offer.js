@@ -178,7 +178,9 @@ module.exports = function(Carspecialoffer) {
                     if (err) {
                         throw err;
                     }
-                    Carspecialoffer.find({where: {
+                    console.log(registration)
+                    console.log(startDate)
+                    return Carspecialoffer.find({where: {
                         registration: registration,
                         startDate: {
                             lte: startDate
@@ -188,6 +190,7 @@ module.exports = function(Carspecialoffer) {
                         }
                     }})
                     .then((result) => {
+                        console.log(result);
                         if (result[0].myuserId != null) {
                             throw new Error("This special offer is already reserved");
                         }
