@@ -38,7 +38,8 @@ export class UserComponent implements OnInit {
 
   changePasswordFormErrors = {
     'oldPassword': '',
-    'newPassword': ''
+    'newPassword': '',
+    'newPasswordRepeat': ''
   };
 
   changePasswordFormValidationMessages = {
@@ -47,6 +48,10 @@ export class UserComponent implements OnInit {
     },
     'newPassword': {
       'required': 'New password has to be filled in'
+    },
+    'newPasswordRepeat': {
+      'required': 'New password has to be filled here as well',
+      'match': 'Passwords have to match'
     }
   };
 
@@ -149,6 +154,13 @@ export class UserComponent implements OnInit {
         }
       }
     }
+
+    if (form.get('newPassword').value != form.get('newPasswordRepeat').value) {
+      this.changePasswordFormErrors['newPasswordRepeat'] += this.changePasswordFormValidationMessages['newPasswordRepeat']['match'];
+      form.controls['newPasswordRepeat'].setErrors({'match': true});
+
+    }
+
   }
 
   createModifyUserForm() {
@@ -168,7 +180,8 @@ export class UserComponent implements OnInit {
   createChangePasswordForm() {
     this.changePasswordForm = this.fb.group({
       'oldPassword': ['', Validators.required],
-      'newPassword': ['', Validators.required]
+      'newPassword': ['', Validators.required],
+      'newPasswordRepeat': ['', Validators.required]
     });
     this.changePasswordForm.valueChanges
     .subscribe(data => this.onValueChangedChangePassword(data));

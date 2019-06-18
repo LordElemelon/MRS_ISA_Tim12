@@ -91,6 +91,14 @@
                 </mat-error>
               </mat-form-field>
             </p>
+            <p>
+              <mat-form-field class="half-width">
+                <input matInput formControlName="newPasswordRepeat" placeholder="New password again" type="password">
+                <mat-error *ngIf="changePasswordFormErrors.newPasswordRepeat">
+                  {{ changePasswordFormErrors.newPasswordRepeat }}
+                </mat-error>
+              </mat-form-field>
+            </p>
             <button type="submit" mat-button class="background-primary text-floral-white" [disabled]="changePasswordForm.invalid">Submit</button>
         </form>
       </div>

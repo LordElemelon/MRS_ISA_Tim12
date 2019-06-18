@@ -256,7 +256,6 @@ export class CarDiscountsComponent implements OnInit {
   matchCarAndPrice(car, prices, start) {
     car.price = 0;
       car.start = new Date(0);
-      car.category = "B"; //ovaj red treba izbaciti, tu je zarad testiranja
       for (let price of prices) {
         if (car.rentalServiceId == price.rentalServiceId) {
           if (start > price.start && car.start < price.start) {

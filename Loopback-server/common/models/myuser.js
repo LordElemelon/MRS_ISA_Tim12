@@ -119,6 +119,23 @@ module.exports = function (Myuser) {
     returns: {type: 'object', arg: 'retval'},
   });
 
+  Myuser.connectAdminToCompany = function(userid, companyid, cb) {
+    Myuser.app.models.adminCompany.create({adminid: userid, companyid: companyid})
+    .then((result) => {
+      cb(null, result);
+    })
+    .catch((err) => {
+      cb(err, null);
+    })
+  }
+
+  Myuser.remoteMethod('connectAdminToCompany', {
+    accepts: [{arg: 'userid', type: 'string', required: true},
+              {arg: 'companyid', type: 'string', required: true}],
+    http: {path: '/connectAdminToCompany', verb:'post'},
+    returns: {type: 'object', arg: 'retval'}
+  });
+
   Myuser.getRoomReservations = function(userId, size, offset, cb) {
     Myuser.getApp((err, app) => {
       if (err) cb(err, null);

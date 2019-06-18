@@ -57,7 +57,7 @@ export class AdminsComponent implements OnInit {
       });
     this.hotelservice.find({where: {myuserId: ''}})
       .subscribe((result: Hotel[]) => this.hotels = result);
-    this.rentalserviceservice.find({where: {myuserId: ''}})
+    this.rentalserviceservice.find()
       .subscribe((result: RentalService[]) => this.rentalServices = result);
     this.createAddAidminForm();
   }
@@ -146,7 +146,15 @@ export class AdminsComponent implements OnInit {
               this.rentalserviceservice.updateAttributes(rac.id,
                 rac)
                 .subscribe(result1 => {
-                  this.openSnackBar('Added admin succesfully', 'Dismiss');
+                  this.myuserservice.connectAdminToCompany(result.retval.id, rac.id)
+                  .subscribe(
+                    (result) => {
+                      this.openSnackBar('Added admin succesfully', 'Dismiss');
+                    },
+                    (err) => {
+                      this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
+                    }
+                  )
                 }, err => {
                   this.openSnackBar('Something went wrong. Please try again', 'Dismiss');
                 });
