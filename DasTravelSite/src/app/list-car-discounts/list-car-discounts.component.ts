@@ -4,6 +4,7 @@ import { baseURL, API_VERSION } from '../shared/baseUrl';
 import { MatSnackBar } from '@angular/material';
 import { ItemService } from '../services/item.service';
 import { Router } from '@angular/router';
+import { LoginServiceService } from '../login-service.service';
 
 @Component({
   selector: 'app-list-car-discounts',
@@ -26,21 +27,32 @@ export class ListCarDiscountsComponent implements OnInit {
     this.carDiscountService.find({})
     .subscribe(
       (result) => {
+        this.foundDiscounts = [];
         var i = 0;
+        var rentalid = this.itemService.getServiceId();
         for (let mini_result of result) {
           var temp = mini_result as any;
-          temp.nmbr = i;
-          i++;
-          var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-          temp.startDate = new Date(temp.startDate);
-          temp.endDate = new Date(temp.endDate);
-          temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
-          temp.startDate = temp.startDate.toLocaleDateString("en-US");
-          temp.endDate = temp.endDate.toLocaleDateString("en-US");
-          temp.total = temp.basePrice;
-          temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
+          if (rentalid == temp.rentalServiceId) {
+            temp.nmbr = i;
+            i++;
+            console.log(mini_result);
+            var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+            temp.startDate = new Date(temp.startDate);
+            temp.endDate = new Date(temp.endDate);
+            temp.days = 1 + Math.round(Math.abs((temp.startDate.getTime() - temp.endDate.getTime())/(oneDay)));
+            temp.startDate = temp.startDate.toLocaleDateString("en-US");
+            temp.endDate = temp.endDate.toLocaleDateString("en-US");
+            temp.total = temp.basePrice;
+            temp.totalDiscounted = Math.round((100 - temp.discount) / 100 * temp.total);
+            if (temp.myuserId == null) {
+              temp.status = 'Not reserved';
+            } else {
+              temp.status = 'Reserved';
+            }
+            this.foundDiscounts.push(temp);
+          }
+          
         }
-        this.foundDiscounts = result;
       },
       (err) => {
         this.openSnackBar("Could not retrieve discounts", "Dismiss");

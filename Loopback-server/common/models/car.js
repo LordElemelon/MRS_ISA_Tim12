@@ -105,5 +105,37 @@ module.exports = function(Car) {
 		returns: {type: 'object', arg: 'retval'}	
 	});
 
+	//dodaj da ne moze i delete ukoliko ima rezervacije u buducnosti
+	Car.beforeRemote('deleteById', function(ctx, modelInstance, next) {
 
+		if (!ctx.req.accessToken) {
+            next(new Error("No user logged in"));
+            return;
+        }
+
+        var userid = ctx.req.accessToken.userId;
+		var carid = ctx.req.params.id;
+		var rentalid;
+
+		Car.findById(carid)
+		.then((result) => {
+			if (result == null) throw new Error("Could not find car for deletion");
+			rentalid = result.rentalServiceId;
+			return Car.app.models.adminCompany.find();
+		})
+		.then((result) => {
+			result = result.filter((e)=>e.adminid==userid&&e.companyid==rentalid)
+            if (result.length == 0) {
+                throw new Error("Authorization requirements not met");
+			}
+			return Car.app.models.carReservation.find({where: {carsId:  carid}});
+		})
+		.then((result) => {
+			if (result.length != 0) throw new Error("Cannot dlete this car, it has resrvations");
+			next();
+		})
+		.catch((err) => {
+			next(err);
+		});
+	})
 };

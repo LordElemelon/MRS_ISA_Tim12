@@ -102,6 +102,25 @@ module.exports = function(Carspecialoffer) {
         returns: {type: 'object', arg: 'retval'}
     });
 
+    Carspecialoffer.beforeRemote('makeSpecialOffer', function(ctx, modelInstance, next) {
+        if (!ctx.req.accessToken) {
+            next(new Error("No user logged in"));
+            return;
+        }
+        var userid = ctx.req.accessToken.userId;
+        var rentalid = ctx.req.query.rentalid;     
+        Carspecialoffer.app.models.adminCompany.find()
+        .then((result)=>{
+            result = result.filter((e)=>e.adminid==userid&&e.companyid==rentalid)
+            if (result.length == 0) {
+                throw new Error("Authorization requirements not met");
+            }
+            next();
+        })
+        .catch((err) => {
+            next(err);
+        })
+    });
 
     Carspecialoffer.quicklyReserve = function(carId, specialOfferId, userId, cb) {
         var mySpecialOffer;
@@ -150,15 +169,18 @@ module.exports = function(Carspecialoffer) {
         Carspecialoffer.app.models.car.findOne({where: {registration: registration}})
         .then((result) => {
             if (result == null) throw new Error("No car found");
+            console.log(result);
             Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
             .then((tx) => {
                 const postgres = Carspecialoffer.app.dataSources.postgres;
-                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
+                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + result.id + '"'], {transaction: tx}, (err, result) => {
                     //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                     if (err) {
                         throw err;
                     }
-                    Carspecialoffer.find({where: {
+                    console.log(registration)
+                    console.log(startDate)
+                    return Carspecialoffer.find({where: {
                         registration: registration,
                         startDate: {
                             lte: startDate
@@ -168,6 +190,7 @@ module.exports = function(Carspecialoffer) {
                         }
                     }})
                     .then((result) => {
+                        console.log(result);
                         if (result[0].myuserId != null) {
                             throw new Error("This special offer is already reserved");
                         }
@@ -203,6 +226,35 @@ module.exports = function(Carspecialoffer) {
         returns: {type: 'object', arg: 'retval'}
     });
 
+
+    Carspecialoffer.beforeRemote('removeOffer', function(ctx, modelInstance, next) {
+        if (!ctx.req.accessToken) {
+            next(new Error("No user logged in"));
+            return;
+        }
+        var registration = ctx.req.query.registration;
+        var userid = ctx.req.accessToken.userId;
+        var rentalid;
+        Carspecialoffer.app.models.car.find({where: {registration: registration}})
+        .then((result) => {
+            if (result.length == 0 ) throw new Error('This car does not exist');
+            rentalid = result[0].rentalServiceId;
+            console.log(rentalid);
+            return Carspecialoffer.app.models.adminCompany.find();
+        })
+        .then((result) => {
+            result = result.filter((e)=>e.adminid==userid&&e.companyid==rentalid)
+            if (result.length == 0) {
+                throw new Error("Authorization requirements not met");
+            }
+            next();
+        })
+        .catch((err) => {
+            next(err);
+        })
+    });
+
+
     Carspecialoffer.changeOffer = function(startDate, registration, newDiscount, cb) {
         var specialOfferId = -1;
         Carspecialoffer.app.models.car.findOne({where: {registration: registration}})
@@ -211,7 +263,7 @@ module.exports = function(Carspecialoffer) {
             Carspecialoffer.beginTransaction({isolationLevel: Carspecialoffer.Transaction.READ_COMMITED})
             .then((tx) => {
                 const postgres = Carspecialoffer.app.dataSources.postgres;
-                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + carId + '"'], {transaction: tx}, (err, result) => {
+                postgres.connector.execute("SELECT carid FROM carid WHERE carid = $1 FOR UPDATE;", ['"' + result.id + '"'], {transaction: tx}, (err, result) => {
                     //mislim da ovo niko ne hvata, sumnjam da ide u ove catchove ispod
                     if (err) {
                         throw err;
@@ -262,5 +314,35 @@ module.exports = function(Carspecialoffer) {
         http: {path: '/changeSpecialOffer', verb: 'put'},
         returns: {type: 'object', arg: 'retval'}
     });
+
+
+    Carspecialoffer.beforeRemote('changeOffer', function(ctx, modelInstance, next) {
+        if (!ctx.req.accessToken) {
+            next(new Error("No user logged in"));
+            return;
+        }
+        var registration = ctx.req.query.registration;
+        var userid = ctx.req.accessToken.userId;
+        var rentalid;
+        Carspecialoffer.app.models.car.find({where: {registration: registration}})
+        .then((result) => {
+            if (result.length == 0 ) throw new Error('This car does not exist');
+            rentalid = result[0].rentalServiceId;
+            console.log(rentalid);
+            return Carspecialoffer.app.models.adminCompany.find();
+        })
+        .then((result) => {
+            result = result.filter((e)=>e.adminid==userid&&e.companyid==rentalid)
+            if (result.length == 0) {
+                throw new Error("Authorization requirements not met");
+            }
+            next();
+        })
+        .catch((err) => {
+            next(err);
+        })
+    });
+
+
 
 };
