@@ -18,6 +18,8 @@ njihovih root foldera (DasTravelSite i Loopback-server) i pokrenuti komandu **np
 ## Potrebne baze
 
 Baze potrebne da bi projekat radio su [Postgres](https://www.postgresql.org/download/) i [MongoDB](https://www.mongodb.com/download-center#community)
+U postgress serveru potrebno je napraviti bazu koja se zove **reservations** i korisnika sa nazivom: **myuser** i sifrom **sys**.
+U mongo serveru potrebno je napraviti bazu koja se zove  **travels**.
 
 ## Pokretanje projekta
 
@@ -27,7 +29,7 @@ Ovo ce pokrenuti loopback server na portu 3000, a angular server na portu 4200.
 ## Formiranje potrebnih tabela u bazama
 
 U okviru Loopback-servera/server/boot foldera se nalaze skripte koje se pokrenu kada se server upali. Da bi baze sadrzale adekvatne tabele potrebno je uraditi automigraciju. Ovo se postize tako sto se odkomentarisu redovi 2-4 od fajla **automigr.js**. Nakon ovoga, snimimo promene u fajlu i pokrenemo loopback server. Sada baze imaju potrebne tabele.
-Za kraj, potrebno je takodje ponovo zakomentarisati redove 2-4 od fajla automigr.js, posto ukoliko ne bismo, automigracija bi se dogadjala pri svakom pokretanju, i gubili bismo podatke svaki put kada bismo pokrenuli projekat.
+Za kraj, potrebno je takodje ponovo zakomentarisati redove 2-4 od fajla automigr.js, posto ukoliko to ne bismo uradili, automigracija bi se dogadjala pri svakom pokretanju, i gubili bismo podatke svaki put kada bi pokrenuli projekat.
 
 ## Popunjavanje test podacima
 
