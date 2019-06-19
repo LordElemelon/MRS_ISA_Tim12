@@ -34,3 +34,7 @@ Za kraj, potrebno je takodje ponovo zakomentarisati redove 2-4 od fajla automigr
 ## Popunjavanje test podacima
 
 Moguce je popuniti Mongo bazu test podacima tako sto se pokrene FillDb.py skripta koja se nalazi u root-u repozitorijuma.
+
+## Live verzija
+
+Postoji deployvana verzija projekta [ovde](http://das-travel-site.herokuapp.com/home)
