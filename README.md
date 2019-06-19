@@ -28,3 +28,7 @@ Ovo ce pokrenuti loopback server na portu 3000, a angular server na portu 4200.
 
 U okviru Loopback-servera/server/boot foldera se nalaze skripte koje se pokrenu kada se server upali. Da bi baze sadrzale adekvatne tabele potrebno je uraditi automigraciju. Ovo se postize tako sto se odkomentarisu redovi 2-4 od fajla **automigr.js**. Nakon ovoga, snimimo promene u fajlu i pokrenemo loopback server. Sada baze imaju potrebne tabele.
 Za kraj, potrebno je takodje ponovo zakomentarisati redove 2-4 od fajla automigr.js, posto ukoliko ne bismo, automigracija bi se dogadjala pri svakom pokretanju, i gubili bismo podatke svaki put kada bismo pokrenuli projekat.
+
+## Popunjavanje test podacima
+
+Moguce je popuniti Mongo bazu test podacima tako sto se pokrene FillDb.py skripta koja se nalazi u root-u repozitorijuma.
