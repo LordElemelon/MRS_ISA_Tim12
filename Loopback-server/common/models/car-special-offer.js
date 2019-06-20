@@ -281,6 +281,7 @@ module.exports = function(Carspecialoffer) {
                         if (result[0].myuserId != null) {
                             throw new Error("This special offer is already reserved");
                         }
+                        if (newDiscount <= 0 || newDiscount >= 100) throw new Error("Invalid discount percentage");
                         var newPrice = Math.round(result[0].basePrice * (1 - newDiscount / 100));
                         specialOfferId = result[0].id;
                         return Carspecialoffer.app.models.carReservation.updateAll({id: result.carReservationsId}, {price: newPrice},{transaction: tx});

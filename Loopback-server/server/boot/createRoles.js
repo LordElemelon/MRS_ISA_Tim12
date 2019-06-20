@@ -1,6 +1,8 @@
 'use strict'
 
 module.exports = function (app) {
+  if (false) {
+	  
   var Myuser = app.models.Myuser;
   var Role = app.models.Role;
   Role.findOne({where: {name: 'admin'}}, (err, role, next) => {
@@ -62,6 +64,7 @@ module.exports = function (app) {
 		//insertRentalAdmin(app, Myuser, Role);
 	}
   });
+  }
 };
 
 function insertAdmin(app, Myuser, Role) {
