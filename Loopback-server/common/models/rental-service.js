@@ -101,4 +101,27 @@ module.exports = function(Rentalservice) {
 			next();
 	    }
     });
+
+
+    Rentalservice.changeOptimistic = function(new_rental, version, cb) {
+        new_rental.version += 1;
+        Rentalservice.app.models.updateAll({version: version, id: new_rental.id}, new_rental).
+        then((result) => {
+            if (result.count == 0) {
+                throw new Error("failed to change rental service");
+            } else {
+                cb(null, result);
+            }
+        })
+        .catch((err) => {
+            cb(err, null);
+        })
+    }
+
+    Rentalservice.remoteMethod('changeOptimistic', {
+        accepts: [{arg: 'new_rental', type: 'object', required: true},
+                  {arg: 'version', type: 'number', required: true}],
+        http: {path: '/changeOptimistically', verb: 'put'},
+        returns: {type: 'object', arg: 'retval'}
+    })
 };
