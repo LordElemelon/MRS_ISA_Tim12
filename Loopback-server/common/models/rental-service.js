@@ -70,7 +70,10 @@ module.exports = function(Rentalservice) {
     })
 
     Rentalservice.observe('before save', function findLatLong(ctx, next) {
+        if (ctx.instance) {
+            console.log(ctx.instance);
         let instance = ctx.instance.__data;
+        
         let address = instance.address;
         let queryString = address;
         let locationId = instance.locationId;
@@ -100,5 +103,32 @@ module.exports = function(Rentalservice) {
 	    } else {
 			next();
 	    }
+        } else {
+            next();
+        }
+        
     });
+
+
+    Rentalservice.changeOptimistic = function(new_rental, version, cb) {
+        new_rental.version = version + 1;
+        Rentalservice.app.models.rentalService.updateAll({version: version, id: new_rental.id}, new_rental).
+        then((result) => {
+            if (result.count == 0) {
+                throw new Error("failed to change rental service");
+            } else {
+                cb(null, result);
+            }
+        })
+        .catch((err) => {
+            cb(err, null);
+        })
+    }
+
+    Rentalservice.remoteMethod('changeOptimistic', {
+        accepts: [{arg: 'new_rental', type: 'object', required: true},
+                  {arg: 'version', type: 'number', required: true}],
+        http: {path: '/changeOptimistically', verb: 'put'},
+        returns: {type: 'object', arg: 'retval'}
+    })
 };

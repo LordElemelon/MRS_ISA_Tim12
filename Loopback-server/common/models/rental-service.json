@@ -36,6 +36,10 @@
     "ratingCount": {
       "type": "number",
       "default": 0
+    },
+    "version": {
+      "type": "number",
+      "default": 0
     }
   },
   "validations": [],
