@@ -17,6 +17,7 @@ export class ChangeRentalServiceComponent implements OnInit {
 
   userType: string;
   changeForm: FormGroup;
+  rentalService;
 
   @ViewChild('changeform') changeFormDirective;
 
@@ -37,6 +38,7 @@ export class ChangeRentalServiceComponent implements OnInit {
           this.changeForm.controls['name'].setValue(result.name);
           this.changeForm.controls['address'].setValue(result.address);
           this.changeForm.controls['description'].setValue(result.description);
+          this.rentalService = result;
         },
         (err) => {
 
@@ -73,34 +75,22 @@ export class ChangeRentalServiceComponent implements OnInit {
   }
 
   onChangeSubmit() {
-
-    this.rentalServiceService.findById(this.itemService.getServiceId())
-    .subscribe(
-      (rentalservice) => {
-        var myRentalService = rentalservice as RentalService;
-        myRentalService.address = this.changeForm.value.address;
-        myRentalService.description = this.changeForm.value.description;
-        this.rentalServiceService.updateAttributes(myRentalService.id, myRentalService)
-         .subscribe(
-          (result) => {
-            if (result != null) {
-              this.openSnackBar("Change successfull", "Dismiss");
-            }
-            else {
-              this.openSnackBar("Change failed", "Dismiss");
-            }
-          },
-          (err) => {
-            this.openSnackBar("Change failed", "Dismiss");
-          });
+    var myRentalService = this.rentalService as RentalService;
+    myRentalService.address = this.changeForm.value.address;
+    myRentalService.description = this.changeForm.value.description;
+    this.rentalServiceService.changeOptimistic(myRentalService, myRentalService.version)
+      .subscribe(
+      (result) => {
+        if (result != null) {
+          this.openSnackBar("Change successfull", "Dismiss");
+        }
+        else {
+          this.openSnackBar("Change failed", "Dismiss");
+        }
       },
       (err) => {
-        this.baseURL.openSnackBar("Failed to retrieve rental service", "Dismiss");
-      }
-    )
-        
-      
-    
+        this.openSnackBar("Change failed", "Dismiss");
+      });
   }
 
   onChangeValueChanged(data?:any) {

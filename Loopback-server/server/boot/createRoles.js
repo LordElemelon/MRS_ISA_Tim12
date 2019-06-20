@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = function (app) {
-  if (false) {
+  if (true) {
 	  
   var Myuser = app.models.Myuser;
   var Role = app.models.Role;

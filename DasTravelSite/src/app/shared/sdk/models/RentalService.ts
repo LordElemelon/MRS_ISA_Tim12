@@ -15,6 +15,7 @@ export interface RentalServiceInterface {
   "description": string;
   "rating"?: number;
   "ratingCount"?: number;
+  "version"?: number;
   "id"?: any;
   "myuserId"?: any;
   "locationId"?: any;
@@ -32,6 +33,7 @@ export class RentalService implements RentalServiceInterface {
   "description": string;
   "rating": number;
   "ratingCount": number;
+  "version": number;
   "id": any;
   "myuserId": any;
   "locationId": any;
@@ -99,6 +101,11 @@ export class RentalService implements RentalServiceInterface {
         },
         "ratingCount": {
           name: 'ratingCount',
+          type: 'number',
+          default: 0
+        },
+        "version": {
+          name: 'version',
           type: 'number',
           default: 0
         },

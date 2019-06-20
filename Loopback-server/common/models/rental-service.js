@@ -70,7 +70,10 @@ module.exports = function(Rentalservice) {
     })
 
     Rentalservice.observe('before save', function findLatLong(ctx, next) {
+        if (ctx.instance) {
+            console.log(ctx.instance);
         let instance = ctx.instance.__data;
+        
         let address = instance.address;
         let queryString = address;
         let locationId = instance.locationId;
@@ -100,12 +103,16 @@ module.exports = function(Rentalservice) {
 	    } else {
 			next();
 	    }
+        } else {
+            next();
+        }
+        
     });
 
 
     Rentalservice.changeOptimistic = function(new_rental, version, cb) {
-        new_rental.version += 1;
-        Rentalservice.app.models.updateAll({version: version, id: new_rental.id}, new_rental).
+        new_rental.version = version + 1;
+        Rentalservice.app.models.rentalService.updateAll({version: version, id: new_rental.id}, new_rental).
         then((result) => {
             if (result.count == 0) {
                 throw new Error("failed to change rental service");

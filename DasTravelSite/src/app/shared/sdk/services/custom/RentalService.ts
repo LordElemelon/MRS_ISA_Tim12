@@ -789,6 +789,38 @@ export class RentalServiceApi extends BaseLoopBackApi {
   }
 
   /**
+   * <em>
+         * (The remote method definition does not provide any description.)
+         * </em>
+   *
+   * @param {object} data Request data.
+   *
+   *  - `new_rental` – `{object}` - 
+   *
+   *  - `version` – `{number}` - 
+   *
+   * @returns {object} An empty reference that will be
+   *   populated with the actual data once the response is returned
+   *   from the server.
+   *
+   * Data properties:
+   *
+   *  - `retval` – `{object}` - 
+   */
+  public changeOptimistic(new_rental: any, version: any, customHeaders?: Function): Observable<any> {
+    let _method: string = "PUT";
+    let _url: string = LoopBackConfig.getPath() + "/" + LoopBackConfig.getApiVersion() +
+    "/rentalServices/changeOptimistically";
+    let _routeParams: any = {};
+    let _postBody: any = {};
+    let _urlParams: any = {};
+    if (typeof new_rental !== 'undefined' && new_rental !== null) _urlParams.new_rental = new_rental;
+    if (typeof version !== 'undefined' && version !== null) _urlParams.version = version;
+    let result = this.request(_method, _url, _routeParams, _urlParams, _postBody, null, customHeaders);
+    return result;
+  }
+
+  /**
    * Creates a new instance in branches of this model.
    *
    * @param {any} id rentalService id
